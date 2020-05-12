@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement style="flex-direction: row;&#10;">
+        <Style src="FileLocationPanel.uss" />
+        <ui:VisualElement name="fields-container" style="flex-grow: 1;&#10;">
+            <ui:VisualElement style="flex-direction: row;&#10;">
+                <ui:TextField picking-mode="Ignore" label="Path:" value="filler text" name="path-field" readonly="false" style="flex-grow: 1;&#10;flex-shrink: 1;&#10;" />
+                <ui:Button text="..." name="path-button" />
+            </ui:VisualElement>
+            <QuickEye.UIToolkit.FileNameField label="Name:" style="flex-grow: 1;&#10;flex-shrink: 1;&#10;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="button-container" style="align-items: flex-end;&#10;margin-right: 5px;&#10;margin-bottom: 0;&#10;margin-left: 5px;&#10;flex-direction: row-reverse;&#10;flex-shrink: 0;&#10;">
+            <ui:Button text="Cancel" name="cancel-button" class="fixed-size-button" />
+            <ui:Button text="Add" name="add-button" class="fixed-size-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
