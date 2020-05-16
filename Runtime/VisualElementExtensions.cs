@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    public static class VisualElementExtensions
+    public static partial class VisualElementExtensions
     {
         public static void Q<T>(this VisualElement ve, out T element, string name, string className = null) where T : VisualElement
         {
@@ -33,23 +34,34 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        public static void SetSystemStyle(this VisualElement ve)
-        {
-            ve.transform.position = -Vector2.one;
-            ve.transform.scale = Vector3.zero;
-            ve.style.position = Position.Absolute;
-        }
-
         public static void ToggleDisplayStyle(this VisualElement ve, bool value)
         {
             ve.style.display = value ? DisplayStyle.Flex : DisplayStyle.None;
         }
+    }
 
-        //If Unity fixes the Default style of ScrollView this can be removed
-        public static void ForceScrollViewMode(this ScrollView sv, ScrollViewMode mode)
+    public static partial class VisualElementExtensions
+    {
+        private static readonly Dictionary<Delegate, Delegate> _wrapedCallbacks = new Dictionary<Delegate, Delegate>();
+
+        public static bool RegisterThisValueChangedCallback<T>(this INotifyValueChanged<T> control, EventCallback<ChangeEvent<T>> callback)
         {
-            sv.hierarchy[0].style.flexDirection =
-            sv.hierarchy[0].hierarchy[0].style.flexDirection = mode == ScrollViewMode.Vertical ? FlexDirection.Column : FlexDirection.Row;
+            EventCallback<ChangeEvent<T>> wrappedCallback = evt =>
+            {
+                if (evt.target == control)
+                    callback.Invoke(evt);
+            };
+            _wrapedCallbacks[callback] = wrappedCallback;
+            return control.RegisterValueChangedCallback(wrappedCallback);
+        }
+
+        public static bool UnregisterThisValueChangedCallback<T>(this INotifyValueChanged<T> control, EventCallback<ChangeEvent<T>> callback)
+        {
+            if (_wrapedCallbacks.TryGetValue(callback, out var wrappedCallback))
+            {
+                return control.UnregisterValueChangedCallback(wrappedCallback as EventCallback<ChangeEvent<T>>);
+            }
+            return false;
         }
     }
 }
