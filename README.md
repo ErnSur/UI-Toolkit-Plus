@@ -1,7 +1,7 @@
 # UI-Toolkit-Plus
 
 ### About
-Library mostly made of of extension methods. Created to cut down the boilerplate code, that I wrote in every UI Tollkit related scripts.
+Library mostly made of of extension methods. Created to cut down the boilerplate code, that I wrote in every UI Toolkit related scripts.
 
 ### QAttribute Example
 
