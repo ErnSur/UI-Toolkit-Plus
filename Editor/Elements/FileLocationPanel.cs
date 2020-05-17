@@ -20,19 +20,19 @@ namespace QuickEye.UIToolkit
         public event Action AddClicked;
         public event Action CancelClicked;
 
-        [UQuery("add-button")]
+        [Q("add-button")]
         private Button _addButton;
 
-        [UQuery("cancel-button")]
+        [Q("cancel-button")]
         private Button _cancelButton;
 
-        [UQuery("path-button")]
+        [Q("path-button")]
         private Button _pathButton;
 
-        [UQuery("path-field")]
+        [Q("path-field")]
         private TextField _pathField;
 
-        [UQuery]
+        [Q]
         private FileNameField _nameField;
 
         public string Directory { get => _pathField.value; set => _pathField.value = value; }
@@ -51,7 +51,7 @@ namespace QuickEye.UIToolkit
             styleSheets.Add(Resources.Load<StyleSheet>(_ussPath));
             var tree = Resources.Load<VisualTreeAsset>(_uxmlPath);
             tree.CloneTree(this);
-            this.AssignQueryableMembers(this);
+            this.AssignQueryResults(this);
         }
 
         private void RegisterEventHandlers()

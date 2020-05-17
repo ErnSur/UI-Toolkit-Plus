@@ -25,11 +25,11 @@ namespace QuickEye.UIToolkit
             _findElementOfType = methods.FirstOrDefault();
         }
 
-        public static void AssignQueryableMembers(this VisualElement root, object obj)
+        public static void AssignQueryResults(this VisualElement root, object target)
         {
             var members =
-                from member in obj.GetType().GetMembers(_uQueryAttributeFlags)
-                let att = member.GetCustomAttribute<UQueryAttribute>()
+                from member in target.GetType().GetMembers(_uQueryAttributeFlags)
+                let att = member.GetCustomAttribute<QAttribute>()
                 where att != null
                 select (member, att);
 
@@ -48,7 +48,7 @@ namespace QuickEye.UIToolkit
                     ? Q(root, returnType)
                     : root.Q(att.Name);
 
-                setMemberValue(obj, queryResult);
+                setMemberValue(target, queryResult);
             }
         }
 
@@ -59,7 +59,7 @@ namespace QuickEye.UIToolkit
             return methodInfo.Invoke(null, new object[] { e, null, null });
         }
 
-        public static bool HasParamaters(this MethodInfo methodInfo,IList<Type> paramTypes)
+        public static bool HasParamaters(this MethodInfo methodInfo, IList<Type> paramTypes)
         {
             var parameters = methodInfo.GetParameters();
             if (parameters.Length != paramTypes.Count)
