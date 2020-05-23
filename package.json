@@ -3,5 +3,12 @@
   "displayName": "QuickEye UI Toolkit Plus",
   "version": "1.0.0",
   "author": "Ernest Sury\u015b",
-  "type": "library"
+  "type": "library",
+  "samples": [
+	    {
+	      "displayName": "Fluent Interface",
+	      "description": "Basic usage of the fluent interface extensions.",
+	      "path": "Samples~/FluentInterface"
+	    }
+	]
 }
