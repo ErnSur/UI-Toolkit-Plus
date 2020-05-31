@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.UIElements;
+
 namespace QuickEye.UIToolkit
 {
     public static class FluentVisualElementExtensions
