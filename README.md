@@ -1,5 +1,7 @@
 # UI Toolkit Plus
-![](https://img.shields.io/badge/unity-2019.1%2B-green)
+[![license](https://img.shields.io/github/license/ToshikiImagawa/Variable-infinite-scroll?style=flat)](https://github.com/ToshikiImagawa/Variable-infinite-scroll/blob/master/LICENSE.md)
+![](https://img.shields.io/badge/unity-2019.1%2B-blue)
+
 ### About
 Library mostly made of of extension methods. Created to cut down the boilerplate code, that I wrote in every UI Toolkit related scripts.
 
