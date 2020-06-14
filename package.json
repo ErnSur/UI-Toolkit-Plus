@@ -2,13 +2,14 @@
   "name": "com.quickeye.uitoolkitplus",
   "displayName": "QuickEye UI Toolkit Plus",
   "version": "1.0.0",
+  "unity": "2019.1",
   "author": "Ernest Sury\u015b",
   "type": "library",
   "samples": [
-	    {
-	      "displayName": "Fluent Interface",
-	      "description": "Basic usage of the fluent interface extensions.",
-	      "path": "Samples~/FluentInterface"
-	    }
-	]
+    {
+      "displayName": "Fluent Interface",
+      "description": "Basic usage of the fluent interface extensions.",
+      "path": "Samples~/FluentInterface"
+    }
+  ]
 }
