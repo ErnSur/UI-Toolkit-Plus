@@ -19,7 +19,7 @@ namespace QuickEye.UIToolkit
                     (returnType, setMemberValue) = (property.PropertyType, property.SetValue);
                 else continue;
                 
-                var queryResult = string.IsNullOrEmpty(att.Name)
+                var queryResult = string.IsNullOrEmpty(att.Name) && att.Classes == null
                     ? root.Q(returnType)
                     : root.Q(att.Name, att.Classes);
                 

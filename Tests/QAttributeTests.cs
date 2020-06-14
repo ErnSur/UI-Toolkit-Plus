@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using NUnit.Framework;
 using UnityEngine.UIElements;
 
@@ -9,16 +7,20 @@ namespace QuickEye.UIToolkit.Tests
     public class QAttributeTests
     {
         const string LabelName = "label";
+        const string LabelClass = "first"; 
 
         VisualElement root;
-        private BasePoco poco;
-        readonly Label label = new Label {name = LabelName};
+        BasePoco poco;
+        readonly Label label = new Label { name = LabelName };
         readonly Button button = new Button();
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
+            label.AddToClassList(LabelClass);
+            
             root = new VisualElement();
+            root.Add(new Label());
             root.Add(label);
             root.Add(button);
         }
@@ -30,7 +32,47 @@ namespace QuickEye.UIToolkit.Tests
         }
         
         [Test]
-        public void Fields_Are_Assign_InBaseClass()
+        public void AssignMembers_By_Name()
+        {
+            poco = new BasePoco();
+            
+            root.AssignQueryResults(poco);
+            
+            Assert.AreEqual(root.Q(LabelName), poco.elementByName);
+        }
+        
+        [Test]
+        public void AssignMembers_By_Class()
+        {
+            poco = new BasePoco();
+            
+            root.AssignQueryResults(poco);
+            
+            Assert.AreEqual(root.Q(null,LabelClass), poco.elementByClass);
+        }
+        
+        [Test]
+        public void AssignMembers_By_Type()
+        {
+            poco = new BasePoco();
+            
+            root.AssignQueryResults(poco);
+            
+            Assert.AreEqual(root.Q<Button>(), poco.elementByType);
+        }
+        
+        [Test]
+        public void AssignMembers_By_NameAndClass()
+        {
+            poco = new BasePoco();
+            
+            root.AssignQueryResults(poco);
+            
+            Assert.AreEqual(root.Q(LabelName,LabelClass), poco.elementByNameAndClass);
+        }
+        
+        [Test]
+        public void Fields_AreAssigned_InBaseClass()
         {
             poco = new BasePoco();
             
@@ -46,7 +88,7 @@ namespace QuickEye.UIToolkit.Tests
         }
         
         [Test]
-        public void Properties_Are_Assign_InBaseClass()
+        public void Properties_AreAssigned_InBaseClass()
         {
             poco = new BasePoco();
             
@@ -62,7 +104,7 @@ namespace QuickEye.UIToolkit.Tests
         }
         
         [Test]
-        public void Inherited_Fields_Are_Assign_InDerivedClass()
+        public void Inherited_Fields_AreAssigned_InDerivedClass()
         {
             poco = new DerivedPoco();
             
@@ -78,7 +120,7 @@ namespace QuickEye.UIToolkit.Tests
         }
         
         [Test]
-        public void Inherited_Properties_Are_Assign_InDerivedClass()
+        public void Inherited_Properties_AreAssigned_InDerivedClass()
         {
             poco = new DerivedPoco();
             
@@ -110,7 +152,16 @@ namespace QuickEye.UIToolkit.Tests
             [Q(LabelName)] private Label b_private_prop { get; set; }
 
             [Q]
-            internal Button buttonField;
+            public Button elementByType;
+            
+            [Q(LabelName)]
+            public VisualElement elementByName;
+
+            [Q(null, LabelClass)]
+            public VisualElement elementByClass;
+            
+            [Q(LabelName, LabelClass)]
+            public VisualElement elementByNameAndClass;
 
             public void AssertBasePrivateField(object expectedValue)=>
                 Assert.AreEqual(expectedValue, b_private_field);

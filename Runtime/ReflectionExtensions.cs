@@ -19,7 +19,7 @@ namespace QuickEye.UIToolkit
         public static (MemberInfo, QAttribute)[] GetQAttributeMembers(this Type type)
         {
             return (from member in GetFieldsAndProperties()
-                let att = CustomAttributeExtensions.GetCustomAttribute<QAttribute>((MemberInfo) member)
+                let att = member.GetCustomAttribute<QAttribute>()
                 where att != null
                 select (member, att)).ToArray();
             
@@ -34,7 +34,7 @@ namespace QuickEye.UIToolkit
         //Returns `UnityEngine.UIElements.UQueryExtensions.Q<T>(root)` method
         private static MethodInfo GetFindVisualElementOfTypeMethod()
         {
-            var parameters = new[] {typeof(VisualElement), typeof(string), typeof(string)};
+            var parameters = new[] {typeof(VisualElement), typeof(string), typeof(string[])};
             
             var uQueryExtensionMethods = typeof(UnityEngine.UIElements.UQueryExtensions)
                 .GetMethods(BindingFlags.Static | BindingFlags.Public);
