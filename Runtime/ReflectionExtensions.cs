@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+#if UNITY_2018
+using UnityEngine.Experimental.UIElements;
+#else
 using UnityEngine.UIElements;
+#endif
 
 namespace QuickEye.UIToolkit
 {
@@ -31,14 +35,20 @@ namespace QuickEye.UIToolkit
                     yield return prop;
             }
         }
+
         //Returns `UnityEngine.UIElements.UQueryExtensions.Q<T>(root)` method
         private static MethodInfo GetFindVisualElementOfTypeMethod()
         {
             var parameters = new[] {typeof(VisualElement), typeof(string), typeof(string[])};
-            
-            var uQueryExtensionMethods = typeof(UnityEngine.UIElements.UQueryExtensions)
+            var uQueryExtensionType =
+#if UNITY_2018
+                typeof(UnityEngine.Experimental.UIElements.UQueryExtensions);
+#else
+                typeof(UnityEngine.UIElements.UQueryExtensions);
+#endif
+            var uQueryExtensionMethods = uQueryExtensionType
                 .GetMethods(BindingFlags.Static | BindingFlags.Public);
-            
+
             var methods = from method in uQueryExtensionMethods
                 where method.Name == "Q"
                 where method.IsGenericMethod

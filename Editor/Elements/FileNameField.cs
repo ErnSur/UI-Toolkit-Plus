@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿#if UNITY_2019_OR_NEWER
+using System.Linq;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-using System.IO;
 
 namespace QuickEye.UIToolkit
 {
@@ -41,3 +42,4 @@ namespace QuickEye.UIToolkit
         public new class UxmlFactory : UxmlFactory<FileNameField, UxmlTraits> { }
     }
 }
+#endif

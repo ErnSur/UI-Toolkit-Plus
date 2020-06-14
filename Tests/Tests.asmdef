@@ -6,6 +6,9 @@
         "QuickEye.UIToolkit.Editor",
         "QuickEye.UIToolkit"
     ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
     "includePlatforms": [
         "Editor"
     ],

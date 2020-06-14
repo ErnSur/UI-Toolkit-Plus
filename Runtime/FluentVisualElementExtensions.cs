@@ -1,6 +1,11 @@
 ﻿using System;
 using UnityEngine;
+#if UNITY_2018
+using UnityEngine.Experimental.UIElements;
+using UnityEngine.Experimental.UIElements.StyleEnums;
+#else
 using UnityEngine.UIElements;
+#endif
 
 namespace QuickEye.UIToolkit
 {

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+#if UNITY_2018
+using UnityEngine.Experimental.UIElements;
+#else
 using UnityEngine.UIElements;
+#endif
 
 namespace QuickEye.UIToolkit
 {
@@ -16,6 +20,7 @@ namespace QuickEye.UIToolkit
                     callback.Invoke(evt);
             };
             _wrapedCallbacks[callback] = wrappedCallback;
+
             return control.RegisterValueChangedCallback(wrappedCallback);
         }
 
@@ -27,5 +32,19 @@ namespace QuickEye.UIToolkit
             }
             return false;
         }
+        
+        #if UNITY_2018
+        public static bool RegisterValueChangedCallback<T>(this INotifyValueChanged<T> control, EventCallback<ChangeEvent<T>> callback)
+        {
+            control.OnValueChanged(callback);
+            return true;
+        }
+        
+        public static bool UnregisterValueChangedCallback<T>(this INotifyValueChanged<T> control, EventCallback<ChangeEvent<T>> callback)
+        {
+            control.RemoveOnValueChanged(callback);
+            return true;
+        }
+        #endif
     }
 }

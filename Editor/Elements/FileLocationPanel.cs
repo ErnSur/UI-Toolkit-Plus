@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_2019_OR_NEWER
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -96,3 +97,4 @@ namespace QuickEye.UIToolkit
         public new class UxmlFactory : UxmlFactory<FileLocationPanel, UxmlTraits> { }
     }
 }
+#endif

@@ -1,6 +1,10 @@
 ﻿using System;
 using UnityEngine;
+#if UNITY_2018
+using UnityEngine.Experimental.UIElements;
+#else
 using UnityEngine.UIElements;
+#endif
 
 namespace QuickEye.UIToolkit
 {
@@ -32,10 +36,11 @@ namespace QuickEye.UIToolkit
                 ve.UnregisterCallback<AttachToPanelEvent>(InitValue);
             }
         }
-
+#if !UNITY_2018
         public static void ToggleDisplayStyle(this VisualElement ve, bool value)
         {
             ve.style.display = value ? DisplayStyle.Flex : DisplayStyle.None;
         }
+#endif
     }
 }

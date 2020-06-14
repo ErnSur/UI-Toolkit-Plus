@@ -1,6 +1,10 @@
 ﻿using System;
 using NUnit.Framework;
+#if UNITY_2018
+using UnityEngine.Experimental.UIElements;
+#else
 using UnityEngine.UIElements;
+#endif
 
 namespace QuickEye.UIToolkit.Tests
 {
