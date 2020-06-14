@@ -25,9 +25,13 @@ namespace QuickEye.UIToolkit
             return ve;
         }
 
-        public static T Action<T>(this T ve, Action callback) where T : Button
+        public static T Clicked<T>(this T ve, Action callback) where T : Button
         {
+#if UNITY_2019_3_OR_NEWER
             ve.clicked += callback;
+#else
+            ve.clickable.clicked += callback;
+#endif
             return ve;
         }
 
