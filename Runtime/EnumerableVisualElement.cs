@@ -1,10 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+
 namespace QuickEye.UIToolkit
 {
-    public class EnumerableVisualElement : VisualElement, IEnumerable<VisualElement>
+    public class EnumerableVisualElement : VisualElement, IEnumerable<VisualElement>, IEquatable<VisualElement>
     {
+        public bool Equals(VisualElement other)
+        {
+            return base.Equals(other);  
+        }
+
         public IEnumerator<VisualElement> GetEnumerator()
         {
             foreach (var child in contentContainer.Children())
