@@ -1,6 +1,7 @@
 # UI Toolkit Plus
 [![license](https://img.shields.io/github/license/ToshikiImagawa/Variable-infinite-scroll?style=flat)](https://github.com/ToshikiImagawa/Variable-infinite-scroll/blob/master/LICENSE.md)
 ![](https://img.shields.io/static/v1?label=unity&message=2019.1%2B&color=blue&style=flat&logo=Unity)
+[![openupm](https://img.shields.io/npm/v/com.quickeye.uitoolkitplus?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.quickeye.uitoolkitplus/)
 ### About
 Library mostly made of of extension methods. Created to cut down the boilerplate code, that I wrote in every UI Toolkit related scripts.
 
