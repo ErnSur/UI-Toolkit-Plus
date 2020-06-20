@@ -56,9 +56,9 @@ namespace QuickEye.UIToolkit
 
         private void RegisterEventHandlers()
         {
-            _addButton.Clicked(() => AddClicked?.Invoke());
-            _cancelButton.Clicked(() => CancelClicked?.Invoke());
-            _pathButton.Clicked(TrySetPathFromFolderPanel);
+            _addButton.AddAction(() => AddClicked?.Invoke());
+            _cancelButton.AddAction(() => CancelClicked?.Invoke());
+            _pathButton.AddAction(TrySetPathFromFolderPanel);
         }
 
         private void TrySetPathFromFolderPanel()

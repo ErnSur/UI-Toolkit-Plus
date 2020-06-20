@@ -30,5 +30,14 @@ namespace QuickEye.UIToolkit
         {
             ve.style.display = value ? DisplayStyle.Flex : DisplayStyle.None;
         }
+
+        public static void AddAction(this Button button, Action clickEvent)
+        {
+#if UNITY_2019_3_OR_NEWER
+            button.clicked += clickEvent;
+#else
+            button.clickable.clicked += clickEvent;
+#endif
+        }
     }
 }
