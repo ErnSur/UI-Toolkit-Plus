@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -12,17 +13,17 @@ namespace QuickEye.UIToolkit
             {
                 Type returnType;
                 Action<object, object> setMemberValue;
-                
+
                 if (member is FieldInfo field)
                     (returnType, setMemberValue) = (field.FieldType, field.SetValue);
                 else if (member is PropertyInfo property)
                     (returnType, setMemberValue) = (property.PropertyType, property.SetValue);
                 else continue;
-                
+
                 var queryResult = string.IsNullOrEmpty(att.Name) && att.Classes == null
                     ? root.Q(returnType)
                     : root.Q(att.Name, att.Classes);
-                
+
                 setMemberValue(target, queryResult);
             }
         }
@@ -32,6 +33,13 @@ namespace QuickEye.UIToolkit
             var methodInfo = ReflectionExtensions.FindVisualElementOfType.MakeGenericMethod(type);
 
             return methodInfo.Invoke(null, new object[] {e, null, null}) as VisualElement;
+        }
+
+        public static bool Q<T>(this VisualElement ve, out T element, string name, string className = null)
+            where T : VisualElement
+        {
+            element = ve.Q<T>(name, className);
+            return element != null;
         }
     }
 }

@@ -6,26 +6,25 @@ namespace QuickEye.UIToolkit
 {
     public static class INotifyValueChangedExtensions
     {
-        private static readonly Dictionary<Delegate, Delegate> _wrapedCallbacks = new Dictionary<Delegate, Delegate>();
+        private static readonly Dictionary<Delegate, Delegate> WrappedCallbacks = new Dictionary<Delegate, Delegate>();
 
-        public static bool RegisterThisValueChangedCallback<T>(this INotifyValueChanged<T> control, EventCallback<ChangeEvent<T>> callback)
+        public static bool RegisterThisValueChangedCallback<T>(this INotifyValueChanged<T> control,
+            EventCallback<ChangeEvent<T>> callback)
         {
-            EventCallback<ChangeEvent<T>> wrappedCallback = evt =>
+            WrappedCallbacks[callback] = (EventCallback<ChangeEvent<T>>) WrappedCallback;
+            return control.RegisterValueChangedCallback(WrappedCallback);
+
+            void WrappedCallback(ChangeEvent<T> evt)
             {
-                if (evt.target == control)
-                    callback.Invoke(evt);
-            };
-            _wrapedCallbacks[callback] = wrappedCallback;
-            return control.RegisterValueChangedCallback(wrappedCallback);
+                if (evt.target == control) callback.Invoke(evt);
+            }
         }
 
-        public static bool UnregisterThisValueChangedCallback<T>(this INotifyValueChanged<T> control, EventCallback<ChangeEvent<T>> callback)
+        public static bool UnregisterThisValueChangedCallback<T>(this INotifyValueChanged<T> control,
+            EventCallback<ChangeEvent<T>> callback)
         {
-            if (_wrapedCallbacks.TryGetValue(callback, out var wrappedCallback))
-            {
-                return control.UnregisterValueChangedCallback(wrappedCallback as EventCallback<ChangeEvent<T>>);
-            }
-            return false;
+            return WrappedCallbacks.TryGetValue(callback, out var wrappedCallback) &&
+                   control.UnregisterValueChangedCallback(wrappedCallback as EventCallback<ChangeEvent<T>>);
         }
     }
 }

@@ -1,5 +1,5 @@
 {
-    "name": "QuickEye.UIToolkit.Tests",
+    "name": "QuickEye.UIToolkit.Editor.Tests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
@@ -19,6 +19,5 @@
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],
-    "versionDefines": [],
-    "noEngineReferences": false
+    "versionDefines": []
 }
