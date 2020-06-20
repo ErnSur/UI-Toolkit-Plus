@@ -9,34 +9,34 @@ namespace QuickEye.UIToolkit
 {
     public class FileLocationPanel : VisualElement
     {
-        public const string _uxmlPath = "QuickEye/FileLocationPanel/FileLocationPanel";
-        public const string _ussPath = _uxmlPath;
-        private const string _folderPanelTitle = "Select path";
+        private const string UxmlPath = "QuickEye/FileLocationPanel/FileLocationPanel";
+        private const string UssPath = UxmlPath;
+        private const string FolderPanelTitle = "Select path";
 
-        private static readonly Stack<string> _previousDirectories = new Stack<string>(new[] { "Assets/" });
+        private static readonly Stack<string> previousDirectories = new Stack<string>(new[] { "Assets/" });
 
-        public static IReadOnlyCollection<string> PreviousDirectories => _previousDirectories;
+        public static IReadOnlyCollection<string> PreviousDirectories => previousDirectories;
 
         public event Action AddClicked;
         public event Action CancelClicked;
 
         [Q("add-button")]
-        private Button _addButton;
+        private Button addButton;
 
         [Q("cancel-button")]
-        private Button _cancelButton;
+        private Button cancelButton;
 
         [Q("path-button")]
-        private Button _pathButton;
+        private Button pathButton;
 
         [Q("path-field")]
-        private TextField _pathField;
+        private TextField pathField;
 
         [Q]
-        private FileNameField _nameField;
+        private FileNameField nameField;
 
-        public string Directory { get => _pathField.value; set => _pathField.value = value; }
-        public string FileName { get => _nameField.value; set => _nameField.value = value; }
+        public string Directory { get => pathField.value; set => pathField.value = value; }
+        public string FileName { get => nameField.value; set => nameField.value = value; }
 
         public string FullPath => Path.Combine(Directory, FileName);
 
@@ -48,31 +48,31 @@ namespace QuickEye.UIToolkit
 
         private void LoadVisualTree()
         {
-            styleSheets.Add(Resources.Load<StyleSheet>(_ussPath));
-            var tree = Resources.Load<VisualTreeAsset>(_uxmlPath);
+            styleSheets.Add(Resources.Load<StyleSheet>(UssPath));
+            var tree = Resources.Load<VisualTreeAsset>(UxmlPath);
             tree.CloneTree(this);
             this.AssignQueryResults(this);
         }
 
         private void RegisterEventHandlers()
         {
-            _addButton.AddAction(() => AddClicked?.Invoke());
-            _cancelButton.AddAction(() => CancelClicked?.Invoke());
-            _pathButton.AddAction(TrySetPathFromFolderPanel);
+            addButton.AddAction(() => AddClicked?.Invoke());
+            cancelButton.AddAction(() => CancelClicked?.Invoke());
+            pathButton.AddAction(TrySetPathFromFolderPanel);
         }
 
         private void TrySetPathFromFolderPanel()
         {
             if (OpenProjectFolderPanel(null, true, out var path))
             {
-                _previousDirectories.Push(path);
-                _pathField.value = _previousDirectories.Peek();
+                previousDirectories.Push(path);
+                pathField.value = previousDirectories.Peek();
             }
         }
 
         private static bool OpenProjectFolderPanel(string directory, bool projectRelative, out string path)
         {
-            path = EditorUtility.OpenFolderPanel(_folderPanelTitle, directory ?? Application.dataPath, "Assets");
+            path = EditorUtility.OpenFolderPanel(FolderPanelTitle, directory ?? Application.dataPath, "Assets");
 
             if (string.IsNullOrEmpty(path))
                 return false;

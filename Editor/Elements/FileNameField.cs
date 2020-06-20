@@ -18,13 +18,11 @@ namespace QuickEye.UIToolkit
 
         class FileNameInput : TextValueInput
         {
-            private readonly string _allowedChars;
-
-            protected override string allowedCharacters => _allowedChars;
+            protected override string allowedCharacters { get; }
 
             public FileNameInput()
             {
-                _allowedChars = new string(Enumerable.Range(char.MinValue, char.MaxValue)
+                allowedCharacters = new string(Enumerable.Range(char.MinValue, char.MaxValue)
                     .Select(c => (char)c)
                     .Where(c => !char.IsControl(c))
                     .Except(Path.GetInvalidFileNameChars())
