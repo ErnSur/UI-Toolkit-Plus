@@ -7,10 +7,7 @@ namespace QuickEye.UIToolkit
 {
     public class EnumerableVisualElement : VisualElement, IEnumerable<VisualElement>, IEquatable<VisualElement>
     {
-        public bool Equals(VisualElement other)
-        {
-            return base.Equals(other);  
-        }
+        public bool Equals(VisualElement other) => base.Equals(other);
 
         public IEnumerator<VisualElement> GetEnumerator()
         {
