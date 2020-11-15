@@ -1,0 +1,8 @@
+{
+  "name": "com.quickeye.ui-toolkit-plus",
+  "displayName": "UI Toolkit Plus",
+  "version": "0.1.1",
+  "unity": "2019.1",
+  "author": "Ernest Sury\u015b",
+  "type": "library"
+}

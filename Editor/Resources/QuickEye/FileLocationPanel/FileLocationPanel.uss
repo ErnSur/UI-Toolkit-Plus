@@ -1,0 +1,9 @@
+.fixed-size-button {
+    width: 50px;
+    height: 20px;
+}
+
+FileLocationPanel {
+    justify-content: space-around;
+    height: 50px;
+}
