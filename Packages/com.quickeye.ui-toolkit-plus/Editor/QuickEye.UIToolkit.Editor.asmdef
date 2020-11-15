@@ -1,5 +1,6 @@
 {
     "name": "QuickEye.UIToolkit.Editor",
+    "rootNamespace": "",
     "references": [
         "QuickEye.UIToolkit"
     ],
@@ -12,6 +13,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.ui.builder",
+            "expression": "",
+            "define": "UI_BUILDER"
+        }
+    ],
     "noEngineReferences": false
 }
