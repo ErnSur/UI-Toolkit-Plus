@@ -12,24 +12,26 @@ namespace QuickEye.UIToolkit
 {
     public static class UIBuilderUtils
     {
-        private static readonly Type UIBuilderType = Type.GetType("Unity.UI.Builder.Builder, Unity.UI.Builder.Editor");
+        private static readonly Type UIBuilderType =
+            Type.GetType("Unity.UI.Builder.Builder, UnityEditor.UIBuilderModule");
 
         [Shortcut("UI Builder/Copy Field Declarations", KeyCode.C, ShortcutModifiers.Alt)]
         private static void CopyFieldDeclarations()
         {
-            if (!TryGetUIBuilderWindow(out var window))
-                return;
-            
+            var foundWindowWithReflection = TryGetUIBuilderWindow(out var window);
+            if (!foundWindowWithReflection)
+                window = EditorWindow.focusedWindow;
+
             window.SendEvent(EditorGUIUtility.CommandEvent("Copy"));
-            
-            if (TryTranslateXmlToFieldDeclarations(GUIUtility.systemCopyBuffer, out var result))
+
+            if (TryTranslateXmlToFieldDeclarations(GUIUtility.systemCopyBuffer, out var result, out var count))
             {
                 GUIUtility.systemCopyBuffer = result;
-                window.ShowNotification(new GUIContent("Field declarations copied"), 0.2);
+                window.ShowNotification(new GUIContent($"Field declarations copied. ({count})"), 0.2);
             }
-            else
+            else if (foundWindowWithReflection)
             {
-                Debug.LogError($"Could not parse selected elements.");
+                window.ShowNotification(new GUIContent("Nothing to copy."), 0.2);
             }
         }
 
@@ -37,24 +39,25 @@ namespace QuickEye.UIToolkit
         {
             if (UIBuilderType == null)
             {
-                Debug.LogError("Could not find UI Builder type.");
+                Debug.LogWarning("Could not find UI Builder type.");
                 window = null;
                 return false;
             }
+
             var objectsOfTypeAll = Resources.FindObjectsOfTypeAll(UIBuilderType);
             window = objectsOfTypeAll.Cast<EditorWindow>().FirstOrDefault();
 
             return window;
         }
 
-        private static bool TryTranslateXmlToFieldDeclarations(string xml, out string result)
+        private static bool TryTranslateXmlToFieldDeclarations(string xml, out string result, out int count)
         {
             try
             {
-                var fieldInfos = from ele in XDocument.Parse(xml).Descendants()
+                var fieldInfos = (from ele in XDocument.Parse(xml).Descendants()
                     let name = ele.Attribute("name")?.Value
                     where name != null
-                    select (type: ele.Name.LocalName, name);
+                    select (type: ele.Name.LocalName, name)).ToArray();
 
                 var sb = new StringBuilder();
                 foreach (var (type, name) in fieldInfos)
@@ -63,16 +66,18 @@ namespace QuickEye.UIToolkit
                     sb.AppendLine($"private {type} {UssNameToVariableName(name)};");
                 }
 
+                count = fieldInfos.Length;
                 result = sb.ToString();
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 result = null;
+                count = 0;
                 return false;
             }
 
-            static string UssNameToVariableName(string input)
+            string UssNameToVariableName(string input)
             {
                 return Regex.Replace(input, "-.", m => char.ToUpper(m.Value[1]).ToString());
             }

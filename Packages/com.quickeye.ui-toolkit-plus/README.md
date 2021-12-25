@@ -38,3 +38,20 @@ public class ExampleEditorWindow
 }
 ```
 `QAttribute` marks the class member as a query target, and the `AssignQueryResults` extension method assigns appropriate UQuery results to those members.
+
+### Copy Field Declarations (UI builder)
+
+Select visual element in your UI Builder hierarchy and use `UI Builder/Copy Field Declarations` shortcut (Alt + C).
+This will copy C# field declarations for the selected visual element and its children.
+
+![](Documentation~/CopyFieldDeclarations.jpg)
+
+Copied C# field declarations:
+
+```csharp
+    [Q("root")]
+    private VisualElement root;
+    [Q("child")]
+    private VisualElement child;
+```
+

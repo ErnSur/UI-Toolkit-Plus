@@ -12,6 +12,7 @@ namespace QuickEye.UIToolkit
             InitField(ve, element, onValueChange, () => initialValue);
         }
 
+        // TODO: See if we can use `this INotifyValueChanged<T> ve` without `element` argument
         public static void InitField<T>(this VisualElement ve, INotifyValueChanged<T> element,
             EventCallback<ChangeEvent<T>> onValueChange, Func<T> getInitialValue)
         {
