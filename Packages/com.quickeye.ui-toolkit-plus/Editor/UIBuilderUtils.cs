@@ -79,7 +79,7 @@ namespace QuickEye.UIToolkit
 
             string UssNameToVariableName(string input)
             {
-                return Regex.Replace(input, "-.", m => char.ToUpper(m.Value[1]).ToString());
+                return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length-1]).ToString());
             }
         }
     }
