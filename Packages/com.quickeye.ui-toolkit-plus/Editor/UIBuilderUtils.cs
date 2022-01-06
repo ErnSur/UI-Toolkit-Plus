@@ -1,5 +1,6 @@
 #if UI_BUILDER
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -50,6 +51,26 @@ namespace QuickEye.UIToolkit
             return window;
         }
 
+        private const string CopyFieldsMenuPath = "Assets/Copy UXML Field Declarations";
+
+        [MenuItem(CopyFieldsMenuPath, true)]
+        private static bool CopyFieldDeclarationsValidation()
+        {
+            var obj = Selection.activeObject;
+            var path = AssetDatabase.GetAssetPath(obj);
+            return path.EndsWith(".uxml");
+        }
+
+        [MenuItem(CopyFieldsMenuPath)]
+        private static void CopyFieldDeclarationsMenu()
+        {
+            var obj = Selection.activeObject;
+            var path = AssetDatabase.GetAssetPath(obj);
+            var text = File.ReadAllText(path);
+            if (TryTranslateXmlToFieldDeclarations(text, out var res, out _))
+                GUIUtility.systemCopyBuffer = res;
+        }
+
         private static bool TryTranslateXmlToFieldDeclarations(string xml, out string result, out int count)
         {
             try
@@ -79,7 +100,7 @@ namespace QuickEye.UIToolkit
 
             string UssNameToVariableName(string input)
             {
-                return Regex.Replace(input, "-.", m => char.ToUpper(m.Value[1]).ToString());
+                return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());
             }
         }
     }
