@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -27,9 +26,10 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        public static void ToggleDisplayStyle(this VisualElement ve, bool value)
+        public static VisualElement ToggleDisplayStyle(this VisualElement ve, bool value)
         {
             ve.style.display = value ? DisplayStyle.Flex : DisplayStyle.None;
+            return ve;
         }
 
         public static void AddAction(this Button button, Action clickEvent)

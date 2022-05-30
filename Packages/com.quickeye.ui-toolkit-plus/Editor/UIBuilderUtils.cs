@@ -1,4 +1,4 @@
-#if UI_BUILDER
+#if UI_BUILDER || UNITY_2021_1_OR_NEWER
 using System;
 using System.IO;
 using System.Linq;
