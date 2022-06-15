@@ -1,17 +1,13 @@
-name: CI
+name: UPM Release
 on:
   push:
     branches: [ release ]
-  workflow_dispatch:
 
 jobs:
-  build:
+  update_upm_branch:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2.1.5
-
-      - name: Create a package commit
-        run: . ./.github/workflows/ci.ps1
-        shell: pwsh
+      - uses: ErnSur/UPM-Release@develop
+        with:
+          package_directory: 'Packages/com.quickeye.ui-toolkit-plus'
