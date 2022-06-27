@@ -1,0 +1,7 @@
+TabGroup {
+    background-color: rgb(46, 46, 46);
+    padding-top: 2px;
+    min-height: 21px;
+    flex-direction: row;
+    align-items: flex-end;
+}

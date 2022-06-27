@@ -1,14 +1,18 @@
 {
-    "name": "QuickEye.UIToolkit",
+    "name": "QuickEye.UIToolkit.2021",
     "rootNamespace": "QuickEye.UIToolkit",
-    "references": [],
+    "references": [
+        "GUID:9861c8596b4de1544a09a56d39ef2572"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UNITY_2021_1_OR_NEWER"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
