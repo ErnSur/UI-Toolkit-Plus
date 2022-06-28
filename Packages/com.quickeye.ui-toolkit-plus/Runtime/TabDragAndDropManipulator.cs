@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    public class TabDragAndDropManipulator : PointerManipulator
+    public class TabDragAndDropManipulator : Manipulator
     {
         public const string TabDraggedClassName = "tab--dragged";
         public const string TabDraggedOutClassName = "tab--dragged-out";
@@ -32,14 +32,14 @@ namespace QuickEye.UIToolkit
 
         private float _lastPointerXPos;
 
-        private bool _isDragging,_tookCapture;
+        private bool _isDragging, _tookCapture;
 
         private VisualElement _tabGroup;
         private List<VisualElement> _allTabs;
         private VisualElement _lastSwappedTab;
         private readonly VisualElement _shadowSpace = new VisualElement();
         private float _pointerDelta;
-        
+
         private void StartDrag()
         {
             ToggleFloatingMode(true);
@@ -114,7 +114,15 @@ namespace QuickEye.UIToolkit
 
         private static void MoveInHierarchy(VisualElement ve, int newIndex)
         {
+            var nonReorderableTabSiblings = ve.parent.Children()
+                .Select((e, i) => (Index: i, Tab: e as Tab))
+                .Where(t => t.Tab != null)
+                .Where(t => !t.Tab.Reorderable)
+                .ToArray();
+
             ve.parent.Insert(newIndex, ve);
+            foreach (var (index, tab) in nonReorderableTabSiblings)
+                ve.parent.Insert(index, tab);
         }
 
 

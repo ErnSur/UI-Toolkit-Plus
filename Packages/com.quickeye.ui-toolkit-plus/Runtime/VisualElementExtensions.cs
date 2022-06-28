@@ -5,6 +5,16 @@ namespace QuickEye.UIToolkit
 {
     public static class VisualElementExtensions
     {
+        public static T ToggleManipulator<T>(this T ve, IManipulator manipulator, bool enable)
+            where T : VisualElement
+        {
+            if (enable)
+                ve.AddManipulator(manipulator);
+            else
+                ve.RemoveManipulator(manipulator);
+            return ve;
+        }
+
         public static void InitField<T>(this VisualElement ve, INotifyValueChanged<T> element,
             EventCallback<ChangeEvent<T>> onValueChange, T initialValue)
         {

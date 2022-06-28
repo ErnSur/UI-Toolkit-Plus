@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    //Add class on down
-    //On move: remove and add if is outside
-    // on up: remove class
     public class Tab : BaseBindable<bool>
     {
         [Q]
         protected Label Label;
 
         private VisualElement _tabContent;
-        public bool enabled = true;
+        private bool _reorderable;
+        private readonly TabDragAndDropManipulator _dragManipulator = new TabDragAndDropManipulator();
 
         public VisualElement TabContent
         {
@@ -26,7 +23,17 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        public string text
+        public bool Reorderable
+        {
+            get => _reorderable;
+            set
+            {
+                _reorderable = value;
+                this.ToggleManipulator(_dragManipulator, _reorderable);
+            }
+        }
+
+        public string Text
         {
             get => Label.text;
             set => Label.text = value;
@@ -42,9 +49,8 @@ namespace QuickEye.UIToolkit
             AddToClassList("tab");
             RegisterCallback<PointerDownEvent>(PointerDownHandler);
             this.AddManipulator(new ActiveClassManipulator("tab"));
-           // this.AddManipulator(new Clickable((Action)null));
-            this.AddManipulator(new TabDragAndDropManipulator());
-            this.text = text;
+            Reorderable = false;
+            Text = text;
         }
 
         private void PointerDownHandler(PointerDownEvent evt)
@@ -60,7 +66,6 @@ namespace QuickEye.UIToolkit
 
         private void SetActive(bool isActive)
         {
-            enabled = isActive;
             EnableInClassList("tab--checked", isActive);
             EnableInClassList("tab--unchecked", !isActive);
             TabContent?.ToggleDisplayStyle(isActive);
@@ -79,8 +84,14 @@ namespace QuickEye.UIToolkit
 
         public class UxmlTraits : BaseBindableTraits<bool, UxmlBoolAttributeDescription>
         {
-            private readonly UxmlStringAttributeDescription text = new UxmlStringAttributeDescription()
-                { name = "text", defaultValue = "Tab" };
+            private readonly UxmlStringAttributeDescription _text = new UxmlStringAttributeDescription()
+                { name = "text" };
+
+            private readonly UxmlBoolAttributeDescription _reorderable = new UxmlBoolAttributeDescription()
+            {
+                name = "Reorderable",
+                defaultValue = false
+            };
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {
@@ -90,7 +101,9 @@ namespace QuickEye.UIToolkit
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
                 base.Init(ve, bag, cc);
-                ((Tab)ve).Label.text = text.GetValueFromBag(bag, cc);
+                var tab = (Tab)ve;
+                tab.Text = _text.GetValueFromBag(bag, cc);
+                tab.Reorderable = _reorderable.GetValueFromBag(bag, cc);
             }
         }
     }

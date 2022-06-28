@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:editor="UnityEditor.UIElements" xmlns:engine="UnityEngine.UIElements" xmlns="UnityEditor.Overlays" elementFormDefault="qualified" targetNamespace="QuickEye.UIToolkit" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:editor="UnityEditor.UIElements" xmlns:quick-eye="QuickEye.UIToolkit" xmlns:engine="UnityEngine.UIElements" xmlns="UnityEditor.Overlays" elementFormDefault="qualified" targetNamespace="QuickEye.UIToolkit" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements" />
   <xs:complexType name="TabType">
     <xs:complexContent mixed="false">
@@ -15,12 +15,13 @@
         <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
         <xs:attribute default="" name="style" type="xs:string" use="optional" />
         <xs:attribute default="false" name="value" type="xs:boolean" use="optional" />
-        <xs:attribute default="Tab" name="text" type="xs:string" use="optional" />
+        <xs:attribute default="" name="text" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="Reorderable" type="xs:boolean" use="optional" />
         <xs:anyAttribute processContents="lax" />
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="Tab" substitutionGroup="engine:VisualElement" xmlns:q1="QuickEye.UIToolkit" type="q1:TabType" />
+  <xs:element name="Tab" substitutionGroup="engine:VisualElement" type="quick-eye:TabType" />
   <xs:complexType name="TabDropdownType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
@@ -35,12 +36,13 @@
         <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
         <xs:attribute default="" name="style" type="xs:string" use="optional" />
         <xs:attribute default="false" name="value" type="xs:boolean" use="optional" />
-        <xs:attribute default="Tab" name="text" type="xs:string" use="optional" />
+        <xs:attribute default="" name="text" type="xs:string" use="optional" />
+        <xs:attribute default="true" name="Reorderable" type="xs:boolean" use="optional" />
         <xs:anyAttribute processContents="lax" />
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TabDropdown" substitutionGroup="engine:VisualElement" xmlns:q2="QuickEye.UIToolkit" type="q2:TabDropdownType" />
+  <xs:element name="TabDropdown" substitutionGroup="engine:VisualElement" type="quick-eye:TabDropdownType" />
   <xs:complexType name="TabGroupType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
@@ -61,7 +63,7 @@
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="TabGroup" substitutionGroup="engine:VisualElement" xmlns:q3="QuickEye.UIToolkit" type="q3:TabGroupType" />
+  <xs:element name="TabGroup" substitutionGroup="engine:VisualElement" type="quick-eye:TabGroupType" />
   <xs:complexType name="FileLocationPanelType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
@@ -82,7 +84,7 @@
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="FileLocationPanel" substitutionGroup="engine:VisualElement" xmlns:q4="QuickEye.UIToolkit" type="q4:FileLocationPanelType" />
+  <xs:element name="FileLocationPanel" substitutionGroup="engine:VisualElement" type="quick-eye:FileLocationPanelType" />
   <xs:complexType name="FileNameFieldType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
@@ -112,5 +114,5 @@
       </xs:restriction>
     </xs:complexContent>
   </xs:complexType>
-  <xs:element name="FileNameField" substitutionGroup="engine:VisualElement" xmlns:q5="QuickEye.UIToolkit" type="q5:FileNameFieldType" />
+  <xs:element name="FileNameField" substitutionGroup="engine:VisualElement" type="quick-eye:FileNameFieldType" />
 </xs:schema>

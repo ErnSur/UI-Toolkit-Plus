@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_2021_1_OR_NEWER
+using System;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -53,3 +54,4 @@ namespace QuickEye.UIToolkit
         private class UxmlTraits : Tab.UxmlTraits { }
     }
 }
+#endif
