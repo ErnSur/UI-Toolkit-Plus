@@ -2,9 +2,12 @@
     <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Runtime/Resources/com.quickeye.ui-toolkit-plus/uss/Tab.uss?fileID=7433441132597879392&amp;guid=61c7680c5b68df340adf675b2afd53d2&amp;type=3#Tab" />
     <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Runtime/Resources/com.quickeye.ui-toolkit-plus/uss/TabGroup.uss?fileID=7433441132597879392&amp;guid=a6aa293151d94ef39397ac737babe93b&amp;type=3#TabGroup" />
     <QuickEye.UIToolkit.TabGroup>
-        <QuickEye.UIToolkit.Tab />
-        <QuickEye.UIToolkit.TabDropdown />
+        <QuickEye.UIToolkit.Tab text="ggfgfg" Reorderable="true" />
+        <QuickEye.UIToolkit.TabDropdown text="Checked" />
+        <QuickEye.UIToolkit.Tab text="cvc" />
+        <QuickEye.UIToolkit.TabDropdown text="Unchecked" />
+        <QuickEye.UIToolkit.Tab text="zxcv" />
     </QuickEye.UIToolkit.TabGroup>
     <ui:Button text="Button" display-tooltip-when-elided="true" />
-    <QuickEye.UIToolkit.Tab />
+    <QuickEye.UIToolkit.Tab text="dg" />
 </ui:UXML>

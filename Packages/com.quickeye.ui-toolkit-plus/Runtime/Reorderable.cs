@@ -10,6 +10,8 @@ namespace QuickEye.UIToolkit
     // Make draggable button work. problem is with stopping propagation of mouse or pointer event
     // Test if it works with toggles/ elements with clickevent handes
     // check how listview reorderable works
+    // make it work with drag handle being different visualelement
+    // try to use it in real scenario
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
