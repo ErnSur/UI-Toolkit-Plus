@@ -6,6 +6,8 @@ namespace QuickEye.UIToolkit
 {
     public class Tab : BaseBindable<bool>
     {
+        public const string ClassName = "tab";
+
         [Q]
         protected Label Label;
 
@@ -40,12 +42,14 @@ namespace QuickEye.UIToolkit
 
         public Tab(string text)
         {
+            EnableInClassList(ClassName, true);
             this.InitResources();
             AddToClassList("tab");
             RegisterCallback<PointerDownEvent>(PointerDownHandler);
             this.AddManipulator(new ActiveClassManipulator("tab"));
             Reorderable = false;
             Text = text;
+            SetActive(value);
         }
 
         private void PointerDownHandler(PointerDownEvent evt)

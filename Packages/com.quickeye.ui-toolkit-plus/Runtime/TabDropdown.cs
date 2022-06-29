@@ -8,18 +8,18 @@ namespace QuickEye.UIToolkit
     {
         public event Action<GenericDropdownMenu> BeforeMenuShow;
 
-        [Q(null, "unity-enum-field__arrow")]
-        private VisualElement _arrow;
+        public const string ClassName = "tab-dropdown";
+        public const string ArrowCLassName = ClassName + "--arrow";
 
         private readonly Clickable _clickable;
         private GenericDropdownMenu _menu;
 
         public TabDropdown()
         {
+            EnableInClassList(ClassName, true);
             hierarchy.Clear();
             this.InitResources();
             _clickable = new Clickable(ShowMenu);
-            ToggleArrow(value);
         }
 
         private void ShowMenu()
@@ -35,18 +35,12 @@ namespace QuickEye.UIToolkit
         {
             var clickedOnActiveTab = value && newValue;
             base.SetValueWithoutNotify(newValue);
-            ToggleArrow(newValue);
             if (clickedOnActiveTab)
                 this.AddManipulator(_clickable);
             else
             {
                 this.RemoveManipulator(_clickable);
             }
-        }
-
-        private void ToggleArrow(bool value)
-        {
-            _arrow.ToggleDisplayStyle(value);
         }
 
         private class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }
