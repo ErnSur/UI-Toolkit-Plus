@@ -10,8 +10,9 @@ public class TestView
 
         for (int i = 0; i < 5; i++)
         {
-            var t = new Tab($"Tab {i}");
+            var t = new Tab();
             t.Reorderable = i != 2 && i != 4;
+            t.Text = $"Tab {i}";
             group.Add(t);
         }
 

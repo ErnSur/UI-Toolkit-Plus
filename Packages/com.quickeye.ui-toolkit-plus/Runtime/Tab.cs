@@ -10,7 +10,7 @@ namespace QuickEye.UIToolkit
         protected Label Label;
 
         private VisualElement _tabContent;
-        private readonly TabDragAndDropManipulator _dragManipulator = new TabDragAndDropManipulator();
+        private readonly ReorderableManipulator _reorderableManipulator = new ReorderableManipulator();
 
         public VisualElement TabContent
         {
@@ -24,12 +24,8 @@ namespace QuickEye.UIToolkit
 
         public bool Reorderable
         {
-            get => ClassListContains("tab-group--reorderable");
-            set
-            {
-                EnableInClassList("tab-group--reorderable", value);
-                this.ToggleManipulator(_dragManipulator, value);
-            }
+            get => _reorderableManipulator.target == this;
+            set => this.ToggleManipulator(_reorderableManipulator, value);
         }
 
         public string Text
@@ -38,7 +34,7 @@ namespace QuickEye.UIToolkit
             set => Label.text = value;
         }
 
-        public bool IsDragged => ClassListContains(TabDragAndDropManipulator.TabDraggedClassName);
+        public bool IsDragged => ClassListContains(ReorderableManipulator.DraggedClassName);
 
         public Tab() : this(null) { }
 

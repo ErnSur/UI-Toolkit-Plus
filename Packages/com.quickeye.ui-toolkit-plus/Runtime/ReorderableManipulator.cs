@@ -5,14 +5,27 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    public class TabDragAndDropManipulator : Manipulator
+    internal class ReorderableManipulator : Manipulator
     {
-        public const string TabDraggedClassName = "tab--dragged";
-        public const string TabDraggedOutClassName = "tab--dragged-out";
+        public const string ReorderableClassName = "reorderable";
+        public const string DraggedClassName = ReorderableClassName + "--dragged";
+
+        private List<VisualElement> _allReorderable;
+
+        private readonly VisualElement _shadowSpace = new VisualElement();
+        private VisualElement _container;
+        private VisualElement _lastSwappedElement;
+
+        private bool _isDragging, _tookCapture;
+        private float _pointerDelta;
+        private float _pointerStartPos;
+        private float _targetStartPos;
+
         public float DragStartThreshold { get; set; } = 5;
 
         protected override void RegisterCallbacksOnTarget()
         {
+            target.EnableInClassList(ReorderableClassName, true);
             target.RegisterCallback<PointerDownEvent>(PointerDownHandler);
             target.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
             target.RegisterCallback<PointerUpEvent>(PointerUpHandler);
@@ -21,42 +34,35 @@ namespace QuickEye.UIToolkit
 
         protected override void UnregisterCallbacksFromTarget()
         {
+            target.EnableInClassList(ReorderableClassName, false);
             target.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
             target.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
             target.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
             target.UnregisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
         }
 
-        private float _pointerStartPos;
-        private float _targetStartPos;
-
-        private float _lastPointerXPos;
-
-        private bool _isDragging, _tookCapture;
-
-        private VisualElement _tabGroup;
-        private List<VisualElement> _allTabs;
-        private VisualElement _lastSwappedTab;
-        private readonly VisualElement _shadowSpace = new VisualElement();
-        private float _pointerDelta;
+        private static bool IsReorderable(VisualElement ve)
+        {
+            return ve.ClassListContains(ReorderableClassName);
+        }
 
         private void StartDrag()
         {
-            ToggleFloatingMode(true);
+            ToggleDraggingMode(true);
             _isDragging = true;
         }
 
-        private void InitVars(IPointerEvent evt)
+        private void SetupData(IPointerEvent evt)
         {
-            _tabGroup = target.parent;
-            _allTabs = _tabGroup.Children().Where(c => c is Tab).ToList();
-            _pointerStartPos = _lastPointerXPos = evt.position.x;
+            _container = target.parent;
+            _allReorderable = _container.Children().Where(IsReorderable).ToList();
+            _pointerStartPos = evt.position.x;
             _targetStartPos = target.layout.position.x;
         }
 
         private void PointerDownHandler(PointerDownEvent evt)
         {
-            InitVars(evt);
+            SetupData(evt);
             target.CapturePointer(evt.pointerId);
             _tookCapture = true;
         }
@@ -70,8 +76,8 @@ namespace QuickEye.UIToolkit
             {
                 target.transform.position = GetNewTargetPosFromCursor();
 
-                if (TryGetNewHierarchyPosition(out var index))
-                    MoveInHierarchy(_shadowSpace, index);
+                if (TryGetNewHierarchyPosition(out var newIndex))
+                    MoveInHierarchy(_shadowSpace, newIndex);
             }
             else if (Mathf.Abs(_pointerDelta) >= DragStartThreshold)
             {
@@ -92,14 +98,13 @@ namespace QuickEye.UIToolkit
         {
             if (!_isDragging)
                 return;
-            ToggleFloatingMode(false);
+            ToggleDraggingMode(false);
             _isDragging = false;
         }
 
-        private void UpdatePointerDelta(PointerMoveEvent evt)
+        private void UpdatePointerDelta(IPointerEvent evt)
         {
-            _lastPointerXPos = evt.position.x;
-            _pointerDelta = _lastPointerXPos - _pointerStartPos;
+            _pointerDelta = evt.position.x - _pointerStartPos;
         }
 
         private Vector2 GetNewTargetPosFromCursor()
@@ -107,22 +112,23 @@ namespace QuickEye.UIToolkit
             return new Vector2
             {
                 x = Mathf.Clamp(_pointerDelta + _targetStartPos,
-                    0, _tabGroup.layout.width - target.resolvedStyle.width),
+                    0, _container.layout.width - target.resolvedStyle.width),
                 y = target.transform.position.y
             };
         }
 
         private static void MoveInHierarchy(VisualElement ve, int newIndex)
         {
-            var nonReorderableTabSiblings = ve.parent.Children()
-                .Select((e, i) => (Index: i, Tab: e as Tab))
-                .Where(t => t.Tab != null)
-                .Where(t => !t.Tab.Reorderable)
+            var container = ve.parent;
+            var nonReorderableSiblings = container.Children()
+                .Select((e, i) => (index: i, element: e))
+                .Where(t => !IsReorderable(t.element))
+                .Where(t => t.element != ve)
                 .ToArray();
 
-            ve.parent.Insert(newIndex, ve);
-            foreach (var (index, tab) in nonReorderableTabSiblings)
-                ve.parent.Insert(index, tab);
+            container.Insert(newIndex, ve);
+            foreach (var (index, tab) in nonReorderableSiblings)
+                container.Insert(index, tab);
         }
 
 
@@ -132,18 +138,18 @@ namespace QuickEye.UIToolkit
         // instead set it so that element stays in the last dragged position
         // then add animation class
         // then set pos to zero
-        private void ToggleFloatingMode(bool enabled)
+        private void ToggleDraggingMode(bool enabled)
         {
             if (enabled)
             {
                 //target.EnableInClassList(TabDraggedOutClassName, false);
                 ToggleShadowSpace(true);
                 SwitchPositionSpace(true);
-                target.EnableInClassList(TabDraggedClassName, true);
+                target.EnableInClassList(DraggedClassName, true);
             }
             else
             {
-                target.EnableInClassList(TabDraggedClassName, false);
+                target.EnableInClassList(DraggedClassName, false);
                 SwitchPositionSpace(false);
                 //target.EnableInClassList(TabDraggedOutClassName, true);
                 target.PlaceBehind(_shadowSpace);
@@ -183,55 +189,56 @@ namespace QuickEye.UIToolkit
         private bool TryGetNewHierarchyPosition(out int index)
         {
             index = -1;
-            var overlappingTabs = _allTabs.Where(OverlapsTarget);
-            var closeTab = FindClosestTab(overlappingTabs);
-            if (closeTab == null)
+            var overlappingTabs = _allReorderable.Where(OverlapsTarget).ToArray();
+            var closestElement = FindClosestElement(overlappingTabs);
+            if (closestElement == null)
                 return false;
-            var swap = ShouldSwapPlacesWithTab(closeTab);
+            var swap = ShouldSwapPlacesWith(closestElement);
             if (swap)
-                _lastSwappedTab = closeTab;
-            index = swap ? closeTab.parent.IndexOf(closeTab) : -1;
+                _lastSwappedElement = closestElement;
+            index = swap ? closestElement.parent.IndexOf(closestElement) : -1;
             return swap;
         }
 
-        private bool ShouldSwapPlacesWithTab(VisualElement tab)
+        private bool ShouldSwapPlacesWith(VisualElement element)
         {
-            var threshold = tab != _lastSwappedTab ? tab.worldBound.width / 3 : tab.worldBound.width / 1.5f;
-            var (myRect, otherRect) = (target.worldBound, tab.worldBound);
+            var threshold = element != _lastSwappedElement
+                ? element.worldBound.width / 3
+                : element.worldBound.width / 1.5f;
+            var (myRect, otherRect) = (target.worldBound, element.worldBound);
             if (otherRect.center.x < myRect.center.x)
                 return otherRect.xMax - myRect.xMin > threshold;
             return myRect.xMax - otherRect.xMin > threshold;
         }
 
-        private bool OverlapsTarget(VisualElement tab)
+        private bool OverlapsTarget(VisualElement element)
         {
-            return tab != target && target.worldBound.Overlaps(tab.worldBound);
+            return element != target && target.worldBound.Overlaps(element.worldBound);
         }
 
-        private VisualElement FindClosestTab(IEnumerable<VisualElement> tabs)
+        private VisualElement FindClosestElement(VisualElement[] elements)
         {
-            var tabList = tabs.ToList();
             var bestDistanceSq = float.MaxValue;
             VisualElement closest = null;
-            foreach (var tab in tabList)
+            foreach (var element in elements)
             {
                 var displacement =
-                    RootSpaceOfTab(tab, tab.parent) - target.transform.position;
+                    RootSpaceOfElement(element) - target.transform.position;
                 var distanceSq = displacement.sqrMagnitude;
                 if (distanceSq < bestDistanceSq)
                 {
                     bestDistanceSq = distanceSq;
-                    closest = tab;
+                    closest = element;
                 }
             }
 
             return closest;
         }
 
-        private Vector3 RootSpaceOfTab(VisualElement tab, VisualElement tabGroup)
+        private static Vector3 RootSpaceOfElement(VisualElement element)
         {
-            var tabWorldSpace = tab.parent.LocalToWorld(tab.layout.position);
-            return tabGroup.WorldToLocal(tabWorldSpace);
+            var tabWorldSpace = element.parent.LocalToWorld(element.layout.position);
+            return element.parent.WorldToLocal(tabWorldSpace);
         }
     }
 }

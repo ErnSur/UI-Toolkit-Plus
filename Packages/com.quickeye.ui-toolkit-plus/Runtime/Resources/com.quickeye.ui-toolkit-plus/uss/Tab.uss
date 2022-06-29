@@ -36,7 +36,7 @@
     background-color: rgb(38, 81, 118);
 }
 
-.tab--dragged {
+.reorderable--dragged {
     border-left-color: rgb(46, 46, 46);
     border-right-color: rgb(46, 46, 46);
     border-top-color: rgb(46, 46, 46);
@@ -48,7 +48,7 @@
     border-bottom-right-radius: 2px;
 }
 
-.tab--dragged-out {
-    transition-property: translate, width;
-    transition-duration: 0.2s, 0.2s;
+.reorderable {
+    border-bottom-color: rgba(241, 0, 168, 255);
+    border-bottom-width: 1px;
 }
