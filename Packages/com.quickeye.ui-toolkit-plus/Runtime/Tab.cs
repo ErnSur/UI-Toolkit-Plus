@@ -10,7 +10,6 @@ namespace QuickEye.UIToolkit
         protected Label Label;
 
         private VisualElement _tabContent;
-        private bool _reorderable;
         private readonly TabDragAndDropManipulator _dragManipulator = new TabDragAndDropManipulator();
 
         public VisualElement TabContent
@@ -25,11 +24,11 @@ namespace QuickEye.UIToolkit
 
         public bool Reorderable
         {
-            get => _reorderable;
+            get => ClassListContains("tab-group--reorderable");
             set
             {
-                _reorderable = value;
-                this.ToggleManipulator(_dragManipulator, _reorderable);
+                EnableInClassList("tab-group--reorderable", value);
+                this.ToggleManipulator(_dragManipulator, value);
             }
         }
 
