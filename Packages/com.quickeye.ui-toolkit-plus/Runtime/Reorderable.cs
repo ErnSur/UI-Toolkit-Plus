@@ -5,7 +5,12 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    internal class ReorderableManipulator : Manipulator
+    //TODO: If container has flex direction: column, make it work in y axis.
+    // TODO: Is PointerCaptureOutEvent needed?
+    // Make draggable button work. problem is with stopping propagation of mouse or pointer event
+    // Test if it works with toggles/ elements with clickevent handes
+    // check how listview reorderable works
+    public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
         public const string DraggedClassName = ReorderableClassName + "--dragged";
@@ -28,15 +33,20 @@ namespace QuickEye.UIToolkit
             target.EnableInClassList(ReorderableClassName, true);
             target.RegisterCallback<PointerDownEvent>(PointerDownHandler);
             target.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
+            target.RegisterCallback<MouseUpEvent>(MouseUpHandler);
             target.RegisterCallback<PointerUpEvent>(PointerUpHandler);
+
             target.RegisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
         }
+
 
         protected override void UnregisterCallbacksFromTarget()
         {
             target.EnableInClassList(ReorderableClassName, false);
             target.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
             target.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
+            target.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
+
             target.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
             target.UnregisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
         }
@@ -69,7 +79,7 @@ namespace QuickEye.UIToolkit
 
         private void PointerMoveHandler(PointerMoveEvent evt)
         {
-            if (!target.HasPointerCapture(evt.pointerId))
+            if (!target.HasPointerCapture(evt.pointerId) || !_tookCapture)
                 return;
             UpdatePointerDelta(evt);
             if (_isDragging)
@@ -87,10 +97,33 @@ namespace QuickEye.UIToolkit
 
         private void PointerUpHandler(PointerUpEvent evt)
         {
+            Debug.Log($"pointerup: ");
             if (_tookCapture && target.HasPointerCapture(evt.pointerId))
             {
                 _tookCapture = false;
                 target.ReleasePointer(evt.pointerId);
+            }
+
+            if (_isDragging)
+            {
+                evt.StopImmediatePropagation();
+                Debug.Log($"Stop Propagation");
+            }
+        }
+
+        private void MouseUpHandler(MouseUpEvent evt)
+        {
+            Debug.Log($"mouseup: ");
+            if (_tookCapture && target.HasPointerCapture(PointerId.mousePointerId))
+            {
+                _tookCapture = false;
+                target.ReleasePointer(PointerId.mousePointerId);
+            }
+
+            if (_isDragging)
+            {
+                evt.StopImmediatePropagation();
+                Debug.Log($"Stop Propagation mouse");
             }
         }
 

@@ -38,9 +38,7 @@ namespace QuickEye.UIToolkit
             if (clickedOnActiveTab)
                 this.AddManipulator(_clickable);
             else
-            {
                 this.RemoveManipulator(_clickable);
-            }
         }
 
         private class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }
