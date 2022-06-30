@@ -7,9 +7,6 @@ namespace QuickEye.UIToolkit
 {
     //TODO: If container has flex direction: column, make it work in y axis.
     // TODO: Is PointerCaptureOutEvent needed?
-    // Make draggable button work. problem is with stopping propagation of mouse or pointer event
-    // Test if it works with toggles/ elements with clickevent handes
-    // check how listview reorderable works
     // make it work with drag handle being different visualelement
     // try to use it in real scenario
     public class Reorderable : Manipulator
@@ -22,22 +19,29 @@ namespace QuickEye.UIToolkit
         private readonly VisualElement _shadowSpace = new VisualElement();
         private VisualElement _container;
         private VisualElement _lastSwappedElement;
+        private VisualElement _dragHandle;
 
         private bool _isDragging, _tookCapture;
         private float _pointerDelta;
         private float _pointerStartPos;
         private float _targetStartPos;
 
-        public float DragStartThreshold { get; set; } = 5;
+        public float DragStartThreshold { get; set; }
+        private VisualElement DragHandle => _dragHandle ?? target;
+        public Reorderable(VisualElement dragHandle = null)
+        {
+            _dragHandle = dragHandle;
+            DragStartThreshold = dragHandle == null ? 5 : 1;
+        }
 
         protected override void RegisterCallbacksOnTarget()
         {
             target.EnableInClassList(ReorderableClassName, true);
-            target.RegisterCallback<PointerDownEvent>(PointerDownHandler);
-            target.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
-            target.RegisterCallback<PointerUpEvent>(PointerUpHandler);
-            target.RegisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
-            target.RegisterCallback<MouseUpEvent>(MouseUpHandler);
+            DragHandle.RegisterCallback<PointerDownEvent>(PointerDownHandler);
+            DragHandle.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
+            DragHandle.RegisterCallback<PointerUpEvent>(PointerUpHandler);
+            DragHandle.RegisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
+            DragHandle.RegisterCallback<MouseUpEvent>(MouseUpHandler);
 
             if (target is Button b)
             {
@@ -50,11 +54,11 @@ namespace QuickEye.UIToolkit
         protected override void UnregisterCallbacksFromTarget()
         {
             target.EnableInClassList(ReorderableClassName, false);
-            target.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
-            target.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
-            target.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
-            target.UnregisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
-            target.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
+            DragHandle.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
+            DragHandle.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
+            DragHandle.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
+            DragHandle.UnregisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
+            DragHandle.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
         }
 
         private static bool IsReorderable(VisualElement ve)
@@ -79,13 +83,13 @@ namespace QuickEye.UIToolkit
         private void PointerDownHandler(PointerDownEvent evt)
         {
             SetupData(evt);
-            target.CapturePointer(evt.pointerId);
+            DragHandle.CapturePointer(evt.pointerId);
             _tookCapture = true;
         }
 
         private void PointerMoveHandler(PointerMoveEvent evt)
         {
-            if (!target.HasPointerCapture(evt.pointerId) || !_tookCapture)
+            if (!DragHandle.HasPointerCapture(evt.pointerId) || !_tookCapture)
                 return;
             UpdatePointerDelta(evt);
             if (_isDragging)
@@ -113,10 +117,10 @@ namespace QuickEye.UIToolkit
         
         private void OnPointerUp(EventBase evt, int pointerId)
         {
-            if (_tookCapture && target.HasPointerCapture(pointerId))
+            if (_tookCapture && DragHandle.HasPointerCapture(pointerId))
             {
                 _tookCapture = false;
-                target.ReleasePointer(pointerId);
+                DragHandle.ReleasePointer(pointerId);
             }
 
             if (_isDragging)

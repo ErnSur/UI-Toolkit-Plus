@@ -11,17 +11,29 @@ public class TestView
 
         for (int i = 0; i < 5; i++)
         {
-            var t = new Button();
-           // var wrapper = new VisualElement();
-            //wrapper.Add(t);
-            //t.Reorderable = i != 2 && i != 4;
-            t.text =t.name= $"Tab {i}";
-            t.clickable = new Clickable(() => { Debug.Log($"MES: {t.name}"); });
+            var t =  CreateButtonWithHandle($"Ele {i}");
             t.AddManipulator(new Reorderable());
             group.Add(t);
         }
 
         root.Add(group);
         return root;
+    }
+
+    private VisualElement CreateButtonWithHandle(string name)
+    {
+        var wrapper = new VisualElement();
+        wrapper.style.flexDirection = FlexDirection.Row;
+        
+        var handle = new VisualElement();
+        handle.style.width = 10;
+        handle.style.backgroundColor = Color.cyan;
+
+        var button = new Button(() => { Debug.Log($"Button: {name}"); });
+        button.text = name;
+        
+        wrapper.Add(handle);
+        wrapper.Add(button);
+        return wrapper;
     }
 }
