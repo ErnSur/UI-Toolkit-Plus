@@ -7,7 +7,6 @@ namespace QuickEye.UIToolkit
 {
     //TODO: If container has flex direction: column, make it work in y axis.
     // TODO: Is PointerCaptureOutEvent needed?
-    // make it work with drag handle being different visualelement
     // try to use it in real scenario
     public class Reorderable : Manipulator
     {
@@ -19,15 +18,26 @@ namespace QuickEye.UIToolkit
         private readonly VisualElement _shadowSpace = new VisualElement();
         private VisualElement _container;
         private VisualElement _lastSwappedElement;
-        private VisualElement _dragHandle;
+        private readonly VisualElement _dragHandle;
 
         private bool _isDragging, _tookCapture;
-        private float _pointerDelta;
-        private float _pointerStartPos;
-        private float _targetStartPos;
+        private Vector2 _pointerDelta;
+        private Vector3 _pointerStartPos;
+        private Vector2 _targetStartPos;
 
         public float DragStartThreshold { get; set; }
+        public (float nextElement, float previousElement) SwapThresholdMod { get; set; } = (1 / 1.5f, 1 / 3f);
         private VisualElement DragHandle => _dragHandle ?? target;
+
+        private bool IsColumnContainer
+        {
+            get
+            {
+                var dir = _container.style.flexDirection.value;
+                return dir == FlexDirection.Column || dir == FlexDirection.ColumnReverse;
+            }
+        }
+
         public Reorderable(VisualElement dragHandle = null)
         {
             _dragHandle = dragHandle;
@@ -50,7 +60,7 @@ namespace QuickEye.UIToolkit
                 b.AddManipulator(clickable);
             }
         }
-        
+
         protected override void UnregisterCallbacksFromTarget()
         {
             target.EnableInClassList(ReorderableClassName, false);
@@ -76,8 +86,8 @@ namespace QuickEye.UIToolkit
         {
             _container = target.parent;
             _allReorderable = _container.Children().Where(IsReorderable).ToList();
-            _pointerStartPos = evt.position.x;
-            _targetStartPos = target.layout.position.x;
+            _pointerStartPos = evt.position;
+            _targetStartPos = target.layout.position;
         }
 
         private void PointerDownHandler(PointerDownEvent evt)
@@ -99,7 +109,7 @@ namespace QuickEye.UIToolkit
                 if (TryGetNewHierarchyPosition(out var newIndex))
                     MoveInHierarchy(_shadowSpace, newIndex);
             }
-            else if (Mathf.Abs(_pointerDelta) >= DragStartThreshold)
+            else if (Mathf.Abs(IsColumnContainer ? _pointerDelta.y : _pointerDelta.x) >= DragStartThreshold)
             {
                 StartDrag();
             }
@@ -107,14 +117,14 @@ namespace QuickEye.UIToolkit
 
         private void PointerUpHandler(PointerUpEvent evt)
         {
-            OnPointerUp(evt,evt.pointerId);
+            OnPointerUp(evt, evt.pointerId);
         }
 
         private void MouseUpHandler(MouseUpEvent evt)
         {
             OnPointerUp(evt, PointerId.mousePointerId);
         }
-        
+
         private void OnPointerUp(EventBase evt, int pointerId)
         {
             if (_tookCapture && DragHandle.HasPointerCapture(pointerId))
@@ -128,7 +138,7 @@ namespace QuickEye.UIToolkit
                 evt.StopImmediatePropagation();
             }
         }
-        
+
         private void PointerCaptureOutHandler(PointerCaptureOutEvent evt)
         {
             if (!_isDragging)
@@ -139,17 +149,24 @@ namespace QuickEye.UIToolkit
 
         private void UpdatePointerDelta(IPointerEvent evt)
         {
-            _pointerDelta = evt.position.x - _pointerStartPos;
+            _pointerDelta = evt.position - _pointerStartPos;
         }
 
         private Vector2 GetNewTargetPosFromCursor()
         {
-            return new Vector2
-            {
-                x = Mathf.Clamp(_pointerDelta + _targetStartPos,
-                    0, _container.layout.width - target.resolvedStyle.width),
-                y = target.transform.position.y
-            };
+            return IsColumnContainer
+                ? new Vector2
+                {
+                    x = target.transform.position.x,
+                    y = Mathf.Clamp(_pointerDelta.y + _targetStartPos.y,
+                        0, _container.layout.height - target.resolvedStyle.height)
+                }
+                : new Vector2
+                {
+                    x = Mathf.Clamp(_pointerDelta.x + _targetStartPos.x,
+                        0, _container.layout.width - target.resolvedStyle.width),
+                    y = target.transform.position.y
+                };
         }
 
         private static void MoveInHierarchy(VisualElement ve, int newIndex)
@@ -212,6 +229,7 @@ namespace QuickEye.UIToolkit
             if (enabled)
             {
                 _shadowSpace.style.width = target.layout.width;
+                _shadowSpace.style.height = target.layout.height;
                 target.parent.Add(_shadowSpace);
                 _shadowSpace.PlaceBehind(target);
             }
@@ -235,15 +253,20 @@ namespace QuickEye.UIToolkit
             return swap;
         }
 
+
         private bool ShouldSwapPlacesWith(VisualElement element)
         {
-            var threshold = element != _lastSwappedElement
-                ? element.worldBound.width / 3
-                : element.worldBound.width / 1.5f;
-            var (myRect, otherRect) = (target.worldBound, element.worldBound);
-            if (otherRect.center.x < myRect.center.x)
-                return otherRect.xMax - myRect.xMin > threshold;
-            return myRect.xMax - otherRect.xMin > threshold;
+            var (targetRect, otherRect) = (
+                new AxisRectData(IsColumnContainer, target.worldBound),
+                new AxisRectData(IsColumnContainer, element.worldBound));
+
+            var threshold = otherRect.WidthOrHeight
+                            * (element != _lastSwappedElement
+                                ? SwapThresholdMod.previousElement
+                                : SwapThresholdMod.nextElement);
+            if (otherRect.CenterXOrY < targetRect.CenterXOrY)
+                return otherRect.XMaxOrYMax - targetRect.XMinOrYMin > threshold;
+            return targetRect.XMaxOrYMax - otherRect.XMinOrYMin > threshold;
         }
 
         private bool OverlapsTarget(VisualElement element)
@@ -274,6 +297,22 @@ namespace QuickEye.UIToolkit
         {
             var tabWorldSpace = element.parent.LocalToWorld(element.layout.position);
             return element.parent.WorldToLocal(tabWorldSpace);
+        }
+    }
+
+    internal readonly struct AxisRectData
+    {
+        public readonly float WidthOrHeight;
+        public readonly float XOrY;
+        public float XMinOrYMin => XOrY;
+        public readonly float XMaxOrYMax;
+        public float CenterXOrY => XOrY + WidthOrHeight / 2f;
+
+        public AxisRectData(bool isVertical, Rect rect)
+        {
+            WidthOrHeight = isVertical ? rect.height : rect.width;
+            XOrY = isVertical ? rect.y : rect.x;
+            XMaxOrYMax = isVertical ? rect.yMax : rect.xMax;
         }
     }
 }
