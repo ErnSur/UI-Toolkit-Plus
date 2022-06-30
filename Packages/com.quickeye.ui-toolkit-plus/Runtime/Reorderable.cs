@@ -35,22 +35,26 @@ namespace QuickEye.UIToolkit
             target.EnableInClassList(ReorderableClassName, true);
             target.RegisterCallback<PointerDownEvent>(PointerDownHandler);
             target.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
-            target.RegisterCallback<MouseUpEvent>(MouseUpHandler);
             target.RegisterCallback<PointerUpEvent>(PointerUpHandler);
-
             target.RegisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
+            target.RegisterCallback<MouseUpEvent>(MouseUpHandler);
+
+            if (target is Button b)
+            {
+                var clickable = b.clickable;
+                b.RemoveManipulator(clickable);
+                b.AddManipulator(clickable);
+            }
         }
-
-
+        
         protected override void UnregisterCallbacksFromTarget()
         {
             target.EnableInClassList(ReorderableClassName, false);
             target.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
             target.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
-            target.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
-
             target.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
             target.UnregisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
+            target.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
         }
 
         private static bool IsReorderable(VisualElement ve)
@@ -99,36 +103,28 @@ namespace QuickEye.UIToolkit
 
         private void PointerUpHandler(PointerUpEvent evt)
         {
-            Debug.Log($"pointerup: ");
-            if (_tookCapture && target.HasPointerCapture(evt.pointerId))
-            {
-                _tookCapture = false;
-                target.ReleasePointer(evt.pointerId);
-            }
-
-            if (_isDragging)
-            {
-                evt.StopImmediatePropagation();
-                Debug.Log($"Stop Propagation");
-            }
+            OnPointerUp(evt,evt.pointerId);
         }
 
         private void MouseUpHandler(MouseUpEvent evt)
         {
-            Debug.Log($"mouseup: ");
-            if (_tookCapture && target.HasPointerCapture(PointerId.mousePointerId))
+            OnPointerUp(evt, PointerId.mousePointerId);
+        }
+        
+        private void OnPointerUp(EventBase evt, int pointerId)
+        {
+            if (_tookCapture && target.HasPointerCapture(pointerId))
             {
                 _tookCapture = false;
-                target.ReleasePointer(PointerId.mousePointerId);
+                target.ReleasePointer(pointerId);
             }
 
             if (_isDragging)
             {
                 evt.StopImmediatePropagation();
-                Debug.Log($"Stop Propagation mouse");
             }
         }
-
+        
         private void PointerCaptureOutHandler(PointerCaptureOutEvent evt)
         {
             if (!_isDragging)
