@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    //TODO: If container has flex direction: column, make it work in y axis.
     // TODO: Is PointerCaptureOutEvent needed?
+    // Event On order changed?
     // try to use it in real scenario
     public class Reorderable : Manipulator
     {
@@ -33,7 +33,7 @@ namespace QuickEye.UIToolkit
         {
             get
             {
-                var dir = _container.style.flexDirection.value;
+                var dir = _container.resolvedStyle.flexDirection;
                 return dir == FlexDirection.Column || dir == FlexDirection.ColumnReverse;
             }
         }
