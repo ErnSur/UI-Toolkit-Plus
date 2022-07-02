@@ -6,13 +6,19 @@ using UnityEngine.UIElements;
 namespace QuickEye.UIToolkit
 {
     // TODO: Is PointerCaptureOutEvent needed?
+    // Attach stylesheet to the panel root instead of each custom element
     // Event On order changed?
     // try to use it in real scenario
+    // create static method IsDragged
+    // use clickable with tab
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
-        public const string DraggedClassName = ReorderableClassName + "--dragged";
-
+        public const string DraggedClassName = "dragged";
+        public string TargetClassName { get; }
+        public string TargetReorderableClassName => $"{TargetClassName}--{ReorderableClassName}";
+        public string TargetDraggedClassName => $"{TargetReorderableClassName}-{DraggedClassName}";
+        
         private List<VisualElement> _allReorderable;
 
         private readonly VisualElement _shadowSpace = new VisualElement();
@@ -38,14 +44,16 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        public Reorderable(VisualElement dragHandle = null)
+        public Reorderable(string targetClassName = null, VisualElement dragHandle = null)
         {
+            TargetClassName = targetClassName;
             _dragHandle = dragHandle;
             DragStartThreshold = dragHandle == null ? 5 : 1;
         }
 
         protected override void RegisterCallbacksOnTarget()
         {
+            target.EnableInClassList(TargetReorderableClassName, true);
             target.EnableInClassList(ReorderableClassName, true);
             DragHandle.RegisterCallback<PointerDownEvent>(PointerDownHandler);
             DragHandle.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
@@ -63,6 +71,7 @@ namespace QuickEye.UIToolkit
 
         protected override void UnregisterCallbacksFromTarget()
         {
+            target.EnableInClassList(TargetReorderableClassName, false);
             target.EnableInClassList(ReorderableClassName, false);
             DragHandle.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
             DragHandle.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
@@ -197,11 +206,11 @@ namespace QuickEye.UIToolkit
                 //target.EnableInClassList(TabDraggedOutClassName, false);
                 ToggleShadowSpace(true);
                 SwitchPositionSpace(true);
-                target.EnableInClassList(DraggedClassName, true);
+                target.EnableInClassList(TargetDraggedClassName, true);
             }
             else
             {
-                target.EnableInClassList(DraggedClassName, false);
+                target.EnableInClassList(TargetDraggedClassName, false);
                 SwitchPositionSpace(false);
                 //target.EnableInClassList(TabDraggedOutClassName, true);
                 target.PlaceBehind(_shadowSpace);

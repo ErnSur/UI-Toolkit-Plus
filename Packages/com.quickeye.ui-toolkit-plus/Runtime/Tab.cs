@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -7,12 +8,12 @@ namespace QuickEye.UIToolkit
     public class Tab : BaseBindable<bool>
     {
         public const string ClassName = "tab";
+        public const string TextClassName = "tab__text";
 
-        [Q]
         protected Label Label;
 
         private VisualElement _tabContent;
-        private readonly Reorderable _reorderable = new Reorderable();
+        public readonly Reorderable Reorderable = new Reorderable(ClassName);
 
         public VisualElement TabContent
         {
@@ -24,10 +25,10 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        public bool Reorderable
+        public bool IsReorderable
         {
-            get => _reorderable.target == this;
-            set => this.ToggleManipulator(_reorderable, value);
+            get => Reorderable.target == this;
+            set => this.ToggleManipulator(Reorderable, value);
         }
 
         public string Text
@@ -36,19 +37,21 @@ namespace QuickEye.UIToolkit
             set => Label.text = value;
         }
 
-        public bool IsDragged => ClassListContains(UIToolkit.Reorderable.DraggedClassName);
+        public bool IsDragged => ClassListContains(Reorderable.TargetDraggedClassName);
 
         public Tab() : this(null) { }
 
         public Tab(string text)
         {
-            EnableInClassList(ClassName, true);
             this.InitResources();
+            EnableInClassList(ClassName, true);
+            Label = new Label(text);
+            Label.EnableInClassList(TextClassName, true);
+            Add(Label);
             AddToClassList("tab");
+            
             RegisterCallback<PointerDownEvent>(PointerDownHandler);
-            this.AddManipulator(new ActiveClassManipulator("tab"));
-            Reorderable = false;
-            Text = text;
+            IsReorderable = false;
             SetActive(value);
         }
 
@@ -102,7 +105,7 @@ namespace QuickEye.UIToolkit
                 base.Init(ve, bag, cc);
                 var tab = (Tab)ve;
                 tab.Text = _text.GetValueFromBag(bag, cc);
-                tab.Reorderable = _reorderable.GetValueFromBag(bag, cc);
+                tab.IsReorderable = _reorderable.GetValueFromBag(bag, cc);
             }
         }
     }

@@ -1,0 +1,84 @@
+:root {
+    --qe-colors-tab_group-background: var(--unity-colors-tab-background);
+    --qe-colors-tab-background-checked: var(--unity-colors-tab-background-checked);
+    --qe-colors-tab-background-active: var(--unity-colors-highlight-background);
+    --qe-colors-tab-background-hover: var(--unity-colors-tab-background-hover);
+}
+
+.tab-group {
+    background-color: var(--qe-colors-tab_group-background);
+    padding-top: 2px;
+    min-height: 21px;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.tab {
+    justify-content: center;
+    flex-direction: row;
+    padding-right: 5px;
+    padding-left: 5px;
+    height: 20px;
+    overflow: hidden;
+    align-items: flex-end;
+    padding-bottom: 1px;
+}
+
+.tab--unchecked:hover {
+    background-color: var(--qe-colors-tab-background-hover);
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 0;
+}
+
+.tab--checked {
+    background-color: var(--qe-colors-tab-background-checked);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 0;
+    border-top-width: 2px;
+    border-color: var(--qe-colors-tab-background-active);
+}
+
+.tab--active {
+    background-color: var(--qe-colors-tab-background-active);
+    color: var(--unity-colors-highlight-text-inactive);
+}
+
+.tab--reorderable-dragged {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.tab--checked .tab-dropdown--arrow {
+    transition-property: width;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+}
+
+.tab--unchecked .tab-dropdown--arrow {
+    width: 0;
+    transition-property: width, opacity;
+    transition-duration: 0.2s, 0.2s;
+    transition-timing-function: ease, linear;
+    opacity: 0;
+}
+
+.tab-dropdown--arrow {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    background-image: var(--unity-icons-dropdown);
+    width: 14px;
+    -unity-background-scale-mode: scale-to-fit;
+    height: 16px;
+}

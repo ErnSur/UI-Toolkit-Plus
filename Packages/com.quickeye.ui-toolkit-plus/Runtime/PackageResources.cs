@@ -8,6 +8,8 @@ namespace QuickEye.UIToolkit
     {
         private const string BaseDir = "com.quickeye.ui-toolkit-plus/";
 
+        private static StyleSheet _baseTheme;
+
         private static T LoadAsset<T>(string resourcesRelativePath) where T : Object
         {
             var dir = typeof(T) == typeof(StyleSheet) ? "uss" : "uxml";
@@ -28,6 +30,7 @@ namespace QuickEye.UIToolkit
 
         public static void InitResources<T>(this T ve) where T : VisualElement
         {
+            ve.RegisterCallback<AttachToPanelEvent>(AddStyleSheetsToRootElement);
             if (TryLoadTree<T>(out var tree))
             {
                 tree.CloneTree(ve);
@@ -36,6 +39,21 @@ namespace QuickEye.UIToolkit
 
             if (TryLoadStyle<T>(out var styleSheet))
                 ve.styleSheets.Add(styleSheet);
+        }
+
+        public static void AddStyleSheetsToRootElement(AttachToPanelEvent evt)
+        {
+            var root = ((VisualElement)evt.target)?.panel.visualTree;
+            if (root == null)
+                return;
+            ThemeStyleSheet s;
+            
+            if (_baseTheme == null)
+                _baseTheme = LoadAsset<StyleSheet>("QuickEye UTPlus Theme");
+            if (!root.styleSheets.Contains(_baseTheme))
+            {
+                root.styleSheets.Add(_baseTheme);
+            }
         }
     }
 }

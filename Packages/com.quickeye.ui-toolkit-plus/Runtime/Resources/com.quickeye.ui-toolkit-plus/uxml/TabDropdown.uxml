@@ -1,4 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Label text="Tab Dropdown" style="flex-shrink: 1; flex-grow: 1;" />
-    <ui:VisualElement class="tab-dropdown--arrow unity-enum-field__arrow" />
-</ui:UXML>
