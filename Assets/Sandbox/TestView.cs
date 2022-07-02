@@ -21,9 +21,16 @@ public class TestView
     {
         var group = new TabGroup { name = "Tab Group" };
         //group.style.flexDirection = FlexDirection.Column;
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
-            var t = CreateTab($"Ele {i}");
+            var t = CreateTab($"Ele {i}", i != 1);
+
+            group.Add(t);
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            var t = CreateTabDropdown($"Ele {i}", i != 1);
             group.Add(t);
         }
 
@@ -63,8 +70,13 @@ public class TestView
         return wrapper;
     }
 
-    private VisualElement CreateTab(string name)
+    private VisualElement CreateTab(string name, bool reorderable)
     {
-        return new Tab(name) { name = name, IsReorderable = true };
+        return new Tab(name) { name = name, IsReorderable = reorderable };
+    }
+
+    private VisualElement CreateTabDropdown(string name, bool reorderable)
+    {
+        return new TabDropdown(name) { name = name, IsReorderable = reorderable };
     }
 }
