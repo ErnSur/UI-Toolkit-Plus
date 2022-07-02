@@ -8,6 +8,5 @@
         <QuickEye.UIToolkit.TabDropdown text="Unchecked" />
         <QuickEye.UIToolkit.Tab text="zxcv" />
     </QuickEye.UIToolkit.TabGroup>
-    <ui:Button text="Button" display-tooltip-when-elided="true" />
-    <QuickEye.UIToolkit.Tab text="dg" />
+    <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" />
 </ui:UXML>

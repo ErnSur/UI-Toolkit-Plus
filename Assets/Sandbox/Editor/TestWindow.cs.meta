@@ -3,7 +3,9 @@ guid: 084a153f825bd4947b7cf89aab1e78e2
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - testComponentPrefab: {fileID: 5832419761612261777, guid: 1dacf853c9fe663439a73fb697efc073, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
