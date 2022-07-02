@@ -37,7 +37,7 @@ namespace QuickEye.UIToolkit
             set => Label.text = value;
         }
 
-        public bool IsDragged => ClassListContains(Reorderable.TargetDraggedClassName);
+        public bool IsDragged => Reorderable.IsDragged(this);
 
         public Tab() : this(null) { }
 

@@ -6,11 +6,8 @@ using UnityEngine.UIElements;
 namespace QuickEye.UIToolkit
 {
     // TODO: Is PointerCaptureOutEvent needed?
-    // Attach stylesheet to the panel root instead of each custom element
     // Event On order changed?
     // try to use it in real scenario
-    // create static method IsDragged
-    // use clickable with tab
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
@@ -80,10 +77,8 @@ namespace QuickEye.UIToolkit
             DragHandle.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
         }
 
-        private static bool IsReorderable(VisualElement ve)
-        {
-            return ve.ClassListContains(ReorderableClassName);
-        }
+        public static bool IsReorderable(VisualElement ve) => ve.ClassListContains(ReorderableClassName);
+        public static bool IsDragged(VisualElement ve) => ve.ClassListContains(DraggedClassName);
 
         private void StartDrag()
         {
