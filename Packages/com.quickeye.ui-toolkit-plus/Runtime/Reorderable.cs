@@ -5,8 +5,10 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
+    // TODO: README entry
+    // TODO: Create demo examples
+    // TODO: Animatable snap into place
     // TODO: Is PointerCaptureOutEvent needed?
-    // try to use it in real scenario
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
@@ -150,7 +152,6 @@ namespace QuickEye.UIToolkit
             using (var orderChangedEvent = ChildOrderChangedEvent.GetPooled())
             {
                 orderChangedEvent.target = _container;
-                Debug.Log($"Send Event to: {_container.name}");
                 _container.SendEvent(orderChangedEvent);
             }
 

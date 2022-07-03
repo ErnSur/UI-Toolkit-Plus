@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using QuickEye.UIToolkit;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -30,13 +31,18 @@ public class TestView
         root.Add(row);
         return root;
     }
-    
+
     private TabGroup CreateTabBarAndBindModel()
     {
         var group = new TabGroup { name = "Tab Group" };
         group.RegisterCallback<ChildOrderChangedEvent>(evt =>
         {
-            Debug.Log($"Order Changed: ");
+            model = group.Children().Select(e => (string)e.userData).ToList();
+            Debug.Log($"New Model:");
+            foreach (var e in model)
+            {
+                Debug.Log(e);
+            }
         });
         group.style.alignItems = Align.FlexStart;
         group.style.flexDirection = FlexDirection.Column;
@@ -44,6 +50,7 @@ public class TestView
         foreach (var e in model)
         {
             var t = CreateTab(e, !e.StartsWith("-"));
+            t.userData = e;
 
             group.Add(t);
         }
