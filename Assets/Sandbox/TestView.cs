@@ -28,6 +28,14 @@ public class TestView
         row.Add(CreateTabBarAndBindModel());
         row.Add(GetSpacer());
 
+        var directionToggle = new Toggle();
+        directionToggle.RegisterValueChangedCallback(evt =>
+        {
+            var group = row.Q<TabGroup>();
+            group.style.alignItems = evt.newValue ? Align.FlexStart : Align.FlexEnd;
+            group.style.flexDirection = evt.newValue ? FlexDirection.Column : FlexDirection.Row;
+        });
+        root.Insert(0, directionToggle);
         root.Add(row);
         return root;
     }
@@ -44,8 +52,8 @@ public class TestView
                 Debug.Log(e);
             }
         });
-        group.style.alignItems = Align.FlexStart;
-        group.style.flexDirection = FlexDirection.Column;
+        // group.style.alignItems = Align.FlexStart;
+        // group.style.flexDirection = FlexDirection.Column;
 
         foreach (var e in model)
         {
