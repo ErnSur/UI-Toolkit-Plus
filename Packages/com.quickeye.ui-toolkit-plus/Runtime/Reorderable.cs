@@ -11,7 +11,6 @@ namespace QuickEye.UIToolkit
     // TODO: Animatable snap into place
     // TODO: Is PointerCaptureOutEvent needed?
     // TODO: Style: remove top space from tab group
-    // TODO: Fix tab drag position when container has align-items: stretch;
     // TODO: ScrollView in TabGroup?
     public class Reorderable : Manipulator
     {
@@ -170,9 +169,10 @@ namespace QuickEye.UIToolkit
 
         private Vector2 GetNewTargetPosFromCursor()
         {
-            var newX = _pointerDelta.x + _targetStartPos.x;
-            var newY = _pointerDelta.y + _targetStartPos.y;
+            var translateBackToStartPos = _targetStartPos - target.layout.position;
 
+            var newX = _pointerDelta.x + translateBackToStartPos.x;
+            var newY = _pointerDelta.y + translateBackToStartPos.y;
             if (!FreeDrag)
             {
                 newX = Mathf.Clamp(newX,
