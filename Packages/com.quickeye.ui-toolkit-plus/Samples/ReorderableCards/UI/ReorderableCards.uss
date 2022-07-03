@@ -1,0 +1,6 @@
+.card {
+    -unity-background-scale-mode: stretch-to-fill;
+    background-image: url('project://database/Packages/com.quickeye.ui-toolkit-plus/Samples/ReorderableCards/Art/Tiles_7_white.png?fileID=2800000&guid=f54cb7e38eb580f40b653873b067c8f4&type=3#Tiles_7_white');
+    width: 163.75px;
+    height: 232.5px;
+}
