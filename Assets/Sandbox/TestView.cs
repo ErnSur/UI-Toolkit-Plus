@@ -1,25 +1,60 @@
-﻿using QuickEye.UIToolkit;
+﻿using System;
+using System.Collections.Generic;
+using QuickEye.UIToolkit;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
+[Serializable]
 public class TestView
 {
+    private List<string> model = new List<string>
+    {
+        "Plane", //0
+        "Car", //1
+        "-human", //2
+        "-Dog", //3
+        "cat", //4
+        "fly", //5
+    };
+
     public VisualElement CreateUI()
     {
         var root = new VisualElement();
         var row = new VisualElement();
         row.style.flexDirection = FlexDirection.Row;
         row.Add(GetSpacer());
-        row.Add(CreateTabBar());
+        row.Add(CreateTabBarAndBindModel());
         row.Add(GetSpacer());
 
         root.Add(row);
         return root;
     }
+    
+    private TabGroup CreateTabBarAndBindModel()
+    {
+        var group = new TabGroup { name = "Tab Group" };
+        group.RegisterCallback<ChildOrderChangedEvent>(evt =>
+        {
+            Debug.Log($"Order Changed: ");
+        });
+        group.style.alignItems = Align.FlexStart;
+        group.style.flexDirection = FlexDirection.Column;
+
+        foreach (var e in model)
+        {
+            var t = CreateTab(e, !e.StartsWith("-"));
+
+            group.Add(t);
+        }
+
+        return group;
+    }
 
     private TabGroup CreateTabBar()
     {
         var group = new TabGroup { name = "Tab Group" };
+        group.RegisterCallback<ChildOrderChangedEvent>(evt => { Debug.Log($"Order Changed: "); });
         //group.style.flexDirection = FlexDirection.Column;
         for (int i = 0; i < 3; i++)
         {

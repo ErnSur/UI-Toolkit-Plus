@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace QuickEye.UIToolkit
         public string TargetClassName { get; }
         public string TargetReorderableClassName => $"{TargetClassName}--{ReorderableClassName}";
         public string TargetDraggedClassName => $"{TargetReorderableClassName}-{DraggedClassName}";
-        
+
         private List<VisualElement> _allReorderable;
 
         private readonly VisualElement _shadowSpace = new VisualElement();
@@ -148,6 +149,13 @@ namespace QuickEye.UIToolkit
             if (!_isDragging)
                 return;
             ToggleDraggingMode(false);
+            using (var orderChangedEvent = ChildOrderChangedEvent.GetPooled())
+            {
+                orderChangedEvent.target = _container;
+                Debug.Log($"Send Event to: {_container.name}");
+                _container.SendEvent(orderChangedEvent);
+            }
+
             _isDragging = false;
         }
 
@@ -183,8 +191,20 @@ namespace QuickEye.UIToolkit
                 .ToArray();
 
             container.Insert(newIndex, ve);
-            foreach (var (index, tab) in nonReorderableSiblings)
-                container.Insert(index, tab);
+            SendEvent(ve, -1, newIndex);
+            // TODO: send event to all moved elements
+            foreach (var (index, element) in nonReorderableSiblings)
+                container.Insert(index, element);
+
+            void SendEvent(VisualElement e, int oldIndex, int newIndex)
+            {
+                using (var evt = HierarchyIndexChangedEvent.GetPooled(oldIndex, newIndex))
+                {
+                    evt.target = e;
+                    Debug.Log($"Send Event to: {e.name}");
+                    e.SendEvent(evt);
+                }
+            }
         }
 
 
@@ -318,5 +338,37 @@ namespace QuickEye.UIToolkit
             XOrY = isVertical ? rect.y : rect.x;
             XMaxOrYMax = isVertical ? rect.yMax : rect.xMax;
         }
+    }
+
+    public class ChildOrderChangedEvent : EventBase<ChildOrderChangedEvent> { }
+
+    public class HierarchyIndexChangedEvent : EventBase<HierarchyIndexChangedEvent>
+    {
+        public static HierarchyIndexChangedEvent GetPooled(int oldIndex, int newIndex)
+        {
+            var pooled = EventBase<HierarchyIndexChangedEvent>.GetPooled();
+            pooled.OldIndex = oldIndex;
+            pooled.NewIndex = newIndex;
+            return pooled;
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            LocalInit();
+        }
+
+        private void LocalInit()
+        {
+            OldIndex = -1;
+            NewIndex = -1;
+        }
+
+        public int OldIndex { get; private set; }
+
+        public int NewIndex { get; private set; }
+
+
+        public HierarchyIndexChangedEvent() => LocalInit();
     }
 }
