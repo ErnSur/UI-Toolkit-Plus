@@ -5,10 +5,14 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
+    // TODO: Polish FreeDrag default/naming
     // TODO: README entry
     // TODO: Create demo examples
     // TODO: Animatable snap into place
     // TODO: Is PointerCaptureOutEvent needed?
+    // TODO: Style: remove top space from tab group
+    // TODO: Fix tab drag position when container has align-items: stretch;
+    // TODO: ScrollView in TabGroup?
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
@@ -30,6 +34,7 @@ namespace QuickEye.UIToolkit
         private Vector2 _targetStartPos;
 
         public float DragStartThreshold { get; set; }
+        public bool FreeDrag { get; set; } = true;
         public (float nextElement, float previousElement) SwapThresholdMod { get; set; } = (1 / 1.5f, 1 / 3f);
         private VisualElement DragHandle => _dragHandle ?? target;
 
@@ -165,26 +170,29 @@ namespace QuickEye.UIToolkit
 
         private Vector2 GetNewTargetPosFromCursor()
         {
-            return IsColumnContainer
-                ? new Vector2
-                {
-                    x = target.transform.position.x,
-                    y = Mathf.Clamp(_pointerDelta.y + _targetStartPos.y,
-                        0, _container.layout.height - target.resolvedStyle.height)
-                }
-                : new Vector2
-                {
-                    x = Mathf.Clamp(_pointerDelta.x + _targetStartPos.x,
-                        0, _container.layout.width - target.resolvedStyle.width),
-                    y = target.transform.position.y
-                };
+            var newX = _pointerDelta.x + _targetStartPos.x;
+            var newY = _pointerDelta.y + _targetStartPos.y;
+
+            if (!FreeDrag)
+            {
+                newX = Mathf.Clamp(newX,
+                    0, _container.layout.width - target.resolvedStyle.width);
+                newY = Mathf.Clamp(newY,
+                    0, _container.layout.height - target.resolvedStyle.height);
+            }
+
+            return new Vector2
+            {
+                x = FreeDrag ? newX : IsColumnContainer ? target.transform.position.x : newX,
+                y = FreeDrag ? newY : IsColumnContainer ? newY : target.transform.position.y
+            };
         }
 
         private static void MoveInHierarchy(VisualElement ve, int newIndex)
         {
-            ReorderableUtility.MoveReorderable(newIndex,ve);
+            ReorderableUtility.MoveReorderable(newIndex, ve);
         }
-        
+
         //todo:
         // if i want to animate snapping into right space:
         // dont just set the transform to zero,
