@@ -57,7 +57,7 @@ namespace QuickEye.UIToolkit
 
         private void PointerDownHandler(PointerDownEvent evt)
         {
-            SetValueWithoutNotify(true);
+            value = true;
         }
 
         public override void SetValueWithoutNotify(bool newValue)
