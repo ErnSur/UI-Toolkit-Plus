@@ -5,13 +5,12 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    // TODO: Polish FreeDrag default/naming
-    // TODO: README entry
-    // TODO: Create demo examples
-    // TODO: Animatable snap into place
-    // TODO: Is PointerCaptureOutEvent needed?
     // TODO: Style: remove top space from tab group
     // TODO: ScrollView in TabGroup?
+    // TODO: Selected index in tabgroup
+    // TODO: Create demo examples
+    // TODO: README entry
+    // TODO: Animatable snap into place
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
@@ -32,8 +31,15 @@ namespace QuickEye.UIToolkit
         private Vector3 _pointerStartPos;
         private Vector2 _targetStartPos;
 
+        /// <summary>
+        /// How much does the pointer needs to drag the element before element is picked up.
+        /// </summary>
         public float DragStartThreshold { get; set; }
-        public bool FreeDrag { get; set; } = true;
+        
+        /// <summary>
+        /// When locked dragging only moves element along its parent flex direction axis.
+        /// </summary>
+        public bool LockDragToAxis { get; set; }
         public (float nextElement, float previousElement) SwapThresholdMod { get; set; } = (1 / 1.5f, 1 / 3f);
         private VisualElement DragHandle => _dragHandle ?? target;
 
@@ -60,7 +66,6 @@ namespace QuickEye.UIToolkit
             DragHandle.RegisterCallback<PointerDownEvent>(PointerDownHandler);
             DragHandle.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
             DragHandle.RegisterCallback<PointerUpEvent>(PointerUpHandler);
-            DragHandle.RegisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
             DragHandle.RegisterCallback<MouseUpEvent>(MouseUpHandler);
 
             if (target is Button b)
@@ -78,7 +83,6 @@ namespace QuickEye.UIToolkit
             DragHandle.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
             DragHandle.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
             DragHandle.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
-            DragHandle.UnregisterCallback<PointerCaptureOutEvent>(PointerCaptureOutHandler);
             DragHandle.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
         }
 
@@ -140,6 +144,7 @@ namespace QuickEye.UIToolkit
             {
                 _tookCapture = false;
                 DragHandle.ReleasePointer(pointerId);
+                EndDraggingProcess();
             }
 
             if (_isDragging)
@@ -148,7 +153,7 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        private void PointerCaptureOutHandler(PointerCaptureOutEvent evt)
+        private void EndDraggingProcess()
         {
             if (!_isDragging)
                 return;
@@ -173,7 +178,7 @@ namespace QuickEye.UIToolkit
 
             var newX = _pointerDelta.x + translateBackToStartPos.x;
             var newY = _pointerDelta.y + translateBackToStartPos.y;
-            if (!FreeDrag)
+            if (LockDragToAxis)
             {
                 newX = Mathf.Clamp(newX,
                     0, _container.layout.width - target.resolvedStyle.width);
@@ -183,8 +188,8 @@ namespace QuickEye.UIToolkit
 
             return new Vector2
             {
-                x = FreeDrag ? newX : IsColumnContainer ? target.transform.position.x : newX,
-                y = FreeDrag ? newY : IsColumnContainer ? newY : target.transform.position.y
+                x = !LockDragToAxis ? newX : IsColumnContainer ? target.transform.position.x : newX,
+                y = !LockDragToAxis ? newY : IsColumnContainer ? newY : target.transform.position.y
             };
         }
 
