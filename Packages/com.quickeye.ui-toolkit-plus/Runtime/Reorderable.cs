@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    // TODO: Style: remove top space from tab group
     // TODO: ScrollView in TabGroup?
     // TODO: Selected index in tabgroup
     // TODO: Create demo examples

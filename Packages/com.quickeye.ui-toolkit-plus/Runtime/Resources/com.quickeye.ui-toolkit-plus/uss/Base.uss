@@ -7,7 +7,6 @@
 
 .tab-group {
     background-color: var(--qe-colors-tab_group-background);
-    padding-top: 2px;
     min-height: 21px;
     flex-direction: row;
     align-items: flex-end;
