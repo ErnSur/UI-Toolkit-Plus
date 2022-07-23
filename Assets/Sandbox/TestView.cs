@@ -32,8 +32,9 @@ public class TestView
         directionToggle.RegisterValueChangedCallback(evt =>
         {
             var group = row.Q<TabGroup>();
-            group.style.alignItems = evt.newValue ? Align.FlexStart : Align.FlexEnd;
-            group.style.flexDirection = evt.newValue ? FlexDirection.Column : FlexDirection.Row;
+            group.Mode = evt.newValue ? TabGroupMode.Horizontal : TabGroupMode.Vertical;
+            // group.style.alignItems = evt.newValue ? Align.FlexStart : Align.FlexEnd;
+            // group.style.flexDirection = evt.newValue ? FlexDirection.Column : FlexDirection.Row;
         });
         root.Insert(0, directionToggle);
         root.Add(row);
