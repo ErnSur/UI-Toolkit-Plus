@@ -1,10 +1,38 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using UnityEngine;
+using UnityEngine.UIElements;
 using VE = UnityEngine.UIElements.VisualElement;
 
 namespace QuickEye.UIToolkit
 {
-    public static class ReorderableUtility
+    internal static class ReorderableUtility
     {
+        public static VE FindClosestElement(VisualElement target, VisualElement[] elements)
+        {
+            var bestDistanceSq = float.MaxValue;
+            VisualElement closest = null;
+            foreach (var element in elements)
+            {
+                var displacement =
+                    RootSpaceOfElement(element) - target.transform.position;
+                var distanceSq = displacement.sqrMagnitude;
+                if (distanceSq < bestDistanceSq)
+                {
+                    bestDistanceSq = distanceSq;
+                    closest = element;
+                }
+            }
+
+            return closest;
+        }
+
+        private static Vector3 RootSpaceOfElement(VisualElement element)
+        {
+            var tabWorldSpace = element.parent.LocalToWorld(element.layout.position);
+            return element.parent.WorldToLocal(tabWorldSpace);
+        }
+
         public static void MoveReorderable(int newIndex, VE element)
         {
             var container = element.parent;

@@ -1,72 +1,63 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
-{ 
-    public class Draggable : Manipulator
+{
+    // TODO: Drag events as UITK events
+    internal class Draggable : Manipulator
     {
-        private Vector2 _targetStartPos;
+        public event Action<PointerMoveEvent> Started;
+        public event Action Ended;
+        public event Action<Vector2> Dragging;
         private Vector3 _pointerStartPos;
-        private Vector2 _pointerDelta;
         private bool _tookCapture, _isDragging;
-
-        private readonly VisualElement _shadowSpace = new VisualElement();
-        private readonly VisualElement _dragHandle;
-        private VisualElement DragHandle => _dragHandle ?? target;
-        public string TargetClassName { get; set; }
         public float DragStartThreshold { get; set; }
 
-        public Draggable(string targetClassName = null, VisualElement dragHandle = null)
+        public Draggable()
         {
-            TargetClassName = targetClassName;
-            _dragHandle = dragHandle;
-            DragStartThreshold = dragHandle == null ? 5 : 1;
+            // Started += _ => { Debug.Log($"Started drag {target.name}"); };
+            // Dragging += _ => { Debug.Log($"Dragging drag {target.name}"); };
+            // Ended += () => { Debug.Log($"Ended drag {target.name}"); };
         }
 
         protected override void RegisterCallbacksOnTarget()
         {
-            DragHandle.RegisterCallback<PointerDownEvent>(PointerDownHandler);
-            DragHandle.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
-            DragHandle.RegisterCallback<PointerUpEvent>(PointerUpHandler);
-            DragHandle.RegisterCallback<MouseUpEvent>(MouseUpHandler);
+            target.RegisterCallback<PointerDownEvent>(PointerDownHandler);
+            target.RegisterCallback<PointerMoveEvent>(PointerMoveHandler);
+            target.RegisterCallback<PointerUpEvent>(PointerUpHandler);
+            target.RegisterCallback<MouseUpEvent>(MouseUpHandler);
         }
 
         protected override void UnregisterCallbacksFromTarget()
         {
-            DragHandle.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
-            DragHandle.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
-            DragHandle.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
-            DragHandle.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
+            target.UnregisterCallback<PointerDownEvent>(PointerDownHandler);
+            target.UnregisterCallback<PointerMoveEvent>(PointerMoveHandler);
+            target.UnregisterCallback<PointerUpEvent>(PointerUpHandler);
+            target.UnregisterCallback<MouseUpEvent>(MouseUpHandler);
         }
 
         private void PointerDownHandler(PointerDownEvent evt)
         {
-            CacheDragStartData(evt);
-            ToggleShadowSpace(true);
-            SwitchPositionSpace(true);
-            DragHandle.CapturePointer(evt.pointerId);
-            _tookCapture = true;
-        }
-
-        private void CacheDragStartData(PointerDownEvent evt)
-        {
             _pointerStartPos = evt.position;
-            _targetStartPos = target.layout.position;
-            _pointerDelta = Vector2.zero;
+            target.CapturePointer(evt.pointerId);
+            _tookCapture = true;
         }
 
         private void PointerMoveHandler(PointerMoveEvent evt)
         {
             if (!target.HasPointerCapture(evt.pointerId))
                 return;
-            _pointerDelta = evt.position - _pointerStartPos;
-            target.transform.position = GetNewTargetPosFromCursor();
-        }
-        
-        private Vector2 GetNewTargetPosFromCursor()
-        {
-            var translateBackToStartPos = _targetStartPos;
-            return _pointerDelta + translateBackToStartPos;
+            var pointerDelta = evt.position - _pointerStartPos;
+            if (_isDragging)
+            {
+                Dragging?.Invoke(pointerDelta);
+            }
+            else if (pointerDelta.magnitude >= DragStartThreshold)
+            {
+                Started?.Invoke(evt);
+                _isDragging = true;
+            }
         }
 
         private void PointerUpHandler(PointerUpEvent evt)
@@ -84,45 +75,12 @@ namespace QuickEye.UIToolkit
             if (_tookCapture)
             {
                 _tookCapture = false;
-                SwitchPositionSpace(false);
-                ToggleShadowSpace(false);
                 target.ReleasePointer(pointerId);
                 evt.StopImmediatePropagation();
+                Ended?.Invoke();
             }
-        }
 
-        private void SwitchPositionSpace(bool dragStart)
-        {
-            if (dragStart)
-            {
-                target.BringToFront();
-                target.style.position = Position.Absolute;
-                target.transform.position = GetNewTargetPosFromCursor();
-            }
-            else
-            {
-                target.style.position = Position.Relative;
-                target.transform.position =
-                    target.layout.position - _shadowSpace.layout.position;
-                target.transform.position = Vector3.zero;
-                _shadowSpace.parent.Add(target);
-                target.PlaceBehind(_shadowSpace);
-            }
-        }
-
-        private void ToggleShadowSpace(bool enabled)
-        {
-            if (enabled)
-            {
-                _shadowSpace.style.width = target.layout.width;
-                _shadowSpace.style.height = target.layout.height;
-                target.parent.Add(_shadowSpace);
-                _shadowSpace.PlaceBehind(target);
-            }
-            else
-            {
-                _shadowSpace.RemoveFromHierarchy();
-            }
+            _isDragging = false;
         }
     }
 }
