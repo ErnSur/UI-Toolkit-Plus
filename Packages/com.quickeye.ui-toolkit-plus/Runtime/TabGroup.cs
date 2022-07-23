@@ -23,6 +23,7 @@ namespace QuickEye.UIToolkit
         public TabGroup()
         {
             scrollView = new ScrollView();
+            scrollView.horizontalScrollerVisibility = scrollView.verticalScrollerVisibility = ScrollerVisibility.Hidden;
             hierarchy.Add(scrollView);
             scrollView.style.flexGrow = 1;
             Mode = TabGroupMode.Horizontal;

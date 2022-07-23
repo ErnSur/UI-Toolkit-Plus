@@ -14,6 +14,7 @@ namespace QuickEye.UIToolkit
 
         private VisualElement _tabContent;
         public readonly Reorderable Reorderable = new Reorderable(ClassName);
+        public readonly Draggable Draggable = new Draggable();
 
         public VisualElement TabContent
         {
@@ -28,7 +29,7 @@ namespace QuickEye.UIToolkit
         public bool IsReorderable
         {
             get => Reorderable.target == this;
-            set => this.ToggleManipulator(Reorderable, value);
+            set => this.ToggleManipulator(Draggable, value);
         }
 
         public string Text
