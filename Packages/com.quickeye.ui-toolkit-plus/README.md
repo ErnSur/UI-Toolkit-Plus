@@ -56,3 +56,10 @@ Copied C# field declarations:
     private VisualElement child;
 ```
 
+### `ReorderableManipulator`
+
+![](Documentation~/reorderable.gif)
+
+### `TabGroup` and `Tab`
+
+![](Documentation~/tabs.gif)
