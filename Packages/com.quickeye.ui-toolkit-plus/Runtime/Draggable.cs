@@ -10,8 +10,9 @@ namespace QuickEye.UIToolkit
         public event Action<PointerMoveEvent> Started;
         public event Action Ended;
         public event Action<Vector2> Dragging;
+
         private Vector3 _pointerStartPos;
-        private bool _tookCapture, _isDragging;
+        private bool _isDragging;
         public float DragStartThreshold { get; set; }
 
         public Draggable()
@@ -39,9 +40,9 @@ namespace QuickEye.UIToolkit
 
         private void PointerDownHandler(PointerDownEvent evt)
         {
+            _isDragging = false;
             _pointerStartPos = evt.position;
             target.CapturePointer(evt.pointerId);
-            _tookCapture = true;
         }
 
         private void PointerMoveHandler(PointerMoveEvent evt)
@@ -49,14 +50,15 @@ namespace QuickEye.UIToolkit
             if (!target.HasPointerCapture(evt.pointerId))
                 return;
             var pointerDelta = evt.position - _pointerStartPos;
-            if (_isDragging)
-            {
-                Dragging?.Invoke(pointerDelta);
-            }
-            else if (pointerDelta.magnitude >= DragStartThreshold)
+            if (!_isDragging && pointerDelta.magnitude >= DragStartThreshold)
             {
                 Started?.Invoke(evt);
                 _isDragging = true;
+            }
+
+            if (_isDragging)
+            {
+                Dragging?.Invoke(pointerDelta);
             }
         }
 
@@ -72,15 +74,13 @@ namespace QuickEye.UIToolkit
 
         private void OnPointerUp(EventBase evt, int pointerId)
         {
-            if (_tookCapture)
+            target.ReleasePointer(pointerId);
+            evt.StopImmediatePropagation();
+            if (_isDragging)
             {
-                _tookCapture = false;
-                target.ReleasePointer(pointerId);
-                evt.StopImmediatePropagation();
                 Ended?.Invoke();
+                _isDragging = false;
             }
-
-            _isDragging = false;
         }
     }
 }

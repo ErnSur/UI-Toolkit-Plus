@@ -81,3 +81,26 @@
     -unity-background-scale-mode: scale-to-fit;
     height: 16px;
 }
+
+.tab-group > ScrollView > Scroller > #unity-slider {
+    visibility: hidden;
+}
+
+.tab-group > ScrollView > Scroller {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+}
+
+.tab-group > ScrollView > Scroller > .unity-repeat-button {
+    height: 100%;
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: var(--qe-colors-tab-background-hover);
+}

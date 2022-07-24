@@ -11,7 +11,12 @@
         <QuickEye.UIToolkit.TabDropdown text="Unchecked" />
         <QuickEye.UIToolkit.Tab text="zxcv" />
     </QuickEye.UIToolkit.TabGroup>
-    <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" />
-    <ui:Button text="Button" display-tooltip-when-elided="true" />
-    <ui:Foldout text="Foldout" />
+    <ui:ScrollView mode="Horizontal" class="test-sv">
+        <ui:Button text="Button" display-tooltip-when-elided="true" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" />
+    </ui:ScrollView>
 </ui:UXML>

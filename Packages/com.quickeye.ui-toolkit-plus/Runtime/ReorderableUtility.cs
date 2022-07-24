@@ -8,6 +8,16 @@ namespace QuickEye.UIToolkit
 {
     internal static class ReorderableUtility
     {
+        public static bool NeedsHorizontalScroller(this ScrollView sv)
+        {
+            var rect = sv.contentContainer.contentRect;
+            var width1 = (double)rect.width;
+            rect = sv.contentViewport.layout;
+            var width2 = (double)rect.width;
+            var scrollableWidth = (float)(width1 - width2);
+            return scrollableWidth > 1.0 / 1000.0;
+        }
+
         public static VE FindClosestElement(VisualElement target, VisualElement[] elements)
         {
             var bestDistanceSq = float.MaxValue;
@@ -38,7 +48,7 @@ namespace QuickEye.UIToolkit
             var container = element.parent;
             var nonReorderables = new List<(VE value, int index)>();
             var oldIndex = -1;
-            for (int i = 0; i <= newIndex + 1 || oldIndex == -1; i++)
+            for (var i = 0; i <= newIndex + 1 || oldIndex == -1; i++)
             {
                 var v = container[i];
                 if (v == element)
@@ -54,7 +64,7 @@ namespace QuickEye.UIToolkit
             container.Insert(newIndex, element);
             if (oldIndex > newIndex)
             {
-                for (int i = 0; i < nonReorderables.Count; i++)
+                for (var i = 0; i < nonReorderables.Count; i++)
                 {
                     var (v, index) = nonReorderables[i];
                     container.Insert(index, v);
@@ -62,7 +72,7 @@ namespace QuickEye.UIToolkit
             }
             else
             {
-                for (int i = nonReorderables.Count - 1; i >= 0; i--)
+                for (var i = nonReorderables.Count - 1; i >= 0; i--)
                 {
                     var (v, index) = nonReorderables[i];
                     container.Insert(index, v);

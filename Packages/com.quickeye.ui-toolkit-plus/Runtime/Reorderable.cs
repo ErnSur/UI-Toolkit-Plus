@@ -5,9 +5,7 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    // TODO: ScrollView in TabGroup?
     // TODO: Selected index in tabgroup
-    // TODO: Create demo examples
     // TODO: README entry
     // TODO: Animatable snap into place
     public class Reorderable : Manipulator
@@ -144,10 +142,12 @@ namespace QuickEye.UIToolkit
             {
                 ToggleShadowSpace(true);
                 SwitchPositionSpace(true);
+                target.usageHints = UsageHints.DynamicTransform;
                 target.EnableInClassList(TargetDraggedClassName, true);
             }
             else
             {
+                target.usageHints = UsageHints.None;
                 target.EnableInClassList(TargetDraggedClassName, false);
                 SwitchPositionSpace(false);
                 target.PlaceBehind(_shadowSpace);

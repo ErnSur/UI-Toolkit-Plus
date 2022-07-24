@@ -25,20 +25,42 @@ public class TestView
         var row = new VisualElement();
         row.style.flexDirection = FlexDirection.Row;
         row.Add(GetSpacer());
-        row.Add(CreateTabBarAndBindModel());
+        var group = CreateTabBarAndBindModel();
+        row.Add(group);
         row.Add(GetSpacer());
 
         var directionToggle = new Toggle();
         directionToggle.RegisterValueChangedCallback(evt =>
         {
             var group = row.Q<TabGroup>();
-            group.Mode = evt.newValue ? TabGroupMode.Horizontal : TabGroupMode.Vertical;
+            group.Mode = evt.newValue ? TabGroupMode.Vertical : TabGroupMode.Horizontal;
             // group.style.alignItems = evt.newValue ? Align.FlexStart : Align.FlexEnd;
             // group.style.flexDirection = evt.newValue ? FlexDirection.Column : FlexDirection.Row;
         });
         root.Insert(0, directionToggle);
         root.Add(row);
+        root.Add(new Button(()=> group.UpdateScrollButtonVisibility())
+        {
+            text = "Update visibility"
+        });
         return root;
+    }
+
+    private void CreateScrollView(VisualElement root)
+    {
+        var sv = new ScrollView();
+        sv.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+        sv.mode = ScrollViewMode.Horizontal;
+        var button = new RepeatButton(() => sv.horizontalScroller.value++, 0, 1);
+        button.AddToClassList("unity-button");
+        button.text = "++";
+        for (int i = 0; i < 100; i++)
+        {
+            sv.Add(new Label($"Label {i}"));
+        }
+
+        root.Add(sv);
+        root.Add(button);
     }
 
     private TabGroup CreateTabBarAndBindModel()
@@ -47,14 +69,12 @@ public class TestView
         group.RegisterCallback<ChildOrderChangedEvent>(evt =>
         {
             model = group.Children().Select(e => (string)e.userData).ToList();
-            Debug.Log($"New Model:");
+            //Debug.Log($"New Model:");
             foreach (var e in model)
             {
-                Debug.Log(e);
+                //Debug.Log(e);
             }
         });
-        // group.style.alignItems = Align.FlexStart;
-        // group.style.flexDirection = FlexDirection.Column;
 
         foreach (var e in model)
         {
