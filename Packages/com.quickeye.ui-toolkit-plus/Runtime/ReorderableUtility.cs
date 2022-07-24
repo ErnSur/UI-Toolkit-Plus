@@ -8,16 +8,6 @@ namespace QuickEye.UIToolkit
 {
     internal static class ReorderableUtility
     {
-        public static bool NeedsHorizontalScroller(this ScrollView sv)
-        {
-            var rect = sv.contentContainer.contentRect;
-            var width1 = (double)rect.width;
-            rect = sv.contentViewport.layout;
-            var width2 = (double)rect.width;
-            var scrollableWidth = (float)(width1 - width2);
-            return scrollableWidth > 1.0 / 1000.0;
-        }
-
         public static VE FindClosestElement(VisualElement target, VisualElement[] elements)
         {
             var bestDistanceSq = float.MaxValue;

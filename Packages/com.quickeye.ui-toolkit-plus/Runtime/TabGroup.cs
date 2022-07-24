@@ -37,8 +37,8 @@ namespace QuickEye.UIToolkit
             ScrollView.RegisterCallback<GeometryChangedEvent>(OnScrollViewGeometryChange);
             ScrollView.horizontalScroller.valueChanged += OnHorizontalScrollerValueChanged;
             ScrollView.horizontalPageSize = 2;
-            ScrollView.horizontalScroller.lowButton.SetAction(ScrollView.horizontalScroller.ScrollPageUp,0,1);
-            ScrollView.horizontalScroller.highButton.SetAction(ScrollView.horizontalScroller.ScrollPageDown,0,1);
+            ScrollView.horizontalScroller.lowButton.SetAction(ScrollView.horizontalScroller.ScrollPageUp, 0, 1);
+            ScrollView.horizontalScroller.highButton.SetAction(ScrollView.horizontalScroller.ScrollPageDown, 0, 1);
             ScrollView.horizontalScroller.pickingMode = PickingMode.Ignore;
 
             hierarchy.Add(ScrollView);
@@ -56,10 +56,9 @@ namespace QuickEye.UIToolkit
 
         public void UpdateScrollButtonVisibility()
         {
-            var needsHorizontalScroller = ScrollView.NeedsHorizontalScroller();
             var horizontalValue = ScrollView.horizontalScroller.value;
-            var leftEnabled = needsHorizontalScroller && horizontalValue != 0;
-            var rightEnabled = needsHorizontalScroller && horizontalValue < ScrollView.horizontalScroller.highValue;
+            var leftEnabled = horizontalValue != 0;
+            var rightEnabled = horizontalValue < ScrollView.horizontalScroller.highValue;
             ScrollView.horizontalScroller.lowButton.ToggleDisplayStyle(leftEnabled);
             ScrollView.horizontalScroller.highButton.ToggleDisplayStyle(rightEnabled);
         }
