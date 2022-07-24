@@ -1,8 +1,15 @@
 {
   "name": "com.quickeye.ui-toolkit-plus",
   "displayName": "UI Toolkit Plus",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "unity": "2019.1",
   "author": "Quick Eye",
-  "type": "library"
+  "type": "library",
+  "samples": [
+    {
+      "displayName": "Reorderable Manipulator",
+      "description": "Basic usage of the Reorderable manipulator.",
+      "path": "Samples~/ReorderableCards"
+    }
+  ]
 }
