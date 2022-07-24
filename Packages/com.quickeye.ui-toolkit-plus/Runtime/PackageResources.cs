@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,6 +8,15 @@ namespace QuickEye.UIToolkit
 {
     internal static class PackageResources
     {
+        private static Dictionary<string, StyleSheet> themes = new Dictionary<string, StyleSheet>()
+        {
+            { ThemeClassNameEditor, LoadAsset<StyleSheet>("QuickEye UTPlus Theme Editor") },
+            { ThemeClassNameRuntime, LoadAsset<StyleSheet>("QuickEye UTPlus Theme Runtime") },
+        };
+
+        public const string ThemeClassNameEditor = "qe-uiplus-editor";
+        public const string ThemeClassNameRuntime = "qe-uiplus-runtime";
+
         private const string BaseDir = "com.quickeye.ui-toolkit-plus/";
 
         private static StyleSheet _baseTheme;
@@ -36,7 +47,7 @@ namespace QuickEye.UIToolkit
                 tree.CloneTree(ve);
                 ve.AssignQueryResults(ve);
             }
-
+            
             if (TryLoadStyle<T>(out var styleSheet))
                 ve.styleSheets.Add(styleSheet);
         }
@@ -46,14 +57,32 @@ namespace QuickEye.UIToolkit
             var root = ((VisualElement)evt.target)?.panel.visualTree;
             if (root == null)
                 return;
-            ThemeStyleSheet s;
-            
-            if (_baseTheme == null)
-                _baseTheme = LoadAsset<StyleSheet>("QuickEye UTPlus Theme");
-            if (!root.styleSheets.Contains(_baseTheme))
+            var isEditorPanel = root[0].name != "UIDocument-container";
+            if (!ContainsThemeClass(root))
+                root.AddToClassList(GetDefaultTheme(isEditorPanel));
+            TryLoadPackageStyleSheet(root);
+        }
+
+        private static string GetDefaultTheme(bool isEditorPanel)
+        {
+            return isEditorPanel ? ThemeClassNameEditor : ThemeClassNameRuntime;
+        }
+
+        private static void TryLoadPackageStyleSheet(VisualElement panelRoot)
+        {
+            foreach (var theme in themes)
             {
-                root.styleSheets.Add(_baseTheme);
+                if (panelRoot.ClassListContains(theme.Key))
+                {
+                    panelRoot.styleSheets.Add(theme.Value);
+                    return;
+                }
             }
+        }
+
+        private static bool ContainsThemeClass(VisualElement panelRoot)
+        {
+            return themes.Any(kvp => panelRoot.ClassListContains(kvp.Key));
         }
     }
 }

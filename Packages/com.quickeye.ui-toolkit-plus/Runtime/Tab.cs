@@ -12,7 +12,7 @@ namespace QuickEye.UIToolkit
         protected Label Label;
 
         private VisualElement _tabContent;
-        public readonly Reorderable Reorderable = new Reorderable(ClassName);
+        public readonly Reorderable Reorderable = new Reorderable(ClassName){LockDragToAxis = true};
 
         public VisualElement TabContent
         {
