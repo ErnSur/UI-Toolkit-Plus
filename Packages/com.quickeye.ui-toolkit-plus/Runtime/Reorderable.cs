@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    // TODO: Selected index in tabgroup
     // TODO: README entry
     // TODO: Animatable snap into place
     public class Reorderable : Manipulator
