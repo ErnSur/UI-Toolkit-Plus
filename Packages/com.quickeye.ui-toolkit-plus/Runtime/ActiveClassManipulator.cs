@@ -40,7 +40,8 @@ namespace QuickEye.UIToolkit
 
         private void PointerEnterHandler(PointerEnterEvent evt)
         {
-            target.EnableInClassList(ClassName, true);
+            if (target.HasPointerCapture(evt.pointerId))
+                target.EnableInClassList(ClassName, true);
         }
 
         private void PointerLeaveHandler(PointerLeaveEvent evt)

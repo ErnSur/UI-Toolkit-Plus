@@ -6,12 +6,13 @@ namespace QuickEye.UIToolkit
 {
     public class Tab : BaseBindable<bool>
     {
-        [Q]
+        public const string ClassName = "tab";
+        public const string TextClassName = "tab__text";
+
         protected Label Label;
 
         private VisualElement _tabContent;
-        private bool _reorderable;
-        private readonly TabDragAndDropManipulator _dragManipulator = new TabDragAndDropManipulator();
+        public readonly Reorderable Reorderable = new Reorderable(ClassName){LockDragToAxis = true};
 
         public VisualElement TabContent
         {
@@ -23,14 +24,10 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        public bool Reorderable
+        public bool IsReorderable
         {
-            get => _reorderable;
-            set
-            {
-                _reorderable = value;
-                this.ToggleManipulator(_dragManipulator, _reorderable);
-            }
+            get => Reorderable.target == this;
+            set => this.ToggleManipulator(Reorderable, value);
         }
 
         public string Text
@@ -39,23 +36,27 @@ namespace QuickEye.UIToolkit
             set => Label.text = value;
         }
 
-        public bool IsDragged => ClassListContains(TabDragAndDropManipulator.TabDraggedClassName);
+        public bool IsDragged => Reorderable.IsDragged(this);
 
         public Tab() : this(null) { }
 
         public Tab(string text)
         {
             this.InitResources();
+            EnableInClassList(ClassName, true);
+            Label = new Label(text);
+            Label.EnableInClassList(TextClassName, true);
+            Add(Label);
             AddToClassList("tab");
+            
             RegisterCallback<PointerDownEvent>(PointerDownHandler);
-            this.AddManipulator(new ActiveClassManipulator("tab"));
-            Reorderable = false;
-            Text = text;
+            IsReorderable = false;
+            SetActive(value);
         }
 
         private void PointerDownHandler(PointerDownEvent evt)
         {
-            SetValueWithoutNotify(true);
+            value = true;
         }
 
         public override void SetValueWithoutNotify(bool newValue)
@@ -103,7 +104,7 @@ namespace QuickEye.UIToolkit
                 base.Init(ve, bag, cc);
                 var tab = (Tab)ve;
                 tab.Text = _text.GetValueFromBag(bag, cc);
-                tab.Reorderable = _reorderable.GetValueFromBag(bag, cc);
+                tab.IsReorderable = _reorderable.GetValueFromBag(bag, cc);
             }
         }
     }

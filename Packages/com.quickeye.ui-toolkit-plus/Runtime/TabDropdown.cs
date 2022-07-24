@@ -1,5 +1,6 @@
 ﻿#if UNITY_2021_1_OR_NEWER
 using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -8,23 +9,29 @@ namespace QuickEye.UIToolkit
     {
         public event Action<GenericDropdownMenu> BeforeMenuShow;
 
-        [Q(null, "unity-enum-field__arrow")]
-        private VisualElement _arrow;
+        public const string ClassName = "tab-dropdown";
+        public const string ArrowCLassName = ClassName + "--arrow";
 
         private readonly Clickable _clickable;
         private GenericDropdownMenu _menu;
 
-        public TabDropdown()
+        public TabDropdown() :this(null)
         {
-            hierarchy.Clear();
-            this.InitResources();
-            _clickable = new Clickable(ShowMenu);
-            ToggleArrow(value);
         }
 
+        public TabDropdown(string text) :base(text)
+        {
+            this.InitResources();
+            AddToClassList(ClassName);
+            var arrow = new VisualElement();
+            arrow.AddToClassList(ArrowCLassName);
+            Add(arrow);
+            _clickable = new Clickable(ShowMenu);
+        }
+        
         private void ShowMenu()
         {
-            if (_menu?.contentContainer.panel != null || IsDragged)
+            if (_menu?.contentContainer.panel != null || BeforeMenuShow == null || IsDragged)
                 return;
             _menu = new GenericDropdownMenu();
             BeforeMenuShow?.Invoke(_menu);
@@ -35,18 +42,10 @@ namespace QuickEye.UIToolkit
         {
             var clickedOnActiveTab = value && newValue;
             base.SetValueWithoutNotify(newValue);
-            ToggleArrow(newValue);
             if (clickedOnActiveTab)
                 this.AddManipulator(_clickable);
             else
-            {
                 this.RemoveManipulator(_clickable);
-            }
-        }
-
-        private void ToggleArrow(bool value)
-        {
-            _arrow.ToggleDisplayStyle(value);
         }
 
         private class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }
