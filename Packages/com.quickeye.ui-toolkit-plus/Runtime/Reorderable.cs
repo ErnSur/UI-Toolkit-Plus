@@ -7,6 +7,7 @@ namespace QuickEye.UIToolkit
 {
     // TODO: README entry
     // TODO: Animatable snap into place
+    // TODO: Fix visuals on dragging tab in column tab group: create a shadow drag container that will mimic previous content container size
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
@@ -85,7 +86,7 @@ namespace QuickEye.UIToolkit
 
         private void OnDragStart(IPointerEvent evt)
         {
-            _container = target.parent;
+            _container = target.parent.contentContainer;
             _allReorderable = _container.Children().Where(IsReorderable).ToList();
             _targetStartPos = target.layout.position;
             ToggleDraggingMode(true);
@@ -123,11 +124,11 @@ namespace QuickEye.UIToolkit
                     0, _container.layout.height - target.resolvedStyle.height);
             }
 
-            return new Vector2
-            {
-                x = !LockDragToAxis ? newX : IsColumnContainer ? target.transform.position.x : newX,
-                y = !LockDragToAxis ? newY : IsColumnContainer ? newY : target.transform.position.y
-            };
+            var cursor = new Vector2();
+            cursor.x = !LockDragToAxis ? newX : IsColumnContainer ? target.transform.position.x : newX;
+            cursor.y = !LockDragToAxis ? newY : IsColumnContainer ? newY : target.transform.position.y;
+            Debug.Log($"MES: {cursor}/{IsColumnContainer} {_container.name}");
+            return cursor;
         }
 
         private static void MoveInHierarchy(VisualElement ve, int newIndex)
