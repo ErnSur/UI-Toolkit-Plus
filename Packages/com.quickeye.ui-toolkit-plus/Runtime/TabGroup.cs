@@ -55,7 +55,7 @@ namespace QuickEye.UIToolkit
             UpdateScrollButtonVisibility();
         }
 
-        public void UpdateScrollButtonVisibility()
+        private void UpdateScrollButtonVisibility()
         {
             var horizontalValue = ScrollView.horizontalScroller.value;
             var leftEnabled = horizontalValue != 0;

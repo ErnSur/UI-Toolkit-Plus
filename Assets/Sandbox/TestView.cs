@@ -39,10 +39,7 @@ public class TestView
         });
         root.Insert(0, directionToggle);
         root.Add(row);
-        root.Add(new Button(()=> group.UpdateScrollButtonVisibility())
-        {
-            text = "Update visibility"
-        });
+
         return root;
     }
 
