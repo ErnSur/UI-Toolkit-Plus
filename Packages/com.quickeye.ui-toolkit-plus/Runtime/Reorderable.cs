@@ -17,8 +17,8 @@ namespace QuickEye.UIToolkit
         private VisualElement _lastSwappedElement;
         private List<VisualElement> _allReorderable;
         private readonly VisualElement _dragHandle;
-        private readonly VisualElement _shadowSpace = new();
-        private readonly Draggable _draggable = new();
+        private readonly VisualElement _shadowSpace = new VisualElement();
+        private readonly Draggable _draggable = new Draggable();
 
         public Reorderable(string targetClassName = null, VisualElement dragHandle = null)
         {
@@ -124,11 +124,11 @@ namespace QuickEye.UIToolkit
                     0, _container.layout.height - target.resolvedStyle.height);
             }
 
-            var cursor = new Vector2();
-            cursor.x = !LockDragToAxis ? newX : IsColumnContainer ? target.transform.position.x : newX;
-            cursor.y = !LockDragToAxis ? newY : IsColumnContainer ? newY : target.transform.position.y;
-            Debug.Log($"MES: {cursor}/{IsColumnContainer} {_container.name}");
-            return cursor;
+            return new Vector2
+            {
+                x = !LockDragToAxis ? newX : IsColumnContainer ? target.transform.position.x : newX,
+                y = !LockDragToAxis ? newY : IsColumnContainer ? newY : target.transform.position.y
+            };
         }
 
         private static void MoveInHierarchy(VisualElement ve, int newIndex)

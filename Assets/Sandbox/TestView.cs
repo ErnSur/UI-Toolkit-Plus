@@ -13,21 +13,25 @@ public class TestView
     {
         "Plane", //0
         "Car", //1
-        "-human", //2
-        "-Dog", //3
-        "cat", //4
-        "fly", //5
+        "Human", //2
+        "Dog", //3
+        "Cat", //4
+        "Fly", //5
     };
 
     public VisualElement CreateUI()
     {
         var root = new VisualElement();
         var row = new VisualElement();
-        row.style.flexDirection = FlexDirection.Row;
-        row.Add(GetSpacer());
+        row.style.flexDirection = FlexDirection.Column;
+        //row.Add(GetSpacer());
         var group = CreateTabBarAndBindModel();
+        var group2 = CreateTabBarAndBindModel();
+        group2.Mode = TabGroupMode.Vertical;
         row.Add(group);
-        row.Add(GetSpacer());
+        row.Add(new VisualElement(){style = { height = 20}});
+        row.Add(group2);
+        //row.Add(GetSpacer());
 
         var directionToggle = new Toggle();
         directionToggle.RegisterValueChangedCallback(evt =>
@@ -37,7 +41,7 @@ public class TestView
             // group.style.alignItems = evt.newValue ? Align.FlexStart : Align.FlexEnd;
             // group.style.flexDirection = evt.newValue ? FlexDirection.Column : FlexDirection.Row;
         });
-        root.Insert(0, directionToggle);
+        //root.Insert(0, directionToggle);
         root.Add(row);
  
         return root;
