@@ -60,9 +60,9 @@ namespace QuickEye.UIToolkit
             var root = target.panel.visualTree;
             if (root == null)
                 return;
-            var isRuntimePanel = root.childCount > 0 && root[0].name == "UIDocument-container";
+            
             if (!ContainsThemeClass(root))
-                root.AddToClassList(GetDefaultTheme(!isRuntimePanel));
+                root.AddToClassList(GetDefaultTheme(target.panel.contextType == ContextType.Editor));
             TryLoadPackageStyleSheet(root, target);
         }
 
