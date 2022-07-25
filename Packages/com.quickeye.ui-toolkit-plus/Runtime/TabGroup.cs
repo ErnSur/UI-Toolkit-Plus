@@ -68,6 +68,8 @@ namespace QuickEye.UIToolkit
         {
 #if UNITY_2021_2_OR_NEWER
             ScrollView.mode = mode == TabGroupMode.Horizontal ? ScrollViewMode.Horizontal : ScrollViewMode.Vertical;
+            ScrollView.verticalScrollerVisibility =
+                mode == TabGroupMode.Horizontal ? ScrollerVisibility.Hidden : ScrollerVisibility.Auto; 
 #endif
             ScrollView.style.alignItems = mode == TabGroupMode.Vertical ? Align.FlexStart : Align.FlexEnd;
         }

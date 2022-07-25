@@ -1,6 +1,5 @@
 ﻿#if UNITY_2021_1_OR_NEWER
 using System;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -12,7 +11,6 @@ namespace QuickEye.UIToolkit
         public const string ClassName = "tab-dropdown";
         public const string ArrowCLassName = ClassName + "--arrow";
 
-        private readonly Clickable _clickable;
         private GenericDropdownMenu _menu;
 
         public TabDropdown() :this(null)
@@ -26,7 +24,6 @@ namespace QuickEye.UIToolkit
             var arrow = new VisualElement();
             arrow.AddToClassList(ArrowCLassName);
             Add(arrow);
-            _clickable = new Clickable(ShowMenu);
         }
         
         private void ShowMenu()
@@ -38,14 +35,14 @@ namespace QuickEye.UIToolkit
             _menu.DropDown(worldBound, this);
         }
 
-        public override void SetValueWithoutNotify(bool newValue)
+        protected override void PointerDownHandler(PointerDownEvent evt)
         {
-            var clickedOnActiveTab = value && newValue;
-            base.SetValueWithoutNotify(newValue);
+            var clickedOnActiveTab = value;
+
+            base.PointerDownHandler(evt);
+            
             if (clickedOnActiveTab)
-                this.AddManipulator(_clickable);
-            else
-                this.RemoveManipulator(_clickable);
+                ShowMenu();
         }
 
         private class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }

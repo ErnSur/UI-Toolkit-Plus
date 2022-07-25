@@ -54,7 +54,7 @@ namespace QuickEye.UIToolkit
             SetActive(value);
         }
 
-        private void PointerDownHandler(PointerDownEvent evt)
+        protected virtual void PointerDownHandler(PointerDownEvent evt)
         {
             value = true;
         }
