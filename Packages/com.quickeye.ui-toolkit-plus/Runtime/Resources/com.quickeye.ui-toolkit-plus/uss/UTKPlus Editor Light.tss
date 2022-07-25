@@ -1,0 +1,9 @@
+
+@import url("UTKPlus Base.uss");
+
+:root {
+    --qe-colors-tab_group-background: #B6B6B6; /*var(--unity-colors-tab-background, #353535);*/
+    --qe-colors-tab-background-checked: #CBCBCB; /*var(--unity-colors-tab-background-checked, #FF0000);*/
+    --qe-colors-tab-background-active: #3A72B0; /*var(--unity-colors-highlight-background, #FF0000);*/
+    --qe-colors-tab-background-hover: #B0B0B0; /*var(--unity-colors-tab-background-hover, #FF0000);*/
+}

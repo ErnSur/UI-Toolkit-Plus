@@ -1,0 +1,18 @@
+
+@import url("UTKPlus Base.uss");
+
+
+:root {
+    --qe-colors-tab_group-background: #B6B6B6;
+    --qe-colors-tab-background-checked: #CBCBCB;
+    --qe-colors-tab-background-active: #3A72B0;
+    --qe-colors-tab-background-hover: #B0B0B0;
+}
+
+.tab-group {
+    min-height: 31px;
+}
+
+.tab {
+    height: 30px;
+}

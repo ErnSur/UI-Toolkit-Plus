@@ -10,11 +10,13 @@ namespace QuickEye.UIToolkit
     {
         private static Dictionary<string, StyleSheet> themes = new Dictionary<string, StyleSheet>()
         {
-            { ThemeClassNameEditor, LoadAsset<StyleSheet>("QuickEye UTPlus Theme Editor") },
-            { ThemeClassNameRuntime, LoadAsset<StyleSheet>("QuickEye UTPlus Theme Runtime") },
+            { ThemeClassNameEditorDark, LoadAsset<StyleSheet>("UTKPlus Editor Dark") },
+            { ThemeClassNameEditorLight, LoadAsset<StyleSheet>("UTKPlus Editor Light") },
+            { ThemeClassNameRuntime, LoadAsset<StyleSheet>("UTKPlus Runtime") },
         };
 
-        public const string ThemeClassNameEditor = "qe-uiplus-editor";
+        public const string ThemeClassNameEditorDark = "qe-uiplus-editor-dark";
+        public const string ThemeClassNameEditorLight = "qe-uiplus-editor-light";
         public const string ThemeClassNameRuntime = "qe-uiplus-runtime";
 
         private const string BaseDir = "com.quickeye.ui-toolkit-plus/";
@@ -47,34 +49,39 @@ namespace QuickEye.UIToolkit
                 tree.CloneTree(ve);
                 ve.AssignQueryResults(ve);
             }
-            
+
             if (TryLoadStyle<T>(out var styleSheet))
                 ve.styleSheets.Add(styleSheet);
         }
 
         public static void AddStyleSheetsToRootElement(AttachToPanelEvent evt)
         {
-            var root = ((VisualElement)evt.target)?.panel.visualTree;
+            var target = (VisualElement)evt.target;
+            var root = target.panel.visualTree;
             if (root == null)
                 return;
-            var isEditorPanel = root[0].name != "UIDocument-container";
+            var isRuntimePanel = root.childCount > 0 && root[0].name == "UIDocument-container";
             if (!ContainsThemeClass(root))
-                root.AddToClassList(GetDefaultTheme(isEditorPanel));
-            TryLoadPackageStyleSheet(root);
+                root.AddToClassList(GetDefaultTheme(!isRuntimePanel));
+            TryLoadPackageStyleSheet(root, target);
         }
 
         private static string GetDefaultTheme(bool isEditorPanel)
         {
-            return isEditorPanel ? ThemeClassNameEditor : ThemeClassNameRuntime;
+#if UNITY_EDITOR
+            if (isEditorPanel)
+                return UnityEditor.EditorGUIUtility.isProSkin ? ThemeClassNameEditorDark : ThemeClassNameEditorLight;
+#endif
+            return ThemeClassNameRuntime;
         }
 
-        private static void TryLoadPackageStyleSheet(VisualElement panelRoot)
+        private static void TryLoadPackageStyleSheet(VisualElement panelRoot, VisualElement target)
         {
             foreach (var theme in themes)
             {
                 if (panelRoot.ClassListContains(theme.Key))
                 {
-                    panelRoot.styleSheets.Add(theme.Value);
+                    target.styleSheets.Add(theme.Value);
                     return;
                 }
             }

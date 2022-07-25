@@ -1,8 +1,8 @@
 :root {
-    --qe-colors-tab_group-background: var(--unity-colors-tab-background);
-    --qe-colors-tab-background-checked: var(--unity-colors-tab-background-checked);
-    --qe-colors-tab-background-active: var(--unity-colors-highlight-background);
-    --qe-colors-tab-background-hover: var(--unity-colors-tab-background-hover);
+    --qe-colors-tab_group-background: #353535;
+    --qe-colors-tab-background-checked: #3C3C3C;
+    --qe-colors-tab-background-active: #2C5D87;
+    --qe-colors-tab-background-hover: #303030;
 }
 
 .tab-group {
@@ -18,7 +18,6 @@
     padding-right: 5px;
     padding-left: 5px;
     height: 20px;
-    overflow: hidden;
     align-items: flex-end;
     padding-bottom: 1px;
 }
