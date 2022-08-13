@@ -1,5 +1,5 @@
 using System;
-using System.Reflection;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -8,7 +8,7 @@ namespace QuickEye.UIToolkit
     {
         private static readonly Type _GenericOsMenuType
 #if UNITY_EDITOR
-            = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.UIElements.GenericOSMenu")
+            = typeof(UnityEditor.UIElements.PropertyField).Assembly.GetType("UnityEditor.UIElements.GenericOSMenu")
 #endif
 ;
         public static IGenericMenu CreateMenuForContext(ContextType context)
