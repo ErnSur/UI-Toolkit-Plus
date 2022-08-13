@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -76,6 +77,8 @@ namespace QuickEye.UIToolkit
 
         private void DeactivateSiblings()
         {
+            if(parent == null)
+                return;
             foreach (var tab in parent.Children().OfType<Tab>())
                 if (tab != this)
                     tab.SetValueWithoutNotify(false);

@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" quick-eye="QuickEye.UIToolkit" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Sandbox/UI/Resources/ReorderableSandbox.style.uss?fileID=7433441132597879392&amp;guid=4fd22ef031c41433fbca0d781f4446ba&amp;type=3#ReorderableSandbox.style" />
+    <QuickEye.UIToolkit.TabGroup class="rord-group">
+        <QuickEye.UIToolkit.Tab text="Tab 0" Reorderable="true" />
+        <QuickEye.UIToolkit.Tab text="Tab 1" Reorderable="true" />
+        <QuickEye.UIToolkit.Tab text="Tab 2" Reorderable="true" />
+    </QuickEye.UIToolkit.TabGroup>
+    <ui:VisualElement class="rord-group">
+        <ui:Button tabindex="-1" text="Button" display-tooltip-when-elided="true" class="rord-element" />
+        <ui:Button tabindex="-1" text="Button" display-tooltip-when-elided="true" class="rord-element" />
+        <ui:Button tabindex="-1" text="Button" display-tooltip-when-elided="true" class="rord-element" />
+    </ui:VisualElement>
+    <ui:VisualElement class="rord-group">
+        <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" class="rord-element" />
+        <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" class="rord-element" />
+    </ui:VisualElement>
+    <ui:VisualElement class="rord-group" />
+    <QuickEye.UIToolkit.TabGroup>
+        <QuickEye.UIToolkit.TabDropdown text="Tab 0" Reorderable="true" />
+        <QuickEye.UIToolkit.TabDropdown text="Tab 1" Reorderable="true" />
+        <QuickEye.UIToolkit.TabDropdown text="Tab 2" Reorderable="true" />
+    </QuickEye.UIToolkit.TabGroup>
+</ui:UXML>

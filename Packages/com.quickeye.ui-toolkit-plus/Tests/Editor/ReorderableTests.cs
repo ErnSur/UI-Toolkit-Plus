@@ -1,18 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using QuickEye.UIToolkit;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UIElements;
 
 public class ReorderableTests
 {
     private List<string> names;
     private VisualElement root;
+    private TestWindow wnd;
+
     [SetUp]
     public void Setup()
     {
+        wnd =EditorWindow.GetWindow<TestWindow>();
+
         names = new List<string>
         {
             "Plane", //0
@@ -32,9 +38,86 @@ public class ReorderableTests
         }
     }
 
+    [TearDown]
+    public void TearDown()
+    {
+        wnd.Close();
+    }
+
     private List<string> RootToListOfNames()
     {
         return root.Children().Select(e => e.name).ToList();
+    }
+
+
+    [Test]
+    public void Button_receives_callbacks()
+    {
+        var flag = false;
+        //var button = new Button(()=> flag = true);
+        var button = new VisualElement();
+        button.RegisterCallback<ClickEvent>(evt=> flag = true);
+        wnd.rootVisualElement.Add(button);
+
+        SendEvent<ClickEvent>(button);
+        Assert.IsTrue(flag);
+    }
+    
+    [Test]
+    public void Button_receives_callbacks2()
+    {
+        var flag = false;
+        var button = new Button(()=> flag = true);
+        wnd.rootVisualElement.Add(button);
+
+        var buttonCentre = Vector2.one;
+        var evt1 = new Event()
+        {
+            type = EventType.MouseDown,
+            button = 0,
+            mousePosition = buttonCentre,
+            clickCount = 1
+        };
+     
+        using (var mouseDownEvent = MouseDownEvent.GetPooled(evt1))
+        {
+            button.SendEvent(mouseDownEvent);
+        }
+         
+        var evt2 = new Event()
+        {
+            type = EventType.MouseUp,
+            button = 0,
+            mousePosition = buttonCentre,
+            clickCount = 1
+        };
+ 
+        using (var mouseUpEvent = MouseUpEvent.GetPooled(evt2))
+        {
+            button.SendEvent(mouseUpEvent);
+        }
+
+        Assert.IsTrue(flag);
+    }
+    
+    public static void ForceMousePositionToCenterOfGameWindow()
+    {
+#if UNITY_EDITOR
+        // Force the mouse to be in the middle of the game screen
+        var game = UnityEditor.EditorWindow.GetWindow(typeof(UnityEditor.EditorWindow).Assembly.GetType("UnityEditor.GameView"));
+        Vector2 warpPosition = game.rootVisualElement.contentRect.center;  // never let it move
+        Mouse.current.WarpCursorPosition(warpPosition);
+        InputState.Change(Mouse.current.position, warpPosition);
+#endif
+    }
+
+    private void SendEvent<T>(IEventHandler target) where  T : EventBase<T>, new()
+    {
+        using (var evt = EventBase<T>.GetPooled())
+        {
+            evt.target = target;
+            target.SendEvent(evt);
+        }
     }
 
    
@@ -74,16 +157,5 @@ public class ReorderableTests
         }
         
         CollectionAssert.AreEqual(correctResultList, RootToListOfNames());
-    }
-}
-
-internal static class ListExtensions
-{
-    public static void Move(this IList list, int oldIndex, int newIndex)
-    {
-        var item = list[oldIndex];
-
-        list.RemoveAt(oldIndex);
-        list.Insert(newIndex, item);
     }
 }

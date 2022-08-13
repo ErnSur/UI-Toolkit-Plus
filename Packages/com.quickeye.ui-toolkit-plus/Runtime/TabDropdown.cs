@@ -1,17 +1,21 @@
 ﻿#if UNITY_2021_1_OR_NEWER
 using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
     public class TabDropdown : Tab
     {
-        public event Action<GenericDropdownMenu> BeforeMenuShow;
+        public event Action<IGenericMenu> BeforeMenuShow;
 
         public const string ClassName = "tab-dropdown";
         public const string ArrowCLassName = ClassName + "--arrow";
 
-        private GenericDropdownMenu _menu;
+        private IGenericMenu _menu;
+        private Clickable _clickable;
+
+        private VisualElement _dropdownButton;
 
         public TabDropdown() :this(null)
         {
@@ -21,28 +25,20 @@ namespace QuickEye.UIToolkit
         {
             this.InitResources();
             AddToClassList(ClassName);
-            var arrow = new VisualElement();
-            arrow.AddToClassList(ArrowCLassName);
-            Add(arrow);
+            _dropdownButton = new VisualElement();
+            _dropdownButton.AddToClassList(ArrowCLassName);
+            Add(_dropdownButton);
+            _clickable = new Clickable(ShowMenu);
+            _dropdownButton.AddManipulator(_clickable);
         }
         
         private void ShowMenu()
         {
-            if (_menu?.contentContainer.panel != null || BeforeMenuShow == null || IsDragged)
+            if ((_menu is GenericDropdownMenuWrapper gdm && gdm.Menu.contentContainer.panel != null) || BeforeMenuShow == null || IsDragged)
                 return;
-            _menu = new GenericDropdownMenu();
+            _menu = GenericMenuUtility.CreateMenuForContext(panel.contextType);
             BeforeMenuShow?.Invoke(_menu);
             _menu.DropDown(worldBound, this);
-        }
-
-        protected override void PointerDownHandler(PointerDownEvent evt)
-        {
-            var clickedOnActiveTab = value;
-
-            base.PointerDownHandler(evt);
-            
-            if (clickedOnActiveTab)
-                ShowMenu();
         }
 
         private class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }

@@ -18,7 +18,7 @@ namespace QuickEye.UIToolkit
         private List<VisualElement> _allReorderable;
         private readonly VisualElement _dragHandle;
         private readonly VisualElement _shadowSpace = new VisualElement();
-        private readonly Draggable _draggable = new Draggable();
+        private readonly Draggable _draggable = new Draggable() {DragStartThreshold = 5};
 
         public Reorderable(string targetClassName = null, VisualElement dragHandle = null)
         {

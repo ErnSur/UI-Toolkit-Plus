@@ -1,0 +1,14 @@
+.rord-group {
+    background-color: rgba(108, 63, 120, 255);
+    border-bottom-width: 1px;
+    border-left-color: rgba(67, 67, 67, 255);
+    border-right-color: rgba(67, 67, 67, 255);
+    border-top-color: rgba(67, 67, 67, 255);
+    border-bottom-color: rgba(67, 67, 67, 255);
+    height: 20px;
+    flex-direction: row;
+}
+
+.rord-element {
+    background-color: rgba(14, 123, 39, 255);
+}
