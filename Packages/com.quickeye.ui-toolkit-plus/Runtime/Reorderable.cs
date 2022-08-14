@@ -18,7 +18,9 @@ namespace QuickEye.UIToolkit
         private List<VisualElement> _allReorderable;
         private readonly VisualElement _dragHandle;
         private readonly VisualElement _shadowSpace = new VisualElement();
-        private readonly Draggable _draggable = new Draggable() {DragStartThreshold = 5};
+        private readonly Draggable _draggable = new Draggable() { DragStartThreshold = 5 };
+
+        private VisualElement[] originalChildOrder;
 
         public Reorderable(string targetClassName = null, VisualElement dragHandle = null)
         {
@@ -87,6 +89,7 @@ namespace QuickEye.UIToolkit
         private void OnDragStart(IPointerEvent evt)
         {
             _container = target.parent.contentContainer;
+            originalChildOrder = _container.Children().ToArray();
             _allReorderable = _container.Children().Where(IsReorderable).ToList();
             _targetStartPos = target.layout.position;
             ToggleDraggingMode(true);
@@ -103,10 +106,13 @@ namespace QuickEye.UIToolkit
         private void OnDragEnd()
         {
             ToggleDraggingMode(false);
+            var newChildOrder = _container.Children();
+            if (originalChildOrder.SequenceEqual(newChildOrder))
+                return;
             using (var orderChangedEvent = ChildOrderChangedEvent.GetPooled())
             {
-                orderChangedEvent.target = _container;
-                _container.SendEvent(orderChangedEvent);
+                orderChangedEvent.target = target.parent;
+                target.parent.SendEvent(orderChangedEvent);
             }
         }
 
