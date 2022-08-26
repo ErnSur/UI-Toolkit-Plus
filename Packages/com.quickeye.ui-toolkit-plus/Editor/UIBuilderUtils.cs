@@ -58,6 +58,7 @@ namespace QuickEye.UIToolkit
         {
             var obj = Selection.activeObject;
             var path = AssetDatabase.GetAssetPath(obj);
+            // TODO: test if the asset is actually a text asset in a better way, VisualTreeAsset can exists in a ".asset" format
             return path.EndsWith(".uxml");
         }
 

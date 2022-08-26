@@ -1,6 +1,6 @@
 {
     "name": "QuickEye.UIToolkit.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "QuickEye.UIToolkit.Editor",
     "references": [
         "QuickEye.UIToolkit"
     ],
