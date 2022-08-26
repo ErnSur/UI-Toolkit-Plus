@@ -79,7 +79,9 @@ namespace QuickEye.UIToolkit.Editor
                     ? LoadAsmDef(reference[5..])
                     : AssetDatabase.FindAssets($"t:{nameof(AssemblyDefinitionAsset)}")
                         .Select(LoadAsmDef)
-                        .First(def => def.name == reference);
+                        .FirstOrDefault(def => def.name == reference);
+                if (asmDef == null)
+                    Debug.Log($"Assembly reference is missing in {nameof(AssemblyDefinitionReferenceAsset)}. Path: {filePath}");
             }
 
             return asmDef != null;

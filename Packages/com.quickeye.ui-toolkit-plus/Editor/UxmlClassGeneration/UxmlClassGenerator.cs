@@ -8,18 +8,25 @@ namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
 {
     internal static class UxmlClassGenerator
     {
+        public static string GetGenCsFilePath(string uxmlFilePath)
+        {
+            return uxmlFilePath.Replace(".uxml", ".gen.cs");
+        }
         [MenuItem("CONTEXT/VisualTreeAsset/Generate cs")]
-        private static void GenerateBinding(MenuCommand command)
+        private static void GenerateGenCs(MenuCommand command)
         {
             var asset = command.context as VisualTreeAsset;
+            GenerateGenCs(asset);
+        }
+
+        public static void GenerateGenCs(VisualTreeAsset asset)
+        {
             var path = AssetDatabase.GetAssetPath(asset);
             var uxml = File.ReadAllText(path);
-            
+
             if (CodeGenUtility.TryGetNamedElementsFromUxml(uxml, out var elements))
             {
-                var scriptPath = path.Replace(".uxml", ".gen.cs");
-
-                GenerateScript(command.context.name, elements, scriptPath);
+                GenerateScript(asset.name, elements, GetGenCsFilePath(path));
             }
         }
 
