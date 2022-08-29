@@ -16,7 +16,7 @@
         <xs:attribute default="" name="style" type="xs:string" use="optional" />
         <xs:attribute default="false" name="value" type="xs:boolean" use="optional" />
         <xs:attribute default="" name="text" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="Reorderable" type="xs:boolean" use="optional" />
+        <xs:attribute default="false" name="Reorderable" type="xs:boolean" use="optional" />
         <xs:anyAttribute processContents="lax" />
       </xs:restriction>
     </xs:complexContent>
@@ -37,7 +37,7 @@
         <xs:attribute default="" name="style" type="xs:string" use="optional" />
         <xs:attribute default="false" name="value" type="xs:boolean" use="optional" />
         <xs:attribute default="" name="text" type="xs:string" use="optional" />
-        <xs:attribute default="true" name="Reorderable" type="xs:boolean" use="optional" />
+        <xs:attribute default="false" name="Reorderable" type="xs:boolean" use="optional" />
         <xs:anyAttribute processContents="lax" />
       </xs:restriction>
     </xs:complexContent>
