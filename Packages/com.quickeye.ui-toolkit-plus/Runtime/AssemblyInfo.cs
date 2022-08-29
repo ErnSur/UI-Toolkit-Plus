@@ -1,7 +1,7 @@
-﻿#if UNITY_EDITOR
 using System.Runtime.CompilerServices;
-using UnityEditor.UIElements;
 
-[assembly:UxmlNamespacePrefix("QuickEye.UIToolkit","quick-eye")]
 [assembly:InternalsVisibleTo("QuickEye.UIToolkit.Editor.Tests")]
+
+#if UNITY_EDITOR
+[assembly:UnityEditor.UIElements.UxmlNamespacePrefix("QuickEye.UIToolkit","quick-eye")]
 #endif
