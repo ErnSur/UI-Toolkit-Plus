@@ -2,34 +2,14 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
 namespace QuickEye.UIToolkit.Editor
 {
-    internal static class CodeGenUtility
+    internal static class CodeGeneration
     {
-        public static bool TryGetNamedElementsFromUxml(string uxml, out (string type, string name)[] elements)
-        {
-            try
-            {
-                elements = (from ele in XDocument.Parse(uxml).Descendants()
-                    let name = ele.Attribute("name")?.Value
-                    where name != null
-                    select (type: ele.Name.LocalName, name)).ToArray();
-
-                return true;
-            }
-            // TODO: See what exception can occur here
-            catch (Exception e)
-            {
-                elements = null;
-                return false;
-            }
-        }
-
         public static string UssNameToVariableName(string input)
         {
             return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());
@@ -81,7 +61,8 @@ namespace QuickEye.UIToolkit.Editor
                         .Select(LoadAsmDef)
                         .FirstOrDefault(def => def.name == reference);
                 if (asmDef == null)
-                    Debug.Log($"Assembly reference is missing in {nameof(AssemblyDefinitionReferenceAsset)}. Path: {filePath}");
+                    Debug.Log(
+                        $"Assembly reference is missing in {nameof(AssemblyDefinitionReferenceAsset)}. Path: {filePath}");
             }
 
             return asmDef != null;

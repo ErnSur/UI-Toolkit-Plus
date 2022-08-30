@@ -1,7 +1,9 @@
 {
     "name": "SampleAsmDefName",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:9861c8596b4de1544a09a56d39ef2572"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

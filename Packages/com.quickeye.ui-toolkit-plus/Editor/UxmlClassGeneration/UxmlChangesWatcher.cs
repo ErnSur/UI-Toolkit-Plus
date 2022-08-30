@@ -7,9 +7,6 @@ namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
 {
     internal class UxmlChangesWatcher : AssetPostprocessor
     {
-        [MenuItem("Assets/Regenerate all UXML-C# files")]
-        private static void RegenerateAll() { }
-
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets,
             string[] movedFromAssetPaths, bool didDomainReload)
         {
