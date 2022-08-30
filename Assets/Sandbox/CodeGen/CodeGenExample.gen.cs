@@ -11,21 +11,21 @@ namespace SampleAsmDefName
 {
     partial class CodeGenExample
     {
-        private Label title;
-        private VisualElement menu;
-        private Button confirmButton;
-        private QuickEye.UIToolkit.Tab normalTab;
-        private QuickEye.UIToolkit.TabGroup dropTab;
-        private UnityEditor.UIElements.Toolbar toolbar;
+        private Label _title;
+        private VisualElement _menu;
+        private Button _confirmButton;
+        private QuickEye.UIToolkit.Tab _normalTab;
+        private QuickEye.UIToolkit.TabGroup _dropTab;
+        private UnityEditor.UIElements.Toolbar _toolbar;
     
         protected void AssignQueryResults(VisualElement root)
         {
-            title = root.Q<Label>("title");
-            menu = root.Q<VisualElement>("menu");
-            confirmButton = root.Q<Button>("confirm-button");
-            normalTab = root.Q<QuickEye.UIToolkit.Tab>("normal-tab");
-            dropTab = root.Q<QuickEye.UIToolkit.TabGroup>("drop--tab");
-            toolbar = root.Q<UnityEditor.UIElements.Toolbar>("toolbar");
+            _title = root.Q<Label>("title");
+            _menu = root.Q<VisualElement>("menu");
+            _confirmButton = root.Q<Button>("confirm-button");
+            _normalTab = root.Q<QuickEye.UIToolkit.Tab>("normal-tab");
+            _dropTab = root.Q<QuickEye.UIToolkit.TabGroup>("drop--tab");
+            _toolbar = root.Q<UnityEditor.UIElements.Toolbar>("toolbar");
         }
     }
 }

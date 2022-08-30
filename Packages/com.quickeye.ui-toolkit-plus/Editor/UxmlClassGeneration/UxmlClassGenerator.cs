@@ -14,7 +14,7 @@ namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
             var asset = command.context as VisualTreeAsset;
             GenerateGenCs(asset);
         }
-        
+
         [MenuItem("Assets/Regenerate all UXML-C# files")]
         private static void RegenerateAll()
         {
@@ -25,33 +25,35 @@ namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
         {
             var path = AssetDatabase.GetAssetPath(asset);
             var uxml = File.ReadAllText(path);
-
+            var settings = CodeGenSettings.FromUxml(uxml);
             if (UxmlParser.TryGetElementsWithName(uxml, out var elements))
             {
-                GenerateScript(asset.name, elements, GetGenCsFilePath(path));
+                GenerateScript(asset.name, elements, GetGenCsFilePath(path), settings);
             }
         }
 
-        private static string GetFieldDeclaration(UxmlElement element)
+        private static string GetFieldDeclaration(UxmlElement element, CodeGenSettings settings)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
 
-            return $"private {type} {CodeGeneration.UssNameToVariableName(element.NameAttribute)};";
+            return
+                $"private {type} {settings.FieldPrefix}{CodeGeneration.UssNameToVariableName(element.NameAttribute)};";
         }
-        
-        private static string GetFieldAssigment(UxmlElement element)
+
+        private static string GetFieldAssigment(UxmlElement element, CodeGenSettings settings)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
             var name = element.NameAttribute;
-            var varName = CodeGeneration.UssNameToVariableName(name);
+            var varName = settings.FieldPrefix + CodeGeneration.UssNameToVariableName(name);
 
             return $"{varName} = root.Q<{type}>(\"{name}\");";
         }
 
-        private static void GenerateScript(string scriptName, UxmlElement[] uxmlElements, string path)
+        private static void GenerateScript(string scriptName, UxmlElement[] uxmlElements, string path,
+            CodeGenSettings settings)
         {
-            var fields = uxmlElements.Select(GetFieldDeclaration);
-            var assignments = uxmlElements.Select(GetFieldAssigment);
+            var fields = uxmlElements.Select(e => GetFieldDeclaration(e, settings));
+            var assignments = uxmlElements.Select(e => GetFieldAssigment(e, settings));
 
             var template = Resources.Load<TextAsset>("QuickEye/UXML Gen Script Template").text
                 .Replace("#SCRIPT_NAME#", scriptName)
