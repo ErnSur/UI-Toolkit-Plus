@@ -5,3 +5,10 @@
 - TabGroup
     - Add SelectedTab
     - Add GetTabs
+
+## Code-gen
+- COde-gen Project settings
+  - default field prefix
+  - regenerate all in project
+- Filename to class name validation
+  - ignore numbers

@@ -1,0 +1,14 @@
+{
+    "name": "QuickEye.UIToolkit.Samples.CodeGen",
+    "rootNamespace": "QuickEye.UIToolkit.Samples.CodeGen",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

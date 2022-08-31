@@ -3,6 +3,7 @@
   <xs:import schemaLocation="UnityEngine.UIElements.xsd" namespace="UnityEngine.UIElements" />
   <xs:import schemaLocation="UnityEditor.UIElements.xsd" namespace="UnityEditor.UIElements" />
   <xs:import schemaLocation="QuickEye.UIToolkit.xsd" namespace="QuickEye.UIToolkit" />
+  <xs:import schemaLocation="QuickEye.UIToolkit.Editor.xsd" namespace="QuickEye.UIToolkit.Editor" />
   <xs:import schemaLocation="UnityEditor.ShortcutManagement.xsd" namespace="UnityEditor.ShortcutManagement" />
   <xs:import schemaLocation="UnityEditor.UIElements.Debugger.xsd" namespace="UnityEditor.UIElements.Debugger" />
   <xs:import schemaLocation="Unity.UI.Builder.xsd" namespace="Unity.UI.Builder" />

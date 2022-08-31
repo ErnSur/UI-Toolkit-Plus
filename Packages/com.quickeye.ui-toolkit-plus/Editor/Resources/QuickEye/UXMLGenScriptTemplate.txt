@@ -1,0 +1,18 @@
+// -----------------------
+// script auto-generated
+// any changes to this file will be lost on next code generation
+// com.quickeye.ui-toolkit-plus ver: #PACKAGE_VERSION#
+// -----------------------
+using UnityEngine.UIElements;
+
+    #NAMESPACE_START#
+partial class #SCRIPT_NAME#
+{
+    #FIELDS#
+    
+    protected void AssignQueryResults(VisualElement root)
+    {
+        #ASSIGNMENTS#
+    }
+}
+#NAMESPACE_END#

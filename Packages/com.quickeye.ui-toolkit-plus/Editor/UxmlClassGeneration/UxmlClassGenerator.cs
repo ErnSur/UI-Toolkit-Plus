@@ -8,17 +8,19 @@ namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
 {
     internal static class UxmlClassGenerator
     {
-        [MenuItem("CONTEXT/VisualTreeAsset/Generate cs")]
+        private const string GenerateCsMenuItemName = "CONTEXT/VisualTreeAsset/Generate C# Class";
+        
+        [MenuItem(GenerateCsMenuItemName)]
         private static void GenerateGenCs(MenuCommand command)
         {
             var asset = command.context as VisualTreeAsset;
             GenerateGenCs(asset);
         }
-
-        [MenuItem("Assets/Regenerate all UXML-C# files")]
-        private static void RegenerateAll()
+        
+        [MenuItem(GenerateCsMenuItemName,true)]
+        private static bool GenerateGenCsValidation(MenuCommand command)
         {
-            // TODO: Regenerate all gen scripts
+            return AssetDatabase.GetAssetPath(command.context).EndsWith(".uxml");
         }
 
         public static void GenerateGenCs(VisualTreeAsset asset)
@@ -55,7 +57,7 @@ namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
             var fields = uxmlElements.Select(e => GetFieldDeclaration(e, settings));
             var assignments = uxmlElements.Select(e => GetFieldAssigment(e, settings));
 
-            var template = Resources.Load<TextAsset>("QuickEye/UXML Gen Script Template").text
+            var template = Resources.Load<TextAsset>("QuickEye/UXMLGenScriptTemplate").text
                 .Replace("#SCRIPT_NAME#", scriptName)
                 .Replace("#PACKAGE_VERSION#", PackageInfo.Version);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#FIELDS#", fields);
