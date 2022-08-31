@@ -10,6 +10,11 @@
       "displayName": "Reorderable Manipulator",
       "description": "Basic usage of the Reorderable manipulator.",
       "path": "Samples~/ReorderableCards"
+    },
+    {
+      "displayName": "UXML C# class generation",
+      "description": "Example usage of UXML C# class generation.",
+      "path": "Samples~/UxmlCodeGeneration"
     }
   ]
 }

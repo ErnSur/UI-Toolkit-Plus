@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using System.Xml.Linq;
+using QuickEye.UIToolkit.Editor;
 using UnityEditor;
 
 namespace QuickEye.UIToolkit
@@ -25,7 +26,7 @@ namespace QuickEye.UIToolkit
 
             window.SendEvent(EditorGUIUtility.CommandEvent("Copy"));
 
-            if (TryTranslateXmlToFieldDeclarations(GUIUtility.systemCopyBuffer, out var result, out var count))
+            if (TryTranslateUxmlToFieldDeclarations(GUIUtility.systemCopyBuffer, out var result, out var count))
             {
                 GUIUtility.systemCopyBuffer = result;
                 window.ShowNotification(new GUIContent($"Field declarations copied. ({count})"), 0.2);
@@ -58,6 +59,7 @@ namespace QuickEye.UIToolkit
         {
             var obj = Selection.activeObject;
             var path = AssetDatabase.GetAssetPath(obj);
+            // TODO: test if the asset is actually a text asset in a better way, VisualTreeAsset can exists in a ".asset" format
             return path.EndsWith(".uxml");
         }
 
@@ -66,42 +68,30 @@ namespace QuickEye.UIToolkit
         {
             var obj = Selection.activeObject;
             var path = AssetDatabase.GetAssetPath(obj);
-            var text = File.ReadAllText(path);
-            if (TryTranslateXmlToFieldDeclarations(text, out var res, out _))
+            var uxml = File.ReadAllText(path);
+            if (TryTranslateUxmlToFieldDeclarations(uxml, out var res, out _))
                 GUIUtility.systemCopyBuffer = res;
         }
 
-        private static bool TryTranslateXmlToFieldDeclarations(string xml, out string result, out int count)
+        private static bool TryTranslateUxmlToFieldDeclarations(string uxml, out string result, out int count)
         {
-            try
+            if (UxmlParser.TryGetElementsWithName(uxml, out var elements))
             {
-                var fieldInfos = (from ele in XDocument.Parse(xml).Descendants()
-                    let name = ele.Attribute("name")?.Value
-                    where name != null
-                    select (type: ele.Name.LocalName, name)).ToArray();
-
                 var sb = new StringBuilder();
-                foreach (var (type, name) in fieldInfos)
+                foreach (var e in elements)
                 {
-                    sb.AppendLine($"[Q(\"{name}\")]");
-                    sb.AppendLine($"private {type} {UssNameToVariableName(name)};");
+                    sb.AppendLine($"[Q(\"{e.NameAttribute}\")]");
+                    sb.AppendLine($"private {e.TypeName} {CodeGeneration.UssNameToVariableName(e.NameAttribute)};");
                 }
 
-                count = fieldInfos.Length;
+                count = elements.Length;
                 result = sb.ToString();
                 return true;
             }
-            catch (Exception e)
-            {
-                result = null;
-                count = 0;
-                return false;
-            }
 
-            string UssNameToVariableName(string input)
-            {
-                return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());
-            }
+            result = null;
+            count = 0;
+            return false;
         }
     }
 }

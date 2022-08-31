@@ -6,6 +6,39 @@
 ### About
 Reusable features for UI Toolkit runtime and editor.
 
+
+### UXML C# Script generation
+
+You can generate partial C# class from UXML file. 
+
+Given the following UXML:
+```xml
+<ui:VisualElement>
+    <ui:Label name="title" />
+</ui:VisualElement>
+<ui:VisualElement name="menu">
+    <ui:Button name="confirm-button" />
+</ui:VisualElement>
+```
+Tool generates C# script:
+```csharp
+partial class UXMLFileName
+{
+    private Label title;
+    private VisualElement menu;
+    private Button confirmButton;
+
+    private void AssignQueryResults(VisualElement root)
+    {
+        title = root.Q<Label>("title");
+        menu = root.Q<VisualElement>("menu");
+        confirmButton = root.Q<Button>("confirm-button");
+    }
+}
+```
+
+[Detailed documentation about code generation](Documentation~/UxmlCodeGeneration.md)
+
 ### QAttribute Example
 
 ##### Standard VisualElement assigment

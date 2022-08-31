@@ -1,14 +1,14 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement style="flex-direction: row;&#10;">
-        <Style src="FileLocationPanel.uss" />
-        <ui:VisualElement name="fields-container" style="flex-grow: 1;&#10;">
-            <ui:VisualElement style="flex-direction: row;&#10;">
-                <ui:TextField picking-mode="Ignore" label="Path:" value="filler text" name="path-field" readonly="false" style="flex-grow: 1;&#10;flex-shrink: 1;&#10;" />
+<ui:UXML code-gen-prefix="_" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Editor/Resources/QuickEye/FileLocationPanel/FileLocationPanel.style.uss?fileID=7433441132597879392&amp;guid=0f71aa673f54ee64e81e1521320ea7c6&amp;type=3#FileLocationPanel.style" />
+    <ui:VisualElement style="flex-direction: row;">
+        <ui:VisualElement name="fields-container" style="flex-grow: 1;">
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:TextField picking-mode="Ignore" label="Path:" value="filler text" name="path-field" readonly="false" style="flex-grow: 1; flex-shrink: 1;" />
                 <ui:Button text="..." name="path-button" />
             </ui:VisualElement>
-            <QuickEye.UIToolkit.FileNameField label="Name:" style="flex-grow: 1;&#10;flex-shrink: 1;&#10;" />
+            <QuickEye.UIToolkit.FileNameField label="Name:" name="name-field" style="flex-grow: 1; flex-shrink: 1;" />
         </ui:VisualElement>
-        <ui:VisualElement name="button-container" style="align-items: flex-end;&#10;margin-right: 5px;&#10;margin-bottom: 0;&#10;margin-left: 5px;&#10;flex-direction: row-reverse;&#10;flex-shrink: 0;&#10;">
+        <ui:VisualElement name="button-container" style="align-items: flex-end; margin-right: 5px; margin-bottom: 0; margin-left: 5px; flex-direction: row-reverse; flex-shrink: 0;">
             <ui:Button text="Cancel" name="cancel-button" class="fixed-size-button" />
             <ui:Button text="Add" name="add-button" class="fixed-size-button" />
         </ui:VisualElement>
