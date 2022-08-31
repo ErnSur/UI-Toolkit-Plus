@@ -14,7 +14,6 @@ namespace SampleAsmDefName
         private Button _confirmButton;
         private QuickEye.UIToolkit.Tab _normalTab;
         private QuickEye.UIToolkit.TabGroup _dropTab;
-        private UnityEditor.UIElements.Toolbar _toolbar;
     
         protected void AssignQueryResults(VisualElement root)
         {
@@ -23,7 +22,6 @@ namespace SampleAsmDefName
             _confirmButton = root.Q<Button>("confirm-button");
             _normalTab = root.Q<QuickEye.UIToolkit.Tab>("normal-tab");
             _dropTab = root.Q<QuickEye.UIToolkit.TabGroup>("drop--tab");
-            _toolbar = root.Q<UnityEditor.UIElements.Toolbar>("toolbar");
         }
     }
 }
