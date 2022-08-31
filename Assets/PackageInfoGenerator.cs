@@ -17,7 +17,7 @@ namespace QuickEye.Editor
 // auto-generated
 namespace #NAMESPACE#
 {
-    public static class PackageInfo
+    internal static class PackageInfo
     {
         public const string Version = ""#VERSION#"";
         public const string Name = ""#NAME#"";

@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+<ui:UXML code-gen-prefix="_" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Editor/Resources/QuickEye/FileLocationPanel/FileLocationPanel.style.uss?fileID=7433441132597879392&amp;guid=0f71aa673f54ee64e81e1521320ea7c6&amp;type=3#FileLocationPanel.style" />
     <ui:VisualElement style="flex-direction: row;">
         <ui:VisualElement name="fields-container" style="flex-grow: 1;">

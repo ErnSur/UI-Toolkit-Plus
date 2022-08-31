@@ -19,8 +19,8 @@ namespace QuickEye.UIToolkit.Editor
         public event Action AddClicked;
         public event Action CancelClicked;
 
-        public string Directory { get => pathField.value; set => pathField.value = value; }
-        public string FileName { get => nameField.value; set => nameField.value = value; }
+        public string Directory { get => _pathField.value; set => _pathField.value = value; }
+        public string FileName { get => _nameField.value; set => _nameField.value = value; }
 
         public string FullPath => Path.Combine(Directory, FileName);
 
@@ -39,9 +39,9 @@ namespace QuickEye.UIToolkit.Editor
 
         private void RegisterEventHandlers()
         {
-            addButton.AddAction(() => AddClicked?.Invoke());
-            cancelButton.AddAction(() => CancelClicked?.Invoke());
-            pathButton.AddAction(TrySetPathFromFolderPanel);
+            _addButton.AddAction(() => AddClicked?.Invoke());
+            _cancelButton.AddAction(() => CancelClicked?.Invoke());
+            _pathButton.AddAction(TrySetPathFromFolderPanel);
         }
 
         private void TrySetPathFromFolderPanel()
@@ -49,7 +49,7 @@ namespace QuickEye.UIToolkit.Editor
             if (OpenProjectFolderPanel(null, true, out var path))
             {
                 _PreviousDirectories.Push(path);
-                pathField.value = _PreviousDirectories.Peek();
+                _pathField.value = _PreviousDirectories.Peek();
             }
         }
 
