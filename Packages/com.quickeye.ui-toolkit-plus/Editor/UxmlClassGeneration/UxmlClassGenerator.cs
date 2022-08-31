@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
+namespace QuickEye.UIToolkit.Editor
 {
     internal static class UxmlClassGenerator
     {

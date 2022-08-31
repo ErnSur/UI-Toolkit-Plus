@@ -12,3 +12,5 @@
   - regenerate all in project
 - Filename to class name validation
   - ignore numbers
+- maybe add assembly settings for code style
+  - [assembly:UxmlCodeGenSettings(fieldPrefix="_",case="snake")]

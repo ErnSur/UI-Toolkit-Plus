@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
+namespace QuickEye.UIToolkit.Editor
 {
     internal class UxmlChangesWatcher : AssetPostprocessor
     {

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
-namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
+namespace QuickEye.UIToolkit.Editor
 {
     internal static class ScriptTemplateUtility
     {
@@ -16,64 +18,52 @@ namespace QuickEye.UIToolkit.Editor.UxmlClassGeneration
             return Regex.Replace(templateContent, tag, replacement);
         }
 
-        public static string ReplaceNamespaceTags(string templateContent, string @namespace)
+        public static string ReplaceNamespaceTags(string templateContent, string namespaceName)
         {
             const string namespaceStartTag = "#NAMESPACE_START#";
             const string namespaceEndTag = "#NAMESPACE_END#";
+            const string endOfLineAndSpaces = @"((\r\n)|\n)\ *";
 
             if (!templateContent.Contains(namespaceStartTag) || !templateContent.Contains(namespaceEndTag))
                 return templateContent;
 
-            if (string.IsNullOrEmpty(@namespace))
+            if (string.IsNullOrEmpty(namespaceName))
             {
-                templateContent = Regex.Replace(templateContent, $"((\\r\\n)|\\n)[ \\t]*{namespaceStartTag}[ \\t]*",
+                templateContent = Regex.Replace(templateContent, $"{endOfLineAndSpaces}{namespaceStartTag}",
                     string.Empty);
-                templateContent = Regex.Replace(templateContent, $"((\\r\\n)|\\n)[ \\t]*{namespaceEndTag}[ \\t]*",
+                templateContent = Regex.Replace(templateContent, $"{endOfLineAndSpaces}{namespaceEndTag}",
                     string.Empty);
 
                 return templateContent;
             }
 
-            // Use first found newline character as newline for entire file after replace.
-            var newline = templateContent.Contains("\r\n") ? "\r\n" : "\n";
-            var contentLines =
-                new List<string>(templateContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None));
-
-            int i = 0;
-
-            for (; i < contentLines.Count; ++i)
+            var sb = new StringBuilder();
+            var namespaceIndent = string.Empty;
+            using (var sr = new StringReader(templateContent))
             {
-                if (contentLines[i].Contains(namespaceStartTag))
-                    break;
-            }
-
-            var startTagLine = contentLines[i];
-
-            // Use the whitespace between beginning of line and #NAMESPACE_START# as identation.
-            var indentationString = startTagLine.Substring(0, startTagLine.IndexOf("#", StringComparison.Ordinal));
-
-            contentLines[i] = $"namespace {@namespace}";
-            contentLines.Insert(i + 1, "{");
-
-            i += 2;
-
-            for (; i < contentLines.Count; ++i)
-            {
-                var line = contentLines[i];
-
-                if (String.IsNullOrEmpty(line) || line.Trim().Length == 0)
-                    continue;
-
-                if (line.Contains(namespaceEndTag))
+                while (sr.ReadLine() is { } line)
                 {
-                    contentLines[i] = "}";
-                    break;
-                }
+                    if (line.Contains(namespaceStartTag))
+                    {
+                        namespaceIndent = line[..^namespaceStartTag.Length];
+                        sb.AppendLine($"namespace {namespaceName}");
+                        sb.AppendLine("{");
+                        continue;
+                    }
 
-                contentLines[i] = $"{indentationString}{line}";
+                    if (line.Contains(namespaceEndTag))
+                    {
+                        sb.AppendLine(line.Replace(namespaceEndTag, "}"));
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(line))
+                        sb.Append(namespaceIndent);
+                    sb.AppendLine(line);
+                }
             }
 
-            return string.Join(newline, contentLines.ToArray());
+            return sb.ToString();
         }
     }
 }

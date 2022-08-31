@@ -61,8 +61,7 @@ namespace QuickEye.UIToolkit.Editor
                         .Select(LoadAsmDef)
                         .FirstOrDefault(def => def.name == reference);
                 if (asmDef == null)
-                    Debug.Log(
-                        $"Assembly reference is missing in {nameof(AssemblyDefinitionReferenceAsset)}. Path: {filePath}");
+                    Debug.LogError($"Assembly reference is missing: {filePath}");
             }
 
             return asmDef != null;
@@ -70,6 +69,8 @@ namespace QuickEye.UIToolkit.Editor
 
         private static AsmDefinition LoadAsmDef(string guid)
         {
+            if (string.IsNullOrEmpty(guid))
+                return null;
             var json = AssetDatabase.LoadAssetAtPath<TextAsset>(AssetDatabase.GUIDToAssetPath(guid)).text;
             return JsonUtility.FromJson<AsmDefinition>(json);
         }
