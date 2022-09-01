@@ -9,15 +9,15 @@ namespace QuickEye.UIToolkit.Editor
     internal static class UxmlClassGenerator
     {
         private const string GenerateCsMenuItemName = "CONTEXT/VisualTreeAsset/Generate C# Class";
-        
+
         [MenuItem(GenerateCsMenuItemName)]
         private static void GenerateGenCs(MenuCommand command)
         {
             var asset = command.context as VisualTreeAsset;
             GenerateGenCs(asset);
         }
-        
-        [MenuItem(GenerateCsMenuItemName,true)]
+
+        [MenuItem(GenerateCsMenuItemName, true)]
         private static bool GenerateGenCsValidation(MenuCommand command)
         {
             return AssetDatabase.GetAssetPath(command.context).EndsWith(".uxml");
@@ -30,7 +30,7 @@ namespace QuickEye.UIToolkit.Editor
             var settings = CodeGenSettings.FromUxml(uxml);
             if (UxmlParser.TryGetElementsWithName(uxml, out var elements))
             {
-                GenerateScript(asset.name, elements, GetGenCsFilePath(path), settings);
+                GenerateScript(asset, elements, GetGenCsFilePath(path), settings);
             }
         }
 
@@ -51,22 +51,28 @@ namespace QuickEye.UIToolkit.Editor
             return $"{varName} = root.Q<{type}>(\"{name}\");";
         }
 
-        private static void GenerateScript(string scriptName, UxmlElement[] uxmlElements, string path,
+        private static void GenerateScript(VisualTreeAsset asset, UxmlElement[] uxmlElements, string path,
             CodeGenSettings settings)
         {
             var fields = uxmlElements.Select(e => GetFieldDeclaration(e, settings));
             var assignments = uxmlElements.Select(e => GetFieldAssigment(e, settings));
 
             var template = Resources.Load<TextAsset>("QuickEye/UXMLGenScriptTemplate").text
-                .Replace("#SCRIPT_NAME#", scriptName)
+                .Replace("#SCRIPT_NAME#", asset.name)
                 .Replace("#PACKAGE_VERSION#", PackageInfo.Version);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#FIELDS#", fields);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#ASSIGNMENTS#", assignments);
             template = ScriptTemplateUtility.ReplaceNamespaceTags(template, CodeGeneration.GetNamespaceForFile(path));
 
+            var assetGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(asset));
+
+            path = GenerationTrackerUtility.GetFixedPath(assetGuid, path);
+
             File.WriteAllText(path, template);
 
             AssetDatabase.Refresh();
+
+            GenerationTrackerUtility.Refresh();
         }
 
         public static string GetGenCsFilePath(string uxmlFilePath)
