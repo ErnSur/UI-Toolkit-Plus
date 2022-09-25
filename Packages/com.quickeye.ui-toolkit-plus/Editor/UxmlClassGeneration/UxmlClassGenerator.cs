@@ -9,7 +9,15 @@ namespace QuickEye.UIToolkit.Editor
     internal static class UxmlClassGenerator
     {
         private const string GenerateCsMenuItemName = "CONTEXT/VisualTreeAsset/Generate C# Class";
-        
+
+        private static readonly string[] IgnoredTagFullnames =
+        {
+            "UnityEngine.UIElements.Template",
+            "Style"
+        };
+
+        private const string ColumnFullName = "UnityEngine.UIElements.Column";
+
         [MenuItem(GenerateCsMenuItemName)]
         private static void GenerateGenCs(MenuCommand command)
         {
@@ -30,7 +38,10 @@ namespace QuickEye.UIToolkit.Editor
             var settings = CodeGenSettings.FromUxml(uxml);
             if (UxmlParser.TryGetElementsWithName(uxml, out var elements))
             {
-                GenerateScript(asset.name, elements, GetGenCsFilePath(path), settings);
+                var validElements = elements
+                    .Where(e => !IgnoredTagFullnames.Contains(e.FullyQualifiedTypeName))
+                    .ToArray();
+                GenerateScript(asset.name, validElements, GetGenCsFilePath(path), settings);
             }
         }
 
@@ -48,7 +59,26 @@ namespace QuickEye.UIToolkit.Editor
             var name = element.NameAttribute;
             var varName = settings.FieldPrefix + CodeGeneration.UssNameToVariableName(name);
 
+            if (element.FullyQualifiedTypeName == ColumnFullName)
+            {
+                return GetFieldAssigmentForColumn(element, settings, varName, name);
+            }
+
             return $"{varName} = root.Q<{type}>(\"{name}\");";
+        }
+
+        private static string GetFieldAssigmentForColumn(UxmlElement element, CodeGenSettings settings, string varName,
+            string name)
+        {
+            var multiColumnElement = element.XElement.Parent?.Parent?.ToUxmlElement();
+
+            if (string.IsNullOrEmpty(multiColumnElement?.NameAttribute))
+                return $"// Could not find \"{name}\" MultiColumn parent with a name.";
+
+            var multiColumnEleVarName = settings.FieldPrefix +
+                                        CodeGeneration.UssNameToVariableName(multiColumnElement
+                                            .NameAttribute);
+            return $"{varName} = {multiColumnEleVarName}.columns[\"{name}\"];";
         }
 
         private static void GenerateScript(string scriptName, UxmlElement[] uxmlElements, string path,
