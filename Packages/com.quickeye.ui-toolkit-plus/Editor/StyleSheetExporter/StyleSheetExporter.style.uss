@@ -1,6 +1,6 @@
-.item-label {
+#item-icon{
+    flex-shrink: 0;
 }
-
 .folder-icon--light {
     background-image: resource('icons/processed/folder icon.asset');
 }
