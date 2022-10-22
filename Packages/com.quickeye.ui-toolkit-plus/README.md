@@ -39,8 +39,17 @@ partial class UXMLFileName
 
 [Detailed documentation about code generation](Documentation~/UxmlCodeGeneration.md)
 
-### QAttribute Example
+### Style Sheet Exporter
+> Open from context menu: __Window/UI Toolkit/Style Sheet Exporter__  
+> Available with Unity 2022.1 and newer
 
+Ever wanted to see how Unity built-in controls are styled? With this tool you can!
+Export style sheet assets used by Unity Editor to USS files.
+
+![Style Sheet Exporter Window](Documentation~/style-sheet-exporter.png)
+
+### QAttribute Example
+> Alternative to code generation for query assignment
 ##### Standard VisualElement assigment
 ```csharp
 public class ExampleEditorWindow 

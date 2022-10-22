@@ -1,0 +1,33 @@
+.item-label {
+}
+
+.folder-icon--light {
+    background-image: resource('icons/processed/folder icon.asset');
+}
+.folder-icon--dark {
+    background-image: resource('icons/processed/d_folder icon.asset');
+}
+
+.uss-icon--light {
+    background-image: resource('icons/processed/unityengine/uielements/stylesheet icon.asset');
+}
+
+.uss-icon--dark {
+    background-image: resource('icons/processed/unityengine/uielements/d_stylesheet icon.asset');
+}
+
+.unity-collection-view:focus .unity-collection-view__item--selected .folder-icon--light {
+    background-image: resource('icons/processed/folder on icon.asset');
+}
+
+.unity-collection-view:focus .unity-collection-view__item--selected .item--expanded .folder-icon--light {
+    background-image: resource('icons/processed/folderopened on icon.asset');
+}
+
+.item--expanded .folder-icon--light {
+    background-image: resource('icons/processed/folderopened icon.asset');
+}
+
+.item--expanded .folder-icon--dark {
+    background-image: resource('icons/processed/d_folderopened icon.asset');
+}
