@@ -1,6 +1,6 @@
 # UI Toolkit Plus
-[![license](https://img.shields.io/github/license/ToshikiImagawa/Variable-infinite-scroll?style=flat)](https://github.com/ToshikiImagawa/Variable-infinite-scroll/blob/master/LICENSE.md)
-![](https://img.shields.io/static/v1?label=unity&message=2021.3%2B&color=blue&style=flat&logo=Unity)
+![license](https://img.shields.io/github/license/ErnSur/UI-Toolkit-Plus)
+![UnityVersion](https://img.shields.io/static/v1?label=unity&message=2021.3%2B&color=blue&style=flat&logo=Unity)
 [![openupm](https://img.shields.io/npm/v/com.quickeye.ui-toolkit-plus?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.quickeye.ui-toolkit-plus/)
 
 ### About
