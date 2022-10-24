@@ -2,7 +2,7 @@
 ![license](https://img.shields.io/github/license/ErnSur/UI-Toolkit-Plus)
 ![UnityVersion](https://img.shields.io/static/v1?label=unity&message=2021.3%2B&color=blue&style=flat&logo=Unity)
 [![openupm](https://img.shields.io/npm/v/com.quickeye.ui-toolkit-plus?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.quickeye.ui-toolkit-plus/)
-
+[![HowToInstall](https://img.shields.io/badge/-How%20To%20Install-gray)](https://docs.unity3d.com/Manual/upm-ui-giturl.html)
 ### About
 Reusable features for UI Toolkit runtime and editor.
 
