@@ -5,7 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - m_ViewDataDictionary: {instanceID: 0}
-  - testComponentPrefab: {fileID: 5832419761612261777, guid: 1dacf853c9fe663439a73fb697efc073, type: 3}
+  - template: {fileID: 9197481963319205126, guid: 7b515ecf90adb450a9535e54d9081d99, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

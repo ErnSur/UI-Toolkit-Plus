@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" quick-eye="QuickEye.UIToolkit" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Sandbox/Tabs/UI%20Toolkit/Views/TabView.uss?fileID=7433441132597879392&amp;guid=83454d6fdda5b430a8aaa3d6b8f977ea&amp;type=3#TabView" />
+    <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Runtime/Resources/com.quickeye.ui-toolkit-plus/uss/UTKPlus%20Base.uss?fileID=7433441132597879392&amp;guid=a6aa293151d94ef39397ac737babe93b&amp;type=3#UTKPlus Base" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgba(26, 26, 26, 0.18); margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px; border-left-color: rgba(71, 255, 209, 0.62); border-right-color: rgba(71, 255, 209, 0.62); border-top-color: rgba(71, 255, 209, 0.62); border-bottom-color: rgba(71, 255, 209, 0.62); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;">
+        <QuickEye.UIToolkit.TabGroup focusable="true" view-data-key="tab-group1" name="tab-group" mode="Horizontal">
+            <QuickEye.UIToolkit.Tab view-data-key="tab1" name="tab1" text="Tab1" Reorderable="true" />
+            <QuickEye.UIToolkit.TabDropdown name="tab-dropdown-1" text="Tab Dropdown 1" view-data-key="tab-drop-1" Reorderable="true" />
+            <QuickEye.UIToolkit.Tab view-data-key="tab2" name="tab2" text="Tab2" Reorderable="true" />
+            <QuickEye.UIToolkit.TabDropdown name="tab-dropdown-2" text="Tab Dropdown 2" view-data-key="tab-drop-2" Reorderable="true" />
+            <QuickEye.UIToolkit.Tab view-data-key="tab3" name="tab3" text="Tab3" Reorderable="true" />
+            <QuickEye.UIToolkit.Tab view-data-key="tab4" name="tab4" text="Tab4" Reorderable="true" />
+            <QuickEye.UIToolkit.Tab text="Other tab" Reorderable="true" />
+            <QuickEye.UIToolkit.Tab text="Other tab" Reorderable="true" />
+        </QuickEye.UIToolkit.TabGroup>
+        <QuickEye.UIToolkit.TabGroup focusable="true" view-data-key="tab-group1" name="tab-group2" mode="Vertical">
+            <QuickEye.UIToolkit.Tab view-data-key="tab11" text="Tab1" Reorderable="true" />
+            <QuickEye.UIToolkit.TabDropdown name="tab-dropdown-1-vert" text="Tab Dropdown 1" view-data-key="tab-drop-1-vert" />
+            <QuickEye.UIToolkit.Tab view-data-key="tab22" text="Tab2" Reorderable="true" />
+            <QuickEye.UIToolkit.Tab view-data-key="tab33" text="Tab3" Reorderable="true" />
+            <QuickEye.UIToolkit.Tab view-data-key="tab44" text="Tab4" Reorderable="true" />
+        </QuickEye.UIToolkit.TabGroup>
+        <ui:VisualElement style="background-color: rgb(80, 69, 130); height: 100px; flex-direction: column; display: none;">
+            <ui:VisualElement name="el1" class="el" style="width: 100px; background-color: rgb(91, 144, 144);" />
+            <ui:VisualElement name="el2" class="el" style="width: 100px; background-color: rgb(140, 91, 32);" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
