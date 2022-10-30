@@ -1,8 +1,8 @@
 :root {
-    --qe-colors-tab_group-background: #353535;
-    --qe-colors-tab-background-checked: #3C3C3C;
-    --qe-colors-tab-background-active: #2C5D87;
-    --qe-colors-tab-background-hover: #303030;
+    --qe-colors-tab_group-background: rgb(53, 53, 53);
+    --qe-colors-tab-background-checked: rgb(60, 60, 60);
+    --qe-colors-tab-background-active: rgb(44, 93, 135);
+    --qe-colors-tab-background-hover: rgb(48, 48, 48);
 }
 
 .tab-group {
@@ -81,11 +81,11 @@
     height: 16px;
 }
 
-.tab-group > ScrollView > Scroller > #unity-slider {
+.tab-group__scroller #unity-slider {
     visibility: hidden;
 }
 
-.tab-group > ScrollView > Scroller {
+.tab-group__scroller {
     position: absolute;
     left: 0;
     right: 0;
@@ -98,8 +98,10 @@
     border-width: 0;
 }
 
-.tab-group > ScrollView > Scroller > .unity-repeat-button {
+.tab-group__scroller RepeatButton {
     height: 100%;
     -unity-background-scale-mode: scale-to-fit;
     background-color: var(--qe-colors-tab-background-hover);
+    max-height: 100%;
+    min-height: 100%;
 }
