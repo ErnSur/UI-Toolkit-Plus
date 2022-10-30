@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -10,10 +9,10 @@ namespace QuickEye.UIToolkit
         public const string ClassName = "tab";
         public const string TextClassName = "tab__text";
 
-        protected Label Label;
+        protected readonly Label TextElement;
 
         private VisualElement _tabContent;
-        public readonly Reorderable Reorderable = new Reorderable(ClassName){LockDragToAxis = true};
+        public readonly Reorderable Reorderable = new Reorderable(ClassName) { LockDragToAxis = true };
 
         public VisualElement TabContent
         {
@@ -33,8 +32,8 @@ namespace QuickEye.UIToolkit
 
         public string Text
         {
-            get => Label.text;
-            set => Label.text = value;
+            get => TextElement.text;
+            set => TextElement.text = value;
         }
 
         public bool IsDragged => Reorderable.IsDragged(this);
@@ -45,11 +44,11 @@ namespace QuickEye.UIToolkit
         {
             this.InitResources();
             EnableInClassList(ClassName, true);
-            Label = new Label(text);
-            Label.EnableInClassList(TextClassName, true);
-            Add(Label);
+            TextElement = new Label(text);
+            TextElement.EnableInClassList(TextClassName, true);
+            Add(TextElement);
             AddToClassList("tab");
-            
+
             RegisterCallback<PointerDownEvent>(PointerDownHandler);
             IsReorderable = false;
             SetActive(value);
@@ -77,16 +76,16 @@ namespace QuickEye.UIToolkit
 
         private void DeactivateSiblings()
         {
-            if(parent == null)
+            if (parent == null)
                 return;
             foreach (var tab in parent.Children().OfType<Tab>())
                 if (tab != this)
                     tab.SetValueWithoutNotify(false);
         }
 
-        public class UxmlFactory : UxmlFactory<Tab, UxmlTraits> { }
+        public new class UxmlFactory : UxmlFactory<Tab, UxmlTraits> { }
 
-        public class UxmlTraits : BaseBindableTraits<bool, UxmlBoolAttributeDescription>
+        public new class UxmlTraits : BaseBindableTraits<bool, UxmlBoolAttributeDescription>
         {
             private readonly UxmlStringAttributeDescription _text = new UxmlStringAttributeDescription()
                 { name = "text" };
