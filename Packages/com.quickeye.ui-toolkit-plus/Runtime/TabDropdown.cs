@@ -6,7 +6,20 @@ namespace QuickEye.UIToolkit
 {
     public class TabDropdown : Tab
     {
-        public event Action<IGenericMenu> BeforeMenuShow;
+        private event Action<IGenericMenu> _beforeMenuShow;
+        public event Action<IGenericMenu> BeforeMenuShow
+        {
+            add
+            {
+                _beforeMenuShow += value;
+                UpdateDropdownButtonVisibility();
+            }
+            remove
+            {
+                _beforeMenuShow -= value;
+                UpdateDropdownButtonVisibility();
+            }
+        }
 
         public const string ClassName = "tab-dropdown";
         public const string ArrowCLassName = ClassName + "--arrow";
@@ -16,11 +29,9 @@ namespace QuickEye.UIToolkit
 
         private VisualElement _dropdownButton;
 
-        public TabDropdown() :this(null)
-        {
-        }
+        public TabDropdown() : this(null) { }
 
-        public TabDropdown(string text) :base(text)
+        public TabDropdown(string text) : base(text)
         {
             this.InitResources();
             AddToClassList(ClassName);
@@ -29,20 +40,26 @@ namespace QuickEye.UIToolkit
             Add(_dropdownButton);
             _clickable = new Clickable(ShowMenu);
             _dropdownButton.AddManipulator(_clickable);
+            UpdateDropdownButtonVisibility();
         }
-        
+
         private void ShowMenu()
         {
-            if ((_menu is GenericDropdownMenuWrapper gdm && gdm.Menu.contentContainer.panel != null) || BeforeMenuShow == null || IsDragged)
+            if ((_menu is GenericDropdownMenuWrapper gdm && gdm.Menu.contentContainer.panel != null) ||
+                _beforeMenuShow == null || IsDragged)
                 return;
             _menu = GenericMenuUtility.CreateMenuForContext(panel.contextType);
-            BeforeMenuShow?.Invoke(_menu);
+            _beforeMenuShow?.Invoke(_menu);
             _menu.DropDown(worldBound, this);
         }
 
-        private class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }
+        private void UpdateDropdownButtonVisibility()
+        {
+            _dropdownButton.ToggleDisplayStyle(_beforeMenuShow != null);
+        }
+        public new class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }
 
-        private class UxmlTraits : Tab.UxmlTraits { }
+        public new class UxmlTraits : Tab.UxmlTraits { }
     }
 }
 #endif
