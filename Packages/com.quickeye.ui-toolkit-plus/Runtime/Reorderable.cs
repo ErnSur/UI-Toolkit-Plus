@@ -118,10 +118,9 @@ namespace QuickEye.UIToolkit
 
         private Vector2 GetNewTargetPosFromCursor(Vector2 pointerDelta)
         {
-            var translateBackToStartPos = _targetStartPos - target.layout.position;
+            var newX = pointerDelta.x + _targetStartPos.x;
+            var newY = pointerDelta.y + _targetStartPos.y;
 
-            var newX = pointerDelta.x + translateBackToStartPos.x;
-            var newY = pointerDelta.y + translateBackToStartPos.y;
             if (LockDragToAxis)
             {
                 newX = Mathf.Clamp(newX,
@@ -167,7 +166,6 @@ namespace QuickEye.UIToolkit
             {
                 target.BringToFront();
                 target.style.position = Position.Absolute;
-                target.transform.position = GetNewTargetPosFromCursor(Vector2.zero);
             }
             else
             {
