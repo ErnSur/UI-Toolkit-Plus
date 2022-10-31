@@ -1,7 +1,7 @@
 // -----------------------
 // script auto-generated
 // any changes to this file will be lost on next code generation
-// com.quickeye.ui-toolkit-plus ver: 1.7.1
+// com.quickeye.ui-toolkit-plus ver: 1.8.0
 // -----------------------
 using UnityEngine.UIElements;
 

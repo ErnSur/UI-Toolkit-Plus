@@ -5,17 +5,15 @@
 // -----------------------
 using UnityEngine.UIElements;
 
-namespace QuickEye.UssExporter
+namespace QuickEye.UIToolkit.Sandbox
 {
-    partial class StyleSheetExporter
+    partial class RuntimeUiInspectorView
     {
-        private UnityEditor.UIElements.ToolbarSearchField searchField;
-        private TreeView treeView;
+        private ListView stringsList;
     
         protected void AssignQueryResults(VisualElement root)
         {
-            searchField = root.Q<UnityEditor.UIElements.ToolbarSearchField>("search-field");
-            treeView = root.Q<TreeView>("tree-view");
+            stringsList = root.Q<ListView>("strings-list");
         }
     }
 }

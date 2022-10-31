@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -10,10 +9,27 @@ namespace QuickEye.UIToolkit
         public const string ClassName = "tab";
         public const string TextClassName = "tab__text";
 
-        protected Label Label;
+        public readonly Reorderable Reorderable = new(ClassName) { LockDragToAxis = true };
 
+        private readonly Label _textElement;
+        
         private VisualElement _tabContent;
-        public readonly Reorderable Reorderable = new Reorderable(ClassName){LockDragToAxis = true};
+
+        public Tab() : this(null) { }
+
+        public Tab(string text)
+        {
+            this.InitResources();
+            EnableInClassList(ClassName, true);
+            _textElement = new Label(text);
+            _textElement.EnableInClassList(TextClassName, true);
+            Add(_textElement);
+            AddToClassList("tab");
+
+            RegisterCallback<PointerDownEvent>(PointerDownHandler);
+            IsReorderable = false;
+            SetActive(value);
+        }
 
         public VisualElement TabContent
         {
@@ -33,27 +49,11 @@ namespace QuickEye.UIToolkit
 
         public string Text
         {
-            get => Label.text;
-            set => Label.text = value;
+            get => _textElement.text;
+            set => _textElement.text = value;
         }
 
         public bool IsDragged => Reorderable.IsDragged(this);
-
-        public Tab() : this(null) { }
-
-        public Tab(string text)
-        {
-            this.InitResources();
-            EnableInClassList(ClassName, true);
-            Label = new Label(text);
-            Label.EnableInClassList(TextClassName, true);
-            Add(Label);
-            AddToClassList("tab");
-            
-            RegisterCallback<PointerDownEvent>(PointerDownHandler);
-            IsReorderable = false;
-            SetActive(value);
-        }
 
         protected virtual void PointerDownHandler(PointerDownEvent evt)
         {
@@ -77,25 +77,24 @@ namespace QuickEye.UIToolkit
 
         private void DeactivateSiblings()
         {
-            if(parent == null)
+            if (parent == null)
                 return;
             foreach (var tab in parent.Children().OfType<Tab>())
                 if (tab != this)
                     tab.SetValueWithoutNotify(false);
         }
 
-        public class UxmlFactory : UxmlFactory<Tab, UxmlTraits> { }
+        public new class UxmlFactory : UxmlFactory<Tab, UxmlTraits> { }
 
-        public class UxmlTraits : BaseBindableTraits<bool, UxmlBoolAttributeDescription>
+        public new class UxmlTraits : BaseBindableTraits<bool, UxmlBoolAttributeDescription>
         {
-            private readonly UxmlStringAttributeDescription _text = new UxmlStringAttributeDescription()
-                { name = "text" };
-
-            private readonly UxmlBoolAttributeDescription _reorderable = new UxmlBoolAttributeDescription()
+            private readonly UxmlBoolAttributeDescription _reorderable = new()
             {
                 name = "Reorderable",
                 defaultValue = false
             };
+
+            private readonly UxmlStringAttributeDescription _text = new() { name = "text" };
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {

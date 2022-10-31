@@ -18,9 +18,14 @@ namespace QuickEye.UIToolkit
         private List<VisualElement> _allReorderable;
         private readonly VisualElement _dragHandle;
         private readonly VisualElement _shadowSpace = new VisualElement();
+        private readonly VisualElement _dragTargetContainer = new VisualElement
+        {
+            usageHints = UsageHints.DynamicTransform,
+            style = { position = Position.Absolute }
+        };
         private readonly Draggable _draggable = new Draggable() { DragStartThreshold = 5 };
 
-        private VisualElement[] originalChildOrder;
+        private VisualElement[] _originalChildOrder;
 
         public Reorderable(string targetClassName = null, VisualElement dragHandle = null)
         {
@@ -89,7 +94,7 @@ namespace QuickEye.UIToolkit
         private void OnDragStart(IPointerEvent evt)
         {
             _container = target.parent.contentContainer;
-            originalChildOrder = _container.Children().ToArray();
+            _originalChildOrder = _container.Children().ToArray();
             _allReorderable = _container.Children().Where(IsReorderable).ToList();
             _targetStartPos = target.layout.position;
             ToggleDraggingMode(true);
@@ -97,7 +102,7 @@ namespace QuickEye.UIToolkit
 
         private void OnDragging(Vector2 pointerDelta)
         {
-            target.transform.position = GetNewTargetPosFromCursor(pointerDelta);
+            _dragTargetContainer.transform.position = GetNewTargetPosFromCursor(pointerDelta);
 
             if (TryGetNewHierarchyPosition(out var newIndex))
                 MoveInHierarchy(_shadowSpace, newIndex);
@@ -107,7 +112,7 @@ namespace QuickEye.UIToolkit
         {
             ToggleDraggingMode(false);
             var newChildOrder = _container.Children();
-            if (originalChildOrder.SequenceEqual(newChildOrder))
+            if (_originalChildOrder.SequenceEqual(newChildOrder))
                 return;
             using (var orderChangedEvent = ChildOrderChangedEvent.GetPooled())
             {
@@ -118,10 +123,9 @@ namespace QuickEye.UIToolkit
 
         private Vector2 GetNewTargetPosFromCursor(Vector2 pointerDelta)
         {
-            var translateBackToStartPos = _targetStartPos - target.layout.position;
+            var newX = pointerDelta.x + _targetStartPos.x;
+            var newY = pointerDelta.y + _targetStartPos.y;
 
-            var newX = pointerDelta.x + translateBackToStartPos.x;
-            var newY = pointerDelta.y + translateBackToStartPos.y;
             if (LockDragToAxis)
             {
                 newX = Mathf.Clamp(newX,
@@ -147,32 +151,33 @@ namespace QuickEye.UIToolkit
             if (enabled)
             {
                 ToggleShadowSpace(true);
-                SwitchPositionSpace(true);
-                target.usageHints = UsageHints.DynamicTransform;
                 target.EnableInClassList(TargetDraggedClassName, true);
+                ToggleTargetDraggingContainer(true);
             }
             else
             {
-                target.usageHints = UsageHints.None;
+                ToggleTargetDraggingContainer(false);
                 target.EnableInClassList(TargetDraggedClassName, false);
-                SwitchPositionSpace(false);
                 target.PlaceBehind(_shadowSpace);
                 ToggleShadowSpace(false);
             }
         }
 
-        private void SwitchPositionSpace(bool absolutePosition)
+        private void ToggleTargetDraggingContainer(bool enabled)
         {
-            if (absolutePosition)
+            if (enabled)
             {
-                target.BringToFront();
-                target.style.position = Position.Absolute;
-                target.transform.position = GetNewTargetPosFromCursor(Vector2.zero);
+                _dragTargetContainer.style.width = target.layout.width;
+                _dragTargetContainer.style.height = target.layout.height;
+                
+                _container.Add(_dragTargetContainer);
+                _dragTargetContainer.Add(target);
             }
             else
             {
-                target.style.position = Position.Relative;
-                target.transform.position = Vector3.zero;
+                _dragTargetContainer.transform.position = Vector3.zero;
+                _dragTargetContainer.RemoveFromHierarchy();
+                _container.Add(target);
             }
         }
 

@@ -3,12 +3,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class TestComponent : MonoBehaviour
+public class RuntimeUi : MonoBehaviour
 {
     private void Start()
     {
         var uiDoc = GetComponent<UIDocument>();
-        uiDoc.rootVisualElement.Add(new TestView().CreateUI());
     }
 }
 #endif
