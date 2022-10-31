@@ -9,10 +9,27 @@ namespace QuickEye.UIToolkit
         public const string ClassName = "tab";
         public const string TextClassName = "tab__text";
 
-        protected readonly Label TextElement;
+        public readonly Reorderable Reorderable = new(ClassName) { LockDragToAxis = true };
 
+        private readonly Label _textElement;
+        
         private VisualElement _tabContent;
-        public readonly Reorderable Reorderable = new Reorderable(ClassName) { LockDragToAxis = true };
+
+        public Tab() : this(null) { }
+
+        public Tab(string text)
+        {
+            this.InitResources();
+            EnableInClassList(ClassName, true);
+            _textElement = new Label(text);
+            _textElement.EnableInClassList(TextClassName, true);
+            Add(_textElement);
+            AddToClassList("tab");
+
+            RegisterCallback<PointerDownEvent>(PointerDownHandler);
+            IsReorderable = false;
+            SetActive(value);
+        }
 
         public VisualElement TabContent
         {
@@ -32,27 +49,11 @@ namespace QuickEye.UIToolkit
 
         public string Text
         {
-            get => TextElement.text;
-            set => TextElement.text = value;
+            get => _textElement.text;
+            set => _textElement.text = value;
         }
 
         public bool IsDragged => Reorderable.IsDragged(this);
-
-        public Tab() : this(null) { }
-
-        public Tab(string text)
-        {
-            this.InitResources();
-            EnableInClassList(ClassName, true);
-            TextElement = new Label(text);
-            TextElement.EnableInClassList(TextClassName, true);
-            Add(TextElement);
-            AddToClassList("tab");
-
-            RegisterCallback<PointerDownEvent>(PointerDownHandler);
-            IsReorderable = false;
-            SetActive(value);
-        }
 
         protected virtual void PointerDownHandler(PointerDownEvent evt)
         {
@@ -87,14 +88,13 @@ namespace QuickEye.UIToolkit
 
         public new class UxmlTraits : BaseBindableTraits<bool, UxmlBoolAttributeDescription>
         {
-            private readonly UxmlStringAttributeDescription _text = new UxmlStringAttributeDescription()
-                { name = "text" };
-
-            private readonly UxmlBoolAttributeDescription _reorderable = new UxmlBoolAttributeDescription()
+            private readonly UxmlBoolAttributeDescription _reorderable = new()
             {
                 name = "Reorderable",
                 defaultValue = false
             };
+
+            private readonly UxmlStringAttributeDescription _text = new() { name = "text" };
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {
