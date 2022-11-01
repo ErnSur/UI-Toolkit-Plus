@@ -1,5 +1,7 @@
 
 @import url("UTKPlus Base.uss");
+@import url("UTKPlus Editor Base.uss");
+
 
 :root {
     --qe-colors-tab_group-background: #B6B6B6; /*var(--unity-colors-tab-background, #353535);*/
