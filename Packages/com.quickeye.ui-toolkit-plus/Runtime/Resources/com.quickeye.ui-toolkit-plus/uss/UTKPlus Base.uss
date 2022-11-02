@@ -89,10 +89,10 @@
 }
 
 .qe-tab--unchecked .qe-tab-dropdown__dropdown-area {
-    width: 5px;
     transition-property: width, opacity;
     transition-duration: 0.2s, 0.2s;
     transition-timing-function: ease, linear;
+    width: 0;
     opacity: 0;
 }
 
@@ -101,6 +101,12 @@
     align-content: flex-end;
     border-left-width: 1px;
     justify-content: center;
+    flex-shrink: 0;
+}
+
+.qe-tab-dropdown .qe-tab__text {
+    flex-shrink: 1;
+    overflow: hidden;
 }
 
 .qe-tab-dropdown__arrow {
