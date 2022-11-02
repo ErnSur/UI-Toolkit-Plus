@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" quick-eye="QuickEye.UIToolkit" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="background-color: rgb(80, 69, 130); height: 100px; flex-direction: column; display: flex;">
+        <ui:VisualElement name="el1" class="el" style="width: 100px; background-color: rgb(91, 144, 144);" />
+        <ui:VisualElement name="el2" class="el" style="width: 100px; background-color: rgb(140, 91, 32);" />
+    </ui:VisualElement>
+</ui:UXML>
