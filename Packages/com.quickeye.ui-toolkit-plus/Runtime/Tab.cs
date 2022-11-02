@@ -90,9 +90,9 @@ namespace QuickEye.UIToolkit
 
         public new class UxmlTraits : BaseBindableTraits<bool, UxmlBoolAttributeDescription>
         {
-            private readonly UxmlBoolAttributeDescription _reorderable = new()
+            private readonly UxmlBoolAttributeDescription _isReorderable = new()
             {
-                name = "reorderable"
+                name = "is-reorderable"
             };
 
             private readonly UxmlStringAttributeDescription _text = new() { name = "text" };
@@ -107,7 +107,7 @@ namespace QuickEye.UIToolkit
                 base.Init(ve, bag, cc);
                 var tab = (Tab)ve;
                 tab.Text = _text.GetValueFromBag(bag, cc);
-                tab.IsReorderable = _reorderable.GetValueFromBag(bag, cc);
+                tab.IsReorderable = _isReorderable.GetValueFromBag(bag, cc);
             }
         }
     }

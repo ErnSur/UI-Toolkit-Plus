@@ -109,7 +109,7 @@ namespace QuickEye.UIToolkit
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {
-                get { yield break; }
+                get { yield return new UxmlChildElementDescription(typeof(VisualElement)); }
             }
 
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
