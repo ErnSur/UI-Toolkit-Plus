@@ -7,12 +7,18 @@
     --qe-colors-tab-background-checked: #CBCBCB;
     --qe-colors-tab-background-active: #3A72B0;
     --qe-colors-tab-background-hover: #B0B0B0;
+    --qe-colors-tab-dropdown-area-hover: #A7A7A7;
 }
 
-.tab-group {
+.qe-tab-group {
     min-height: 31px;
 }
 
-.tab {
+.qe-tab {
     height: 30px;
+}
+
+.qe-tab-dropdown__arrow {
+    width: 10;
+    height: 10;
 }

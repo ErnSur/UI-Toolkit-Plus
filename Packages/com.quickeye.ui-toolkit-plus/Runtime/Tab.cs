@@ -6,8 +6,10 @@ namespace QuickEye.UIToolkit
 {
     public class Tab : BaseBindable<bool>
     {
-        public const string ClassName = "tab";
-        public const string TextClassName = "tab__text";
+        public const string ClassName = "qe-tab";
+        public const string TextClassName = ClassName+ "__text";
+        public const string CheckedClassName = ClassName+ "--checked";
+        public const string UncheckedClassName = ClassName+ "--unchecked";
 
         public readonly Reorderable Reorderable = new(ClassName) { LockDragToAxis = true };
 
@@ -20,11 +22,11 @@ namespace QuickEye.UIToolkit
         public Tab(string text)
         {
             this.InitResources();
-            EnableInClassList(ClassName, true);
+            AddToClassList(ClassName);
+            
             _textElement = new Label(text);
-            _textElement.EnableInClassList(TextClassName, true);
+            _textElement.AddToClassList(TextClassName);
             Add(_textElement);
-            AddToClassList("tab");
 
             RegisterCallback<PointerDownEvent>(PointerDownHandler);
             IsReorderable = false;
@@ -68,8 +70,8 @@ namespace QuickEye.UIToolkit
 
         private void SetActive(bool isActive)
         {
-            EnableInClassList("tab--checked", isActive);
-            EnableInClassList("tab--unchecked", !isActive);
+            EnableInClassList(CheckedClassName, isActive);
+            EnableInClassList(UncheckedClassName, !isActive);
             TabContent?.ToggleDisplayStyle(isActive);
             if (isActive)
                 DeactivateSiblings();

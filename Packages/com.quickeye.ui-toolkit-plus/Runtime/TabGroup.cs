@@ -5,7 +5,8 @@ namespace QuickEye.UIToolkit
 {
     public class TabGroup : VisualElement
     {
-        public const string ClassName = "tab-group";
+        public const string ClassName = "qe-tab-group";
+        public const string HorizontalScrollerClassName = ClassName + "__horizontal-scroller";
         private Scroller _horizontalScroller;
         private TabGroupMode _mode;
 
@@ -54,7 +55,7 @@ namespace QuickEye.UIToolkit
             _horizontalScroller.direction = SliderDirection.Horizontal;
             _horizontalScroller.lowButton.SetAction(ScrollView.horizontalScroller.ScrollPageUp, 0, 1);
             _horizontalScroller.highButton.SetAction(ScrollView.horizontalScroller.ScrollPageDown, 0, 1);
-            _horizontalScroller.AddToClassList("tab-group__scroller");
+            _horizontalScroller.AddToClassList(HorizontalScrollerClassName);
             hierarchy.Add(_horizontalScroller);
 
             UpdateHorizontalScrollerVisibility();

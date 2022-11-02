@@ -1,3 +1,16 @@
+## [1.10.0] - 2022-11-2
+
+## Added
+- `ToolbarDropdownButton`
+- Added USS class name fields to Tab class family
+
+### Changed
+- Added "qe-" prefix to `Tab`, `TabDropdown` and `TabGroup` class names
+- Modified `Tab` and `TabDropdown` layout and style for more polished look
+
+### Fixed
+- Missing icon of `TabDropdown` in runtime
+
 ## [1.9.0] - 2022-10-31
 
 ## Added
