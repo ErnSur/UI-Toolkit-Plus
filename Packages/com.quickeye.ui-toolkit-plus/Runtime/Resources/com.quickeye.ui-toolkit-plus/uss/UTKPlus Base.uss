@@ -32,8 +32,8 @@
 }
 
 .qe-tab-group--vertical .qe-tab {
-    padding-left: 2;
-    padding-top: 0;
+    padding-left: 2px;
+    padding-top: 0px;
 }
 
 .qe-tab__text {
@@ -47,27 +47,27 @@
 .qe-tab--unchecked:hover {
     background-color: var(--qe-colors-tab-background-hover);
     border-top-left-radius: 2px;
-    border-bottom-left-radius: 0;
+    border-bottom-left-radius: 0px;
     border-top-right-radius: 2px;
-    border-bottom-right-radius: 0;
+    border-bottom-right-radius: 0px;
 }
 
 .qe-tab--checked {
     background-color: var(--qe-colors-tab-background-checked);
     border-top-left-radius: 3px;
-    border-bottom-left-radius: 0;
+    border-bottom-left-radius: 0px;
     border-top-right-radius: 3px;
-    border-bottom-right-radius: 0;
+    border-bottom-right-radius: 0px;
     border-top-width: 2px;
     border-color: var(--qe-colors-tab-background-active);
-    padding-top: 0;
+    padding-top: 0px;
 }
 
 .qe-tab-group--vertical .qe-tab--checked {
-    border-top-width: 0;
+    border-top-width: 0px;
     border-left-width: 2px;
-    padding-left: 0;
-    border-radius: 3;
+    padding-left: 0px;
+    border-radius: 3px;
 }
 
 .qe-tab--active {
