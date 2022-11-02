@@ -12,7 +12,7 @@ namespace QuickEye.UIToolkit.Sandbox
             el2.AddManipulator(new Reorderable());
             tabDropdown1.BeforeMenuShow += menu =>
             {
-                menu.AddItem("Hello, World!",false,()=>{ Debug.Log($"Hello, World!");});
+                menu.AddItem("Hello, World!", false, () => { Debug.Log($"Hello, World!"); });
             };
         }
     }

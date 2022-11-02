@@ -3,5 +3,7 @@
 }
 
 .tab--checked {
-    background-color: rgba(154, 21, 21, 0.71);
+}
+
+.tab {
 }
