@@ -7,39 +7,39 @@ namespace QuickEye.UIToolkit
 {
     public static class CompatibilityExtensions
     {
-        public static void RegisterToOnItemChosen(this ListView lv, Action<object> callback)
+        public static void RegisterToItemsChosen(this BaseVerticalCollectionView view, Action<IEnumerable<object>> callback)
         {
-#if UNITY_2020_1_OR_NEWER
-            lv.onItemsChosen += objs => callback?.Invoke(objs.First());
+#if UNITY_2022_2_OR_NEWER
+            view.itemsChosen += callback;
 #else
-            lv.onItemChosen += callback;
+            view.onItemsChosen += callback;
 #endif
         }
         
-        public static void RegisterToOnSelectionChange(this ListView lv, Action<IEnumerable<object>> callback)
+        public static void UnregisterFromItemsChosen(this BaseVerticalCollectionView view, Action<IEnumerable<object>> callback)
         {
-#if UNITY_2020_1_OR_NEWER
-            lv.onSelectionChange += callback;
+#if UNITY_2022_2_OR_NEWER
+            view.itemsChosen -= callback;
 #else
-            lv.onSelectionChanged += callback;
+            view.onItemsChosen -= callback;
 #endif
         }
         
-        public static void UnregisterToOnSelectionChange(this ListView lv, Action<IEnumerable<object>> callback)
+        public static void RegisterToSelectionChanged(this BaseVerticalCollectionView view, Action<IEnumerable<object>> callback)
         {
-#if UNITY_2020_1_OR_NEWER
-            lv.onSelectionChange -= callback;
+#if UNITY_2022_2_OR_NEWER
+            view.selectionChanged += callback;
 #else
-            lv.onSelectionChanged -= callback;
+            view.onSelectionChange += callback;
 #endif
         }
         
-        public static void Rebuild(this ListView lv)
+        public static void UnregisterFromSelectionChanged(this BaseVerticalCollectionView view, Action<IEnumerable<object>> callback)
         {
-#if UNITY_2020_1_OR_NEWER
-            lv.Rebuild();
+#if UNITY_2022_2_OR_NEWER
+            view.selectionChanged -= callback;
 #else
-            lv.Refresh();
+            view.onSelectionChange -= callback;
 #endif
         }
     }
