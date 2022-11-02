@@ -3,22 +3,37 @@
     --qe-colors-tab-background-checked: rgb(60, 60, 60);
     --qe-colors-tab-background-active: rgb(44, 93, 135);
     --qe-colors-tab-background-hover: rgb(48, 48, 48);
-    --qe-colors-tab-dropdown-area-hover: #494949;
+    --qe-colors-tab-dropdown-area-hover: rgb(73, 73, 73);
 }
 
 .qe-tab-group {
     background-color: var(--qe-colors-tab_group-background);
-    min-height: 21px;
     flex-direction: row;
+}
+
+.qe-tab-group.qe-tab-group--horizontal {
+    flex-shrink: 0;
+}
+
+.qe-tab-group--horizontal > ScrollView {
     align-items: flex-end;
+    flex-direction: row;
+}
+
+.qe-tab-group--vertical > ScrollView {
 }
 
 .qe-tab {
     flex-direction: row;
-    height: 25px;
     align-items: stretch;
     justify-content: space-between;
     padding-top: 2px;
+    height: 25px;
+}
+
+.qe-tab-group--vertical .qe-tab {
+    padding-left: 2;
+    padding-top: 0;
 }
 
 .qe-tab__text {
@@ -46,6 +61,13 @@
     border-top-width: 2px;
     border-color: var(--qe-colors-tab-background-active);
     padding-top: 0;
+}
+
+.qe-tab-group--vertical .qe-tab--checked {
+    border-top-width: 0;
+    border-left-width: 2px;
+    padding-left: 0;
+    border-radius: 3;
 }
 
 .qe-tab--active {

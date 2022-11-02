@@ -6,6 +6,8 @@ namespace QuickEye.UIToolkit
     public class TabGroup : VisualElement
     {
         public const string ClassName = "qe-tab-group";
+        public const string VerticalModeClassName = ClassName + "--vertical";
+        public const string HorizontalModeClassName = ClassName + "--horizontal";
         public const string HorizontalScrollerClassName = ClassName + "__horizontal-scroller";
         private Scroller _horizontalScroller;
         private TabGroupMode _mode;
@@ -82,12 +84,11 @@ namespace QuickEye.UIToolkit
 
         private void SetLayoutMode(TabGroupMode mode)
         {
-#if UNITY_2021_2_OR_NEWER
+            EnableInClassList(VerticalModeClassName, mode == TabGroupMode.Vertical);
+            EnableInClassList(HorizontalModeClassName, mode == TabGroupMode.Horizontal);
             ScrollView.mode = mode == TabGroupMode.Horizontal ? ScrollViewMode.Horizontal : ScrollViewMode.Vertical;
             ScrollView.verticalScrollerVisibility =
                 mode == TabGroupMode.Horizontal ? ScrollerVisibility.Hidden : ScrollerVisibility.Auto;
-#endif
-            ScrollView.style.alignItems = mode == TabGroupMode.Vertical ? Align.FlexStart : Align.FlexEnd;
         }
 
         private new class UxmlFactory : UxmlFactory<TabGroup, UxmlTraits> { }
