@@ -58,7 +58,6 @@ namespace QuickEye.UIToolkit
             _horizontalScroller.lowButton.SetAction(ScrollView.horizontalScroller.ScrollPageUp, 0, 1);
             _horizontalScroller.highButton.SetAction(ScrollView.horizontalScroller.ScrollPageDown, 0, 1);
             _horizontalScroller.AddToClassList(HorizontalScrollerClassName);
-            hierarchy.Add(_horizontalScroller);
 
             UpdateHorizontalScrollerVisibility();
         }
@@ -86,9 +85,20 @@ namespace QuickEye.UIToolkit
         {
             EnableInClassList(VerticalModeClassName, mode == TabGroupMode.Vertical);
             EnableInClassList(HorizontalModeClassName, mode == TabGroupMode.Horizontal);
+            ToggleHorizontalScroller(mode == TabGroupMode.Horizontal);
+            
+            _horizontalScroller.SetEnabled(mode == TabGroupMode.Horizontal);
             ScrollView.mode = mode == TabGroupMode.Horizontal ? ScrollViewMode.Horizontal : ScrollViewMode.Vertical;
             ScrollView.verticalScrollerVisibility =
                 mode == TabGroupMode.Horizontal ? ScrollerVisibility.Hidden : ScrollerVisibility.Auto;
+        }
+
+        private void ToggleHorizontalScroller(bool enabled)
+        {
+            if (enabled)
+                hierarchy.Add(_horizontalScroller);
+            else
+                _horizontalScroller.RemoveFromHierarchy();
         }
 
         private new class UxmlFactory : UxmlFactory<TabGroup, UxmlTraits> { }
