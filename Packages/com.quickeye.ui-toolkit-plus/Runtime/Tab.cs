@@ -7,14 +7,14 @@ namespace QuickEye.UIToolkit
     public class Tab : BaseBindable<bool>
     {
         public const string ClassName = "qe-tab";
-        public const string TextClassName = ClassName+ "__text";
-        public const string CheckedClassName = ClassName+ "--checked";
-        public const string UncheckedClassName = ClassName+ "--unchecked";
+        public const string TextClassName = ClassName + "__text";
+        public const string CheckedClassName = ClassName + "--checked";
+        public const string UncheckedClassName = ClassName + "--unchecked";
 
         public readonly Reorderable Reorderable = new(ClassName) { LockDragToAxis = true };
 
         private readonly Label _textElement;
-        
+
         private VisualElement _tabContent;
 
         public Tab() : this(null) { }
@@ -23,7 +23,7 @@ namespace QuickEye.UIToolkit
         {
             this.InitResources();
             AddToClassList(ClassName);
-            
+
             _textElement = new Label(text);
             _textElement.AddToClassList(TextClassName);
             Add(_textElement);
@@ -92,8 +92,7 @@ namespace QuickEye.UIToolkit
         {
             private readonly UxmlBoolAttributeDescription _reorderable = new()
             {
-                name = "Reorderable",
-                defaultValue = false
+                name = "reorderable"
             };
 
             private readonly UxmlStringAttributeDescription _text = new() { name = "text" };
