@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1153573360790615818}
   - component: {fileID: 5832419761612261777}
   m_Layer: 0
-  m_Name: TestPrefab
+  m_Name: SandboxPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,6 +41,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7670828066735300720}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71f3de8e20b42496e84e40e2d01d4f53, type: 3}
+  m_Script: {fileID: 11500000, guid: 65723007792b74cf5bb8ae5ced8c4fde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

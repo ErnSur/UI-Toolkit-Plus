@@ -49,10 +49,13 @@ With this tool, you can! Export style sheet assets used by Unity Editor to USS f
 
 ![Style Sheet Exporter Window](Documentation~/style-sheet-exporter.png)
 
-### `ReorderableManipulator`
-
-![](Documentation~/reorderable.gif)
-
 ### `TabGroup`, `Tab` and `TabDropdown`
+> Sample project: Samples/Tabs
 
 ![](Documentation~/tabs.gif)
+
+### `ReorderableManipulator`
+> Sample project: Samples/ReorderableCards
+
+<img src="Documentation~/reorderable.gif" width="400">
+

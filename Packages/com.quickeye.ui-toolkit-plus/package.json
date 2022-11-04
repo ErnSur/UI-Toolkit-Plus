@@ -1,7 +1,7 @@
 {
   "name": "com.quickeye.ui-toolkit-plus",
   "displayName": "UI Toolkit Plus",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "unity": "2021.3",
   "author": "Quick Eye",
   "type": "library",

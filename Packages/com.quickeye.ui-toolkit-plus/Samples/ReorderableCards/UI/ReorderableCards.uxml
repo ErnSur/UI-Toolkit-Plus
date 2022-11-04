@@ -1,21 +1,23 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" quick-eye="QuickEye.UIToolkit" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Samples/ReorderableCards/UI/ReorderableCards.uss?fileID=7433441132597879392&amp;guid=c7c4cfddd9d5c2841b9e62ae70529517&amp;type=3#ReorderableCards" />
-    <ui:VisualElement style="flex-grow: 1; background-color: rgb(62, 126, 52); flex-direction: row; justify-content: space-around; align-items: center;">
-        <ui:VisualElement class="card">
-            <ui:Label display-tooltip-when-elided="true" text="1" class="top-number number" />
-            <ui:Label text="1" display-tooltip-when-elided="true" class="bottom-number number" />
-        </ui:VisualElement>
-        <ui:VisualElement class="card">
-            <ui:Label display-tooltip-when-elided="true" text="2" class="top-number number" />
-            <ui:Label text="2" display-tooltip-when-elided="true" class="bottom-number number" />
-        </ui:VisualElement>
-        <ui:VisualElement class="card">
-            <ui:Label display-tooltip-when-elided="true" text="3" class="top-number number" />
-            <ui:Label text="3" display-tooltip-when-elided="true" class="bottom-number number" />
-        </ui:VisualElement>
-        <ui:VisualElement class="card">
-            <ui:Label display-tooltip-when-elided="true" text="4" class="top-number number" />
-            <ui:Label text="4" display-tooltip-when-elided="true" class="bottom-number number" />
+    <ui:VisualElement style="flex-grow: 1; border-left-color: rgb(26, 102, 14); border-right-color: rgb(26, 102, 14); border-top-color: rgb(26, 102, 14); border-bottom-color: rgb(26, 102, 14); border-left-width: 20px; border-right-width: 20px; border-top-width: 20px; border-bottom-width: 20px; border-top-left-radius: 20px; border-bottom-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; background-color: rgb(26, 102, 14);">
+        <ui:VisualElement style="flex-grow: 1; background-color: rgb(62, 126, 52); flex-direction: row; justify-content: space-around; align-items: center; border-top-left-radius: 20px; border-bottom-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">
+            <ui:VisualElement class="card">
+                <ui:Label display-tooltip-when-elided="true" text="1" class="top-number number" />
+                <ui:Label text="1" display-tooltip-when-elided="true" class="bottom-number number" />
+            </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Label display-tooltip-when-elided="true" text="2" class="top-number number" />
+                <ui:Label text="2" display-tooltip-when-elided="true" class="bottom-number number" />
+            </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Label display-tooltip-when-elided="true" text="3" class="top-number number" />
+                <ui:Label text="3" display-tooltip-when-elided="true" class="bottom-number number" />
+            </ui:VisualElement>
+            <ui:VisualElement class="card">
+                <ui:Label display-tooltip-when-elided="true" text="4" class="top-number number" />
+                <ui:Label text="4" display-tooltip-when-elided="true" class="bottom-number number" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

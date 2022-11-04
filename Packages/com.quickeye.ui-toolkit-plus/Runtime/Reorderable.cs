@@ -5,9 +5,7 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
 {
-    // TODO: README entry
     // TODO: Animatable snap into place
-    // TODO: Fix visuals on dragging tab in column tab group: create a shadow drag container that will mimic previous content container size
     public class Reorderable : Manipulator
     {
         public const string ReorderableClassName = "reorderable";
@@ -102,7 +100,7 @@ namespace QuickEye.UIToolkit
 
         private void OnDragging(Vector2 pointerDelta)
         {
-            _dragTargetContainer.transform.position = GetNewTargetPosFromCursor(pointerDelta);
+            _dragTargetContainer.transform.position = GetNewTargetContainerPosFromCursor(pointerDelta);
 
             if (TryGetNewHierarchyPosition(out var newIndex))
                 MoveInHierarchy(_shadowSpace, newIndex);
@@ -121,23 +119,25 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        private Vector2 GetNewTargetPosFromCursor(Vector2 pointerDelta)
+        private Vector2 GetNewTargetContainerPosFromCursor(Vector2 pointerDelta)
         {
-            var newX = pointerDelta.x + _targetStartPos.x;
-            var newY = pointerDelta.y + _targetStartPos.y;
+            var translateBackToStartPos = _targetStartPos - _dragTargetContainer.layout.position;
+            
+            var newX = pointerDelta.x + translateBackToStartPos.x;
+            var newY = pointerDelta.y + translateBackToStartPos.y;
 
             if (LockDragToAxis)
             {
                 newX = Mathf.Clamp(newX,
-                    0, _container.layout.width - target.resolvedStyle.width);
+                    0, _container.layout.width - _dragTargetContainer.resolvedStyle.width);
                 newY = Mathf.Clamp(newY,
-                    0, _container.layout.height - target.resolvedStyle.height);
+                    0, _container.layout.height - _dragTargetContainer.resolvedStyle.height);
             }
 
             return new Vector2
             {
-                x = !LockDragToAxis ? newX : IsColumnContainer ? target.transform.position.x : newX,
-                y = !LockDragToAxis ? newY : IsColumnContainer ? newY : target.transform.position.y
+                x = !LockDragToAxis ? newX : IsColumnContainer ? _dragTargetContainer.transform.position.x : newX,
+                y = !LockDragToAxis ? newY : IsColumnContainer ? newY : _dragTargetContainer.transform.position.y
             };
         }
 
@@ -200,7 +200,7 @@ namespace QuickEye.UIToolkit
         {
             index = -1;
             var overlappingTabs = _allReorderable.Where(OverlapsTarget).ToArray();
-            var closestElement = ReorderableUtility.FindClosestElement(target, overlappingTabs);
+            var closestElement = ReorderableUtility.FindClosestElement(_dragTargetContainer, overlappingTabs);
             if (closestElement == null)
                 return false;
             var swap = ShouldSwapPlacesWith(closestElement);
@@ -213,7 +213,7 @@ namespace QuickEye.UIToolkit
         private bool ShouldSwapPlacesWith(VisualElement element)
         {
             var (targetRect, otherRect) = (
-                new AxisRectData(IsColumnContainer, target.worldBound),
+                new AxisRectData(IsColumnContainer, _dragTargetContainer.worldBound),
                 new AxisRectData(IsColumnContainer, element.worldBound));
 
             var threshold = otherRect.WidthOrHeight
@@ -227,7 +227,7 @@ namespace QuickEye.UIToolkit
 
         private bool OverlapsTarget(VisualElement element)
         {
-            return element != target && target.worldBound.Overlaps(element.worldBound);
+            return element != target && _dragTargetContainer.worldBound.Overlaps(element.worldBound);
         }
     }
 

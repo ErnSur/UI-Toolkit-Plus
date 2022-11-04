@@ -8,9 +8,10 @@ namespace QuickEye.UIToolkit
     {
         private static readonly Type _GenericOsMenuType
 #if UNITY_EDITOR
-            = typeof(UnityEditor.UIElements.PropertyField).Assembly.GetType("UnityEditor.UIElements.GenericOSMenu")
+                = typeof(UnityEditor.UIElements.PropertyField).Assembly.GetType("UnityEditor.UIElements.GenericOSMenu")
 #endif
-;
+            ;
+
         public static IGenericMenu CreateMenuForContext(ContextType context)
         {
             return context == ContextType.Player || _GenericOsMenuType == null

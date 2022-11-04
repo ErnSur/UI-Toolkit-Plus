@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace QuickEye.UIToolkit.Sandbox.Editor
+namespace QuickEye.UIToolkit.Samples.Tabs
 {
     public class TabViewWindow : EditorWindow
     {

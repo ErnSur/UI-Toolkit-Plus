@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:ScrollView mode="Horizontal">
+        <ui:VisualElement style="width: 44px; height: 44px; background-image: url(&apos;project://database/Assets/Sandbox/Tabs/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-1304905567622442630&amp;guid=c1c8033dd5c4a44aa8b0991ece76223e&amp;type=3#arrow-down@2x&apos;);" />
+        <ui:VisualElement style="width: 44px; height: 44px; background-image: url(&apos;project://database/Assets/Sandbox/Tabs/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-1304905567622442630&amp;guid=c1c8033dd5c4a44aa8b0991ece76223e&amp;type=3#arrow-down@2x&apos;);" />
+        <ui:VisualElement style="width: 44px; height: 44px; background-image: url(&apos;project://database/Assets/Sandbox/Tabs/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-1304905567622442630&amp;guid=c1c8033dd5c4a44aa8b0991ece76223e&amp;type=3#arrow-down@2x&apos;);" />
+        <ui:VisualElement style="width: 44px; height: 44px; background-image: url(&apos;project://database/Assets/Sandbox/Tabs/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-1304905567622442630&amp;guid=c1c8033dd5c4a44aa8b0991ece76223e&amp;type=3#arrow-down@2x&apos;);" />
+        <ui:VisualElement style="width: 44px; height: 44px; background-image: url(&apos;project://database/Assets/Sandbox/Tabs/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=-1304905567622442630&amp;guid=c1c8033dd5c4a44aa8b0991ece76223e&amp;type=3#arrow-down@2x&apos;);" />
+    </ui:ScrollView>
+</ui:UXML>

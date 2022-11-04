@@ -1,5 +1,4 @@
-﻿#if UNITY_2021_1_OR_NEWER
-using System;
+﻿using System;
 using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit
@@ -21,13 +20,14 @@ namespace QuickEye.UIToolkit
             }
         }
 
-        public const string ClassName = "tab-dropdown";
-        public const string ArrowCLassName = ClassName + "--arrow";
+        public new const string ClassName = Tab.ClassName + "-dropdown";
+        public const string ArrowClassName = ClassName + "__arrow";
+        public const string DropdownAreaClassName = ClassName + "__dropdown-area";
 
         private IGenericMenu _menu;
-        private Clickable _clickable;
 
-        private VisualElement _dropdownButton;
+        private readonly VisualElement _dropdownArea;
+        private readonly VisualElement _dropdownIcon;
 
         public TabDropdown() : this(null) { }
 
@@ -35,31 +35,35 @@ namespace QuickEye.UIToolkit
         {
             this.InitResources();
             AddToClassList(ClassName);
-            _dropdownButton = new VisualElement();
-            _dropdownButton.AddToClassList(ArrowCLassName);
-            Add(_dropdownButton);
-            _clickable = new Clickable(ShowMenu);
-            _dropdownButton.AddManipulator(_clickable);
+            
+            _dropdownArea = new VisualElement();
+            _dropdownIcon = new VisualElement();
+            _dropdownIcon.AddToClassList(ArrowClassName);
+            _dropdownIcon.AddToClassList("unity-base-popup-field__arrow");
+            Add(_dropdownArea);
+            _dropdownArea.Add(_dropdownIcon);
+            _dropdownArea.AddToClassList(DropdownAreaClassName);
+            var clickable = new Clickable(ShowMenu);
+            _dropdownArea.AddManipulator(clickable);
             UpdateDropdownButtonVisibility();
         }
 
         private void ShowMenu()
         {
-            if ((_menu is GenericDropdownMenuWrapper gdm && gdm.Menu.contentContainer.panel != null) ||
-                _beforeMenuShow == null || IsDragged)
+            if (_beforeMenuShow == null || IsDragged)
                 return;
             _menu = GenericMenuUtility.CreateMenuForContext(panel.contextType);
             _beforeMenuShow?.Invoke(_menu);
             _menu.DropDown(worldBound, this);
         }
-
+        
         private void UpdateDropdownButtonVisibility()
         {
-            _dropdownButton.ToggleDisplayStyle(_beforeMenuShow != null);
+            _dropdownArea.ToggleDisplayStyle(_beforeMenuShow != null);
         }
+        
         public new class UxmlFactory : UxmlFactory<TabDropdown, UxmlTraits> { }
 
         public new class UxmlTraits : Tab.UxmlTraits { }
     }
 }
-#endif

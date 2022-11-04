@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace QuickEye.UIToolkit.Samples.Cards
     {
         private VisualElement[] cards;
         private VisualElement root;
+
         void Start()
         {
             var uidoc = GetComponent<UIDocument>();
@@ -29,12 +31,6 @@ namespace QuickEye.UIToolkit.Samples.Cards
         private void GetCards()
         {
             cards = root.Query(null, "card").Build().ToArray();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
         }
     }
 }
