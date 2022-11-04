@@ -11,8 +11,8 @@
         </QuickEye.UIToolkit.TabGroup>
         <ui:VisualElement>
             <QuickEye.UIToolkit.TabGroup focusable="true" view-data-key="tab-group1" name="tab-group-horizontal" mode="Horizontal" style="flex-shrink: 1;">
-                <QuickEye.UIToolkit.Tab view-data-key="tab1" text="Scene" is-reorderable="true" value="true" />
-                <QuickEye.UIToolkit.TabDropdown name="hor-tab-dropdown-1" text="Environment" view-data-key="tab-drop-1" is-reorderable="true" />
+                <QuickEye.UIToolkit.TabDropdown name="hor-tab-dropdown-1" text="Scene" view-data-key="tab-drop-1" is-reorderable="true" />
+                <QuickEye.UIToolkit.Tab view-data-key="tab1" text="Environment" is-reorderable="true" value="true" />
                 <QuickEye.UIToolkit.Tab view-data-key="tab2" text="Realtime Lightmaps" is-reorderable="true" />
                 <QuickEye.UIToolkit.TabDropdown name="hor-tab-dropdown-2" text="Baked Lightmaps" view-data-key="tab-drop-2" is-reorderable="true" />
             </QuickEye.UIToolkit.TabGroup>

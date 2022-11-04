@@ -5,7 +5,7 @@
 // -----------------------
 using UnityEngine.UIElements;
 
-namespace QuickEye.UIToolkit.Sandbox
+namespace QuickEye.UIToolkit.Samples.Tabs
 {
     partial class TabView
     {

@@ -1,0 +1,19 @@
+{
+    "name": "QuickEye.UIToolkit.Samples.Tabs.Editor",
+    "rootNamespace": "QuickEye.UIToolkit.Samples.Tabs.Editor",
+    "references": [
+        "GUID:9861c8596b4de1544a09a56d39ef2572",
+        "GUID:db7f11f4da11a4c44a04260a83b3b085"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
