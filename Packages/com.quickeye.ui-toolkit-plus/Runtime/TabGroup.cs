@@ -86,8 +86,7 @@ namespace QuickEye.UIToolkit
             EnableInClassList(VerticalModeClassName, mode == TabGroupMode.Vertical);
             EnableInClassList(HorizontalModeClassName, mode == TabGroupMode.Horizontal);
             ToggleHorizontalScroller(mode == TabGroupMode.Horizontal);
-            
-            _horizontalScroller.SetEnabled(mode == TabGroupMode.Horizontal);
+
             ScrollView.mode = mode == TabGroupMode.Horizontal ? ScrollViewMode.Horizontal : ScrollViewMode.Vertical;
             ScrollView.verticalScrollerVisibility =
                 mode == TabGroupMode.Horizontal ? ScrollerVisibility.Hidden : ScrollerVisibility.Auto;

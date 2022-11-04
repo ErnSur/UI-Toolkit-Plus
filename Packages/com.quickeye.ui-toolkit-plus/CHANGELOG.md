@@ -1,15 +1,21 @@
-## [1.10.0] - 2022-11-2
+## [2.0.0] - 2022-11-2
 
 ## Added
 - `ToolbarDropdownButton`
 - Added USS class name fields to Tab class family
+- Vertical Tab group style changes
 
 ### Changed
-- Added "qe-" prefix to `Tab`, `TabDropdown` and `TabGroup` class names
-- Modified `Tab` and `TabDropdown` layout and style for more polished look
+- Updated `CompatibilityExtensions`
+  - Support for `BaseVerticalCollectionView.itemsChosen`
+  - Support for `BaseVerticalCollectionView.selectionChanged`
+- Renamed `Tab` UXML attribute: `Reorderable` to `is-reorderable`
+- Added "qe-" prefix to Tab family USS selectors
+- Modified Tab family layout and style for more polished look and behavior
 
 ### Fixed
 - Missing icon of `TabDropdown` in runtime
+- Fixed Tab `reorderable` UXML attribute resetting after saving changes in UI Builder. [issue description](https://forum.unity.com/threads/uxmltraits-and-custom-attributes-resetting-in-inspector.966215/#post-6311601)
 
 ## [1.9.0] - 2022-10-31
 

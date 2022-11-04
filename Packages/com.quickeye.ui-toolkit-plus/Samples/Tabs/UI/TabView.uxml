@@ -1,22 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" quick-eye="QuickEye.UIToolkit" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/Sandbox/Tabs/UI%20Toolkit/Views/TabView.uss?fileID=7433441132597879392&amp;guid=83454d6fdda5b430a8aaa3d6b8f977ea&amp;type=3#TabView" />
-    <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Runtime/Resources/com.quickeye.ui-toolkit-plus/uss/UTKPlus%20Base.uss?fileID=7433441132597879392&amp;guid=a6aa293151d94ef39397ac737babe93b&amp;type=3#UTKPlus Base" />
-    <ui:VisualElement style="flex-grow: 1; background-color: rgba(26, 26, 26, 0.18); margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px; border-left-color: rgba(71, 255, 209, 0.62); border-right-color: rgba(71, 255, 209, 0.62); border-top-color: rgba(71, 255, 209, 0.62); border-bottom-color: rgba(71, 255, 209, 0.62); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; flex-direction: row;">
-        <QuickEye.UIToolkit.TabGroup focusable="true" view-data-key="tab-group1" name="tab-group-vertical" mode="Vertical" style="width: 112px; margin-top: 25px;">
-            <QuickEye.UIToolkit.Tab view-data-key="tab11" text="Category 1" is-reorderable="true" value="true" style="height: 25px;" />
-            <QuickEye.UIToolkit.TabDropdown name="vert-tab-dropdown-1" text="Category 2" view-data-key="tab-drop-1-vert" is-reorderable="true" />
-            <QuickEye.UIToolkit.Tab view-data-key="tab22" text="Category 3" is-reorderable="true" />
-            <QuickEye.UIToolkit.Tab view-data-key="tab33" text="Category 4" is-reorderable="true" />
-            <QuickEye.UIToolkit.Tab view-data-key="tab44" text="Category 5" is-reorderable="true" />
-        </QuickEye.UIToolkit.TabGroup>
-        <ui:VisualElement>
-            <QuickEye.UIToolkit.TabGroup focusable="true" view-data-key="tab-group1" name="tab-group-horizontal" mode="Horizontal" style="flex-shrink: 1;">
-                <QuickEye.UIToolkit.TabDropdown name="hor-tab-dropdown-1" text="Scene" view-data-key="tab-drop-1" is-reorderable="true" />
-                <QuickEye.UIToolkit.Tab view-data-key="tab1" text="Environment" is-reorderable="true" value="true" />
-                <QuickEye.UIToolkit.Tab view-data-key="tab2" text="Realtime Lightmaps" is-reorderable="true" />
-                <QuickEye.UIToolkit.TabDropdown name="hor-tab-dropdown-2" text="Baked Lightmaps" view-data-key="tab-drop-2" is-reorderable="true" />
+    <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Samples/Tabs/UI/TabView.uss?fileID=7433441132597879392&amp;guid=83454d6fdda5b430a8aaa3d6b8f977ea&amp;type=3#TabView" />
+    <ui:VisualElement name="view-root" class="horizontal-tabs-layout" style="flex-grow: 1; background-color: rgba(26, 26, 26, 0.18); margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;">
+        <ui:VisualElement name="tab-bar">
+            <ui:Toggle name="vertical-tabs-toggle" />
+            <QuickEye.UIToolkit.TabGroup focusable="true" view-data-key="tab-group1" name="tab-group" mode="Horizontal" style="flex-shrink: 1;">
+                <QuickEye.UIToolkit.TabDropdown name="tab1" text="Scene" view-data-key="tab1" is-reorderable="true" value="true" />
+                <QuickEye.UIToolkit.Tab view-data-key="tab2" text="Environment" is-reorderable="true" />
+                <QuickEye.UIToolkit.Tab view-data-key="tab3" text="Realtime Lightmaps" is-reorderable="true" />
+                <QuickEye.UIToolkit.TabDropdown text="Baked Lightmaps" view-data-key="tab4" is-reorderable="true" />
             </QuickEye.UIToolkit.TabGroup>
         </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1;" />
+        <ui:VisualElement name="tab-content-container" style="flex-grow: 1;" />
     </ui:VisualElement>
 </ui:UXML>
