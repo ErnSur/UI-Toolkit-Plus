@@ -24,25 +24,40 @@ namespace QuickEye.UIToolkit.Editor
             var asset = command.context as VisualTreeAsset;
             GenerateGenCs(asset);
         }
-        
-        [MenuItem(GenerateCsMenuItemName,true)]
+
+        [MenuItem(GenerateCsMenuItemName, true)]
         private static bool GenerateGenCsValidation(MenuCommand command)
         {
             return AssetDatabase.GetAssetPath(command.context).EndsWith(".uxml");
         }
 
-        public static void GenerateGenCs(VisualTreeAsset asset)
+        public static void GenerateGenCs(VisualTreeAsset uxmlAsset)
         {
-            var path = AssetDatabase.GetAssetPath(asset);
-            var uxml = File.ReadAllText(path);
+            var uxmlFilePath = AssetDatabase.GetAssetPath(uxmlAsset);
+            var uxml = File.ReadAllText(uxmlFilePath);
             var settings = CodeGenSettings.FromUxml(uxml);
-            if (UxmlParser.TryGetElementsWithName(uxml, out var elements))
-            {
-                var validElements = elements
-                    .Where(e => !IgnoredTagFullnames.Contains(e.FullyQualifiedTypeName))
-                    .ToArray();
-                GenerateScript(asset.name, validElements, GetGenCsFilePath(path), settings);
-            }
+
+            if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
+                return;
+
+            var validElements = elements
+                .Where(e => !IgnoredTagFullnames.Contains(e.FullyQualifiedTypeName))
+                .ToArray();
+
+            var genCsFilePath = GetGenCsFilePath(uxmlFilePath);
+
+            var newScriptContent = CreateScriptContent(
+                className: uxmlAsset.name,
+                classNamespace: CodeGeneration.GetNamespaceForFile(genCsFilePath),
+                uxmlElements: validElements,
+                settings: settings);
+            
+            if (File.Exists(genCsFilePath) &&
+                !IsEqualWithoutComments(File.ReadAllText(genCsFilePath), newScriptContent))
+                return;
+            
+            File.WriteAllText(genCsFilePath, newScriptContent);
+            AssetDatabase.Refresh();
         }
 
         private static string GetFieldDeclaration(UxmlElement element, CodeGenSettings settings)
@@ -81,22 +96,32 @@ namespace QuickEye.UIToolkit.Editor
             return $"{varName} = {multiColumnEleVarName}.columns[\"{name}\"];";
         }
 
-        private static void GenerateScript(string scriptName, UxmlElement[] uxmlElements, string path,
+        private static string CreateScriptContent(string className, string classNamespace, UxmlElement[] uxmlElements,
             CodeGenSettings settings)
         {
             var fields = uxmlElements.Select(e => GetFieldDeclaration(e, settings));
             var assignments = uxmlElements.Select(e => GetFieldAssigment(e, settings));
 
             var template = Resources.Load<TextAsset>("QuickEye/UXMLGenScriptTemplate").text
-                .Replace("#SCRIPT_NAME#", scriptName)
+                .Replace("#SCRIPT_NAME#", className)
                 .Replace("#PACKAGE_VERSION#", PackageInfo.Version);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#FIELDS#", fields);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#ASSIGNMENTS#", assignments);
-            template = ScriptTemplateUtility.ReplaceNamespaceTags(template, CodeGeneration.GetNamespaceForFile(path));
+            template = ScriptTemplateUtility.ReplaceNamespaceTags(template, classNamespace);
+            return template;
+        }
 
-            File.WriteAllText(path, template);
+        private static bool IsEqualWithoutComments(string oldContent, string newContent)
+        {
+            return TrimStartComments(oldContent) != TrimStartComments(newContent);
+        }
 
-            AssetDatabase.Refresh();
+        private static string TrimStartComments(string content)
+        {
+            using var reader = new StringReader(content);
+            while ((char)reader.Peek() == '/')
+                reader.ReadLine();
+            return reader.ReadToEnd();
         }
 
         public static string GetGenCsFilePath(string uxmlFilePath)
