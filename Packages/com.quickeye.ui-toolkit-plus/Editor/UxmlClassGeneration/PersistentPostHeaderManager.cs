@@ -15,16 +15,16 @@ namespace QuickEye.UIToolkit.Editor
         {
             UnityEditor.Editor.finishedDefaultHeaderGUI += OnPostHeaderGUI;
         }
-
-        public static void RegisterPostHeaderDrawer(PostHeaderDrawer drawer, UnityEditor.Editor targetEditor)
+        
+        public static void RegisterPostHeaderDrawer(PostHeaderDrawer drawer)
         {
-            if (_ActiveDrawers.TryGetValue(targetEditor, out var drawers))
+            if (_ActiveDrawers.TryGetValue(drawer.Editor, out var drawers))
             {
                 drawers.Add(drawer);
                 return;
             }
 
-            _ActiveDrawers[targetEditor] = new List<PostHeaderDrawer> { drawer };
+            _ActiveDrawers[drawer.Editor] = new List<PostHeaderDrawer> { drawer };
         }
 
         private static void OnPostHeaderGUI(UnityEditor.Editor editor)
@@ -35,7 +35,7 @@ namespace QuickEye.UIToolkit.Editor
                 EditorCreated?.Invoke(editor);
             }
 
-            foreach (var drawer in _ActiveDrawers.SelectMany(kvp => kvp.Value))
+            foreach (var drawer in _ActiveDrawers[editor])
             {
                 drawer.OnGUI();
             }

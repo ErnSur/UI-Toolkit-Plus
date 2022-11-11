@@ -24,7 +24,7 @@ namespace QuickEye.UIToolkit.Editor
             return new InlineCodeGenSettings(uxml);
         }
 
-        public static void SetSettings(string filePath, string key, string value)
+        public static void SetSetting(string filePath, string key, string value)
         {
             var root = XDocument.Parse(File.ReadAllText(filePath)).Root;
             root.SetAttributeValue(key,value);

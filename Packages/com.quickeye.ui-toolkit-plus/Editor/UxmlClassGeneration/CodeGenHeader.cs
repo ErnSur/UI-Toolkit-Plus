@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.AssetImporters;
 using UnityEngine;
@@ -8,60 +7,44 @@ namespace QuickEye.UIToolkit.Editor
 {
     using UnityEditor;
 
-    [InitializeOnLoad]
-    public static class CodeGenHeader
+    internal class CodeGenHeader : PostHeaderDrawer
     {
         public const string UxmlImporterClassName = "UIElementsViewImporter";
 
-        private static readonly Dictionary<Editor, (string original, string dirty)> _EditorCsNamespaceState = new();
-
-        static CodeGenHeader()
+        [InitializeOnLoadMethod]
+        private static void Init()
         {
-            Editor.finishedDefaultHeaderGUI += OnPostHeaderGUI;
+            PersistentPostHeaderManager.EditorCreated += editor =>
+            {
+                if (editor.target.GetType().Name == UxmlImporterClassName)
+                    PersistentPostHeaderManager.RegisterPostHeaderDrawer(new CodeGenHeader(editor));
+            };
         }
 
-        private static (string original, string dirty) _namespaceFieldData;
-        private static void OnPostHeaderGUI(Editor editor)
+        private string _uxmlPath;
+        private string _currentNamespace;
+        private string _textFieldString;
+
+        public CodeGenHeader(Editor editor) : base(editor)
         {
-            if (editor.target.GetType().Name != UxmlImporterClassName)
-                return;
-            if (!_EditorCsNamespaceState.TryGetValue(editor, out var targetCsNamespace))
-            {
-                var ns = CodeGeneration.GetNamespaceForFile(((ScriptedImporter)editor.target).assetPath);
-                _EditorCsNamespaceState[editor] = targetCsNamespace = (ns, ns);
-            }
+            _uxmlPath = ((ScriptedImporter)editor.target).assetPath;
+            _currentNamespace = _textFieldString = CodeGeneration.GetNamespaceForFile(_uxmlPath);
+        }
 
-            EditorGUI.showMixedValue = editor.targets.Length > 1 &&
-                                       editor.targets
-                                           .Cast<ScriptedImporter>()
-                                           .Select(i => i.assetPath)
-                                           .Select(CodeGeneration.GetNamespaceForFile)
-                                           .Any(n => n != targetCsNamespace.original);
-            // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-            foreach (ScriptedImporter importer in editor.targets)
-            {
-                CodeGeneration.GetNamespaceForFile(importer.assetPath);
-            }
-
+        public override void OnGUI()
+        {
             using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
             {
                 using (new OverrideFieldScope(IsTextFieldModified()))
                 {
-                    targetCsNamespace.dirty = EditorGUILayout.TextField("C# Namespace", targetCsNamespace.dirty);
-                    _EditorCsNamespaceState[editor] = targetCsNamespace;
+                    SetShowMixedValues();
+                    _textFieldString = EditorGUILayout.TextField("C# Namespace", _textFieldString);
+                    EditorGUI.showMixedValue = false;
                 }
 
                 using (new EditorGUI.DisabledScope(IsTextFieldModified()))
                 {
                     GenerateScriptDropdown();
-                    if (GUILayout.Button("Generate", GUILayout.Width(65)))
-                    {
-                        foreach (ScriptedImporter target in editor.targets)
-                        {
-                            UxmlClassGenerator.GenerateGenCs(
-                                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(target.assetPath), true);
-                        }
-                    }
                 }
             }
 
@@ -70,49 +53,65 @@ namespace QuickEye.UIToolkit.Editor
                 GUILayout.FlexibleSpace();
                 if (IsTextFieldModified() && GUILayout.Button("Apply", GUILayout.Width(50)))
                 {
-                    foreach (var uxmlPath in editor.targets.Cast<ScriptedImporter>()
-                                 .Select(i => i.assetPath))
-                    {
-                        InlineCodeGenSettings.SetSettings(uxmlPath, InlineCodeGenSettings.CsNamespaceAttributeName,
-                            targetCsNamespace.dirty);
-                        if (string.IsNullOrEmpty(targetCsNamespace.dirty))
-                            targetCsNamespace.dirty =
-                                CodeGeneration.GetNamespaceForFile(((ScriptedImporter)editor.target).assetPath);
-                        targetCsNamespace.original = targetCsNamespace.dirty;
-                        _EditorCsNamespaceState[editor] = targetCsNamespace;
-                        EditorApplication.delayCall += () =>
-                        {
-                            var uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
-                            UxmlClassGenerator.GenerateGenCs(uxmlAsset, true);
-                            Selection.activeObject = uxmlAsset;
-                        };
-                    }
+                    UpdateInlineNamespace();
                 }
             }
+        }
 
-            bool IsTextFieldModified() => targetCsNamespace.original != targetCsNamespace.dirty;
+        private void UpdateInlineNamespace()
+        {
+            foreach (var uxmlPath in Editor.targets.Cast<ScriptedImporter>()
+                         .Select(i => i.assetPath))
+            {
+                InlineCodeGenSettings.SetSetting(uxmlPath, InlineCodeGenSettings.CsNamespaceAttributeName,
+                    _textFieldString);
+                if (string.IsNullOrEmpty(_textFieldString))
+                    _textFieldString = CodeGeneration.GetNamespaceForFile(_uxmlPath);
+                _currentNamespace = _textFieldString;
+                EditorApplication.delayCall += () =>
+                {
+                    // do this for all targets
+                    var uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
+                    UxmlClassGenerator.GenerateGenCs(uxmlAsset, true);
+                    Selection.activeObject = uxmlAsset;
+                };
+            }
+        }
+
+        private bool IsTextFieldModified() => _textFieldString != _currentNamespace;
+
+        private void SetShowMixedValues()
+        {
+            EditorGUI.showMixedValue = Editor.targets.Length > 1 &&
+                                       Editor.targets
+                                           .Cast<ScriptedImporter>()
+                                           .Select(i => i.assetPath)
+                                           .Select(CodeGeneration.GetNamespaceForFile)
+                                           .Any(n => n != _currentNamespace);
         }
 
         private static Rect _generateScriptDropdownRect;
 
-        private static void GenerateScriptDropdown()
+        private void GenerateScriptDropdown()
         {
             if (EditorGUILayout.DropdownButton(new GUIContent("Generate"), FocusType.Keyboard, GUILayout.Width(70)))
             {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("hejpo"), false, null);
+                menu.AddItem(new GUIContent("C# gen script"), false, Generate);
                 menu.DropDown(_generateScriptDropdownRect);
+            }
+
+            void Generate()
+            {
+                foreach (ScriptedImporter target in Editor.targets)
+                {
+                    UxmlClassGenerator.GenerateGenCs(
+                        AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(target.assetPath), true);
+                }
             }
 
             if (Event.current.type == EventType.Repaint)
                 _generateScriptDropdownRect = GUILayoutUtility.GetLastRect();
-        }
-
-        struct NamespaceData
-        {
-            public string fromDirectory;
-            public string fromInlineAttribute;
-            public string textFieldString;
         }
     }
 }

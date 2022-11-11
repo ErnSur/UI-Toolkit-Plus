@@ -1,6 +1,6 @@
 namespace QuickEye.UIToolkit.Editor
 {
-    abstract class PostHeaderDrawer
+    public abstract class PostHeaderDrawer
     {
         public UnityEditor.Editor Editor { get; private set; }
 
@@ -8,8 +8,7 @@ namespace QuickEye.UIToolkit.Editor
         {
             Editor = editor;
         }
-
-
+        
         public abstract void OnGUI();
     }
 }
