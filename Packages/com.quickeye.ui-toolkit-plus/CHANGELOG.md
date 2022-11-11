@@ -1,3 +1,14 @@
+## [2.1.0] - 2022-11-x
+
+## Added
+- UXML Code Generation:
+  - Option to override namespace for generated C# files from UXML importer header.
+  - Option to generate a second file of a generated partial class.
+  - Project-wide settings for code generation.
+
+## Changed
+- Moved code gen field prefix setting from UXML attribute to a project-wide setting.
+
 ## [2.0.0] - 2022-11-2
 
 ## Added

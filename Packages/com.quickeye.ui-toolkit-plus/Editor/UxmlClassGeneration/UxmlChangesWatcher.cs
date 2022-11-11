@@ -7,7 +7,8 @@ namespace QuickEye.UIToolkit.Editor
 {
     internal class UxmlChangesWatcher : AssetPostprocessor
     {
-        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets,
+        private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
+            string[] movedAssets,
             string[] movedFromAssetPaths, bool didDomainReload)
         {
             foreach (var uxmlPath in importedAssets.Where(p => p.EndsWith(".uxml")))
@@ -15,7 +16,7 @@ namespace QuickEye.UIToolkit.Editor
                 var genCsFilePath = UxmlClassGenerator.GetGenCsFilePath(uxmlPath);
                 if (File.Exists(genCsFilePath))
                 {
-                    UxmlClassGenerator.GenerateGenCs(AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath));
+                    UxmlClassGenerator.GenerateGenCs(AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath), false);
                 }
             }
         }

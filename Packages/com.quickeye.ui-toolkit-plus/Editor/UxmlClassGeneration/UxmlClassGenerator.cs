@@ -22,7 +22,7 @@ namespace QuickEye.UIToolkit.Editor
         private static void GenerateGenCs(MenuCommand command)
         {
             var asset = command.context as VisualTreeAsset;
-            GenerateGenCs(asset);
+            GenerateGenCs(asset, true);
         }
 
         [MenuItem(GenerateCsMenuItemName, true)]
@@ -31,11 +31,11 @@ namespace QuickEye.UIToolkit.Editor
             return AssetDatabase.GetAssetPath(command.context).EndsWith(".uxml");
         }
 
-        public static void GenerateGenCs(VisualTreeAsset uxmlAsset)
+        public static void GenerateGenCs(VisualTreeAsset uxmlAsset, bool pingAsset)
         {
             var uxmlFilePath = AssetDatabase.GetAssetPath(uxmlAsset);
             var uxml = File.ReadAllText(uxmlFilePath);
-            var settings = CodeGenSettings.FromUxml(uxml);
+            var settings = InlineCodeGenSettings.FromUxml(uxml);
 
             if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
                 return;
@@ -48,19 +48,21 @@ namespace QuickEye.UIToolkit.Editor
 
             var newScriptContent = CreateScriptContent(
                 className: uxmlAsset.name,
-                classNamespace: CodeGeneration.GetNamespaceForFile(genCsFilePath),
+                classNamespace: CodeGeneration.GetNamespaceForFile(genCsFilePath,out _),
                 uxmlElements: validElements,
                 settings: settings);
-            
+
             if (File.Exists(genCsFilePath) &&
                 !IsEqualWithoutComments(File.ReadAllText(genCsFilePath), newScriptContent))
                 return;
-            
+
             File.WriteAllText(genCsFilePath, newScriptContent);
-            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(genCsFilePath);
+            if (pingAsset)
+                EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<MonoScript>(genCsFilePath));
         }
 
-        private static string GetFieldDeclaration(UxmlElement element, CodeGenSettings settings)
+        private static string GetFieldDeclaration(UxmlElement element, InlineCodeGenSettings settings)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
 
@@ -68,7 +70,7 @@ namespace QuickEye.UIToolkit.Editor
                 $"private {type} {settings.FieldPrefix}{CodeGeneration.UssNameToVariableName(element.NameAttribute)};";
         }
 
-        private static string GetFieldAssigment(UxmlElement element, CodeGenSettings settings)
+        private static string GetFieldAssigment(UxmlElement element, InlineCodeGenSettings settings)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
             var name = element.NameAttribute;
@@ -82,7 +84,8 @@ namespace QuickEye.UIToolkit.Editor
             return $"{varName} = root.Q<{type}>(\"{name}\");";
         }
 
-        private static string GetFieldAssigmentForColumn(UxmlElement element, CodeGenSettings settings, string varName,
+        private static string GetFieldAssigmentForColumn(UxmlElement element, InlineCodeGenSettings settings,
+            string varName,
             string name)
         {
             var multiColumnElement = element.XElement.Parent?.Parent?.ToUxmlElement();
@@ -97,7 +100,7 @@ namespace QuickEye.UIToolkit.Editor
         }
 
         private static string CreateScriptContent(string className, string classNamespace, UxmlElement[] uxmlElements,
-            CodeGenSettings settings)
+            InlineCodeGenSettings settings)
         {
             var fields = uxmlElements.Select(e => GetFieldDeclaration(e, settings));
             var assignments = uxmlElements.Select(e => GetFieldAssigment(e, settings));

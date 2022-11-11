@@ -15,9 +15,48 @@ namespace QuickEye.UIToolkit.Editor
             return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());
         }
 
-        public static string GetNamespaceForFile(string filePath)
+        public static string GetInlineNamespace(string filePath)
+        {
+            if (filePath.EndsWith(".gen.cs"))
+                filePath = filePath.Replace(".gen.cs", ".uxml");
+            if (!filePath.EndsWith(".uxml"))
+                return null;
+
+            return new InlineCodeGenSettings(File.ReadAllText(filePath)).CsNamespace;
+        }
+
+        public static void RemoveInlineNamespace(string filePath)
+        {
+            if (filePath.EndsWith(".gen.cs"))
+                filePath = filePath.Replace(".gen.cs", ".uxml");
+            if (!filePath.EndsWith(".uxml"))
+                return;
+
+            InlineCodeGenSettings.RemoveSetting(filePath, InlineCodeGenSettings.CsNamespaceAttributeName);
+        }
+
+
+        public static string GetNamespaceForFileDirectory(string filePath)
         {
             return GetNamespaceForDir(Path.GetDirectoryName(filePath));
+        }
+
+        public static string GetNamespaceForFile(string filePath, out bool isInline)
+        {
+            if (TryGetInlineNamespace(filePath, out var csNamespace))
+            {
+                isInline = true;
+                return csNamespace;
+            }
+
+            isInline = false;
+            return GetNamespaceForFileDirectory(filePath);
+        }
+
+        private static bool TryGetInlineNamespace(string filePath, out string csNamespace)
+        {
+            csNamespace = GetInlineNamespace(filePath);
+            return csNamespace != null;
         }
 
         private static string GetNamespaceForDir(string directoryName)

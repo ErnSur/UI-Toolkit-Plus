@@ -1,4 +1,4 @@
-﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" code-gen-prefix="_" quick-eye="QuickEye.UIToolkit" xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="False" sd="sd" qwe="ew">
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" code-gen-prefix="_" quick-eye="QuickEye.UIToolkit" xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="False" sd="sd" qwe="ew" code-gen-namespace="Hnsdjj">
     <ui:VisualElement>
         <ui:Label text="Label" display-tooltip-when-elided="true" name="title" />
     </ui:VisualElement>
