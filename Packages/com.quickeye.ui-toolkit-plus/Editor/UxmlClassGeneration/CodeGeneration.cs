@@ -17,7 +17,26 @@ namespace QuickEye.UIToolkit.Editor
 
         public static string GetNamespaceForFile(string filePath)
         {
+            if (TryGetInlineNamespace(filePath, out var csNamespace))
+            {
+                return csNamespace;
+            }
+
             return GetNamespaceForDir(Path.GetDirectoryName(filePath));
+        }
+
+        private static bool TryGetInlineNamespace(string filePath,out string csNamespace)
+        {
+            if (filePath.EndsWith(".gen.cs"))
+                filePath = filePath.Replace(".gen.cs", ".uxml");
+            if (filePath.EndsWith(".uxml"))
+            {
+                csNamespace = new InlineCodeGenSettings(File.ReadAllText(filePath)).CsNamespace;
+                return !string.IsNullOrEmpty(csNamespace);
+            }
+
+            csNamespace = null;
+            return false;
         }
 
         private static string GetNamespaceForDir(string directoryName)

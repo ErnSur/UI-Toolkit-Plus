@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" code-gen-prefix="_" quick-eye="QuickEye.UIToolkit" xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="False">
+﻿<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" code-gen-prefix="_" quick-eye="QuickEye.UIToolkit" xsi="http://www.w3.org/2001/XMLSchema-instance" editor-extension-mode="False" sd="sd" qwe="ew">
     <ui:VisualElement>
         <ui:Label text="Label" display-tooltip-when-elided="true" name="title" />
     </ui:VisualElement>
@@ -7,4 +7,5 @@
     </ui:VisualElement>
     <QuickEye.UIToolkit.Tab name="normal-tab" />
     <QuickEye.UIToolkit.TabGroup name="drop--tab" />
+    <ui:VisualElement />
 </ui:UXML>
