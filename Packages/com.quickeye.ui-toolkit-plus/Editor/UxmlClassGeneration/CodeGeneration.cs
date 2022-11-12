@@ -15,28 +15,37 @@ namespace QuickEye.UIToolkit.Editor
             return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());
         }
 
-        public static string GetNamespaceForFile(string filePath)
-        {
-            if (TryGetInlineNamespace(filePath, out var csNamespace))
-            {
-                return csNamespace;
-            }
-
-            return GetNamespaceForDir(Path.GetDirectoryName(filePath));
-        }
-
-        private static bool TryGetInlineNamespace(string filePath,out string csNamespace)
+        public static string GetInlineNamespace(string filePath)
         {
             if (filePath.EndsWith(".gen.cs"))
                 filePath = filePath.Replace(".gen.cs", ".uxml");
-            if (filePath.EndsWith(".uxml"))
+            if (!filePath.EndsWith(".uxml"))
+                return null;
+
+            return new InlineCodeGenSettings(File.ReadAllText(filePath)).CsNamespace;
+        }
+        
+        public static string GetNamespaceForFileDirectory(string filePath)
+        {
+            return GetNamespaceForDir(Path.GetDirectoryName(filePath));
+        }
+        
+        public static string GetNamespaceForFile(string filePath, out bool isInline)
+        {
+            if (TryGetInlineNamespace(filePath, out var csNamespace))
             {
-                csNamespace = new InlineCodeGenSettings(File.ReadAllText(filePath)).CsNamespace;
-                return !string.IsNullOrEmpty(csNamespace);
+                isInline = true;
+                return csNamespace;
             }
 
-            csNamespace = null;
-            return false;
+            isInline = false;
+            return GetNamespaceForFileDirectory(filePath);
+        }
+
+        private static bool TryGetInlineNamespace(string filePath, out string csNamespace)
+        {
+            csNamespace = GetInlineNamespace(filePath);
+            return !string.IsNullOrEmpty(csNamespace);
         }
 
         private static string GetNamespaceForDir(string directoryName)
