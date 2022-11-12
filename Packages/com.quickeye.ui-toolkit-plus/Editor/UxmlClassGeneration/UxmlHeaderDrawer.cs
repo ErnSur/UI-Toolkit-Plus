@@ -25,8 +25,9 @@ namespace QuickEye.UIToolkit.Editor
         private readonly string _firstTargetUxmlPath;
         private string _firstTargetNamespace;
         private string _textFieldString;
-        private Rect _generateScriptDropdownRect;
         private bool _showOverrideField;
+        private Rect _generateScriptDropdownRect;
+        private Rect _textFieldDropdownRect;
 
         public UxmlHeaderDrawer(Editor editor) : base(editor)
         {
@@ -41,71 +42,62 @@ namespace QuickEye.UIToolkit.Editor
             {
                 SetShowMixedValuesAndFieldOverride();
                 TextField();
-
-                using (new EditorGUI.DisabledScope(IsTextFieldModified()))
-                {
-                    GenerateScriptDropdown();
-                }
-            }
-
-            using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
-            {
-                GUILayout.FlexibleSpace();
-                if (IsTextFieldModified() && GUILayout.Button("Apply", GUILayout.Width(50)))
-                {
-                    GUIUtility.keyboardControl = 0;
-                    UpdateInlineNamespace();
-                    if (string.IsNullOrEmpty(_textFieldString))
-                        _textFieldString = CodeGeneration.GetNamespaceForFile(_firstTargetUxmlPath, out _);
-                    _firstTargetNamespace = _textFieldString;
-                }
+                GenerateScriptDropdown();
             }
         }
 
-        private int _textFieldControlId;
+        private void ApplyNamespaceChanges()
+        {
+            UpdateInlineNamespace(false);
+        }
 
         private void TextField()
         {
             using (new OverrideFieldScope(_showOverrideField))
             {
                 EditorGUILayout.PrefixLabel("C# Namespace");
-                var e = Event.current;
-                if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Return &&
-                    GUIUtility.hotControl == _textFieldControlId)
+
+                var evt = Event.current;
+                if (evt.type == EventType.Repaint)
                 {
-                    Debug.Log($"KeyDown ");
+                    _textFieldDropdownRect = GUILayoutUtility.GetLastRect();
                 }
 
-                _textFieldString = EditorGUILayout.TextField(_textFieldString);
-                _textFieldControlId = GUIUtility.GetControlID(FocusType.Keyboard);
-                
-                if (string.IsNullOrEmpty(_textFieldString))
+                if (_showOverrideField && evt.type == EventType.MouseDown && evt.button == 1 &&
+                    _textFieldDropdownRect.Contains(evt.mousePosition))
                 {
-                    if (Event.current.type == EventType.Repaint)
-                    {
-                        GUI.color = new Color(1, 1, 1, 0.3f);
-
-                        EditorStyles.textField.Draw(GUILayoutUtility.GetLastRect(),
-                            CodeGeneration.GetNamespaceForFileDirectory(_firstTargetUxmlPath)
-                            , false, false, false,
-                            false);
-                        GUI.color = Color.white;
-                    }
+                    var menu = new GenericMenu();
+                    menu.AddItem(new GUIContent("Revert"), false, () => UpdateInlineNamespace(true));
+                    GUIUtility.keyboardControl = 0;
+                    menu.DropDown(_textFieldDropdownRect);
                 }
+
+                using (var changeScope = new EditorGUI.ChangeCheckScope())
+                {
+                    _textFieldString = EditorGUILayout.DelayedTextField(_textFieldString);
+                    if (changeScope.changed)
+                        ApplyNamespaceChanges();
+                }
+
 
                 EditorGUI.showMixedValue = false;
             }
         }
 
-        private void UpdateInlineNamespace()
+        private void UpdateInlineNamespace(bool removeSetting)
         {
+            GUIUtility.keyboardControl = 0;
             var uxmlPaths = GetTargetPaths().ToArray();
             foreach (var uxmlPath in uxmlPaths)
             {
-                InlineCodeGenSettings.SetSetting(uxmlPath, InlineCodeGenSettings.CsNamespaceAttributeName,
-                    _textFieldString);
+                if (removeSetting)
+                    CodeGeneration.RemoveInlineNamespace(uxmlPath);
+                else
+                    InlineCodeGenSettings.SetSetting(uxmlPath, InlineCodeGenSettings.CsNamespaceAttributeName,
+                        _textFieldString);
             }
 
+            _firstTargetNamespace = _textFieldString = CodeGeneration.GetNamespaceForFile(uxmlPaths[0], out _);
             EditorApplication.delayCall += () =>
             {
                 AssetDatabase.StartAssetEditing();
@@ -131,12 +123,11 @@ namespace QuickEye.UIToolkit.Editor
                 .Select(i => i.assetPath);
         }
 
-        private bool IsTextFieldModified() => _textFieldString != _firstTargetNamespace;
-
         private void SetShowMixedValuesAndFieldOverride()
         {
             // mixedvalues = if more then 1 target and they have different namespaces
             // nampespaceOverride = any of the targets has a inline namespace
+            _showOverrideField = false;
             foreach (var filePath in GetTargetPaths())
             {
                 var n = CodeGeneration.GetNamespaceForFile(filePath, out var isInline);
@@ -154,6 +145,7 @@ namespace QuickEye.UIToolkit.Editor
             {
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("C# gen script"), false, Generate);
+                GUIUtility.keyboardControl = 0;
                 menu.DropDown(_generateScriptDropdownRect);
             }
 
