@@ -33,7 +33,7 @@ namespace QuickEye.UIToolkit.Editor
         {
             _firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
             _firstTargetNamespace = _textFieldString =
-                CodeGeneration.GetNamespaceForFile(_firstTargetUxmlPath, out _showOverrideField);
+                CodeGeneration.GetCsNamespace(_firstTargetUxmlPath, out _showOverrideField);
         }
 
         public override void OnGUI()
@@ -97,7 +97,7 @@ namespace QuickEye.UIToolkit.Editor
                         _textFieldString);
             }
 
-            _firstTargetNamespace = _textFieldString = CodeGeneration.GetNamespaceForFile(uxmlPaths[0], out _);
+            _firstTargetNamespace = _textFieldString = CodeGeneration.GetCsNamespace(uxmlPaths[0], out _);
             EditorApplication.delayCall += () =>
             {
                 AssetDatabase.StartAssetEditing();
@@ -130,7 +130,7 @@ namespace QuickEye.UIToolkit.Editor
             _showOverrideField = false;
             foreach (var filePath in GetTargetPaths())
             {
-                var n = CodeGeneration.GetNamespaceForFile(filePath, out var isInline);
+                var n = CodeGeneration.GetCsNamespace(filePath, out var isInline);
                 _showOverrideField |= isInline;
                 EditorGUI.showMixedValue = n != _firstTargetNamespace;
                 if (_showOverrideField && EditorGUI.showMixedValue)
@@ -147,7 +147,7 @@ namespace QuickEye.UIToolkit.Editor
                 menu.AddItem(new GUIContent("Generate .gen.cs"), false, Generate);
                 menu.AddItem(new GUIContent("Generate .gen.cs + .cs"), false, null);
                 menu.AddSeparator("");
-                menu.AddItem(new GUIContent("Open code gen settings"), false, null);
+                menu.AddItem(new GUIContent("Open code gen settings"), false, CodeGenSettingsEditor.OpenSettings);
                 GUIUtility.keyboardControl = 0;
                 menu.DropDown(_generateScriptDropdownRect);
             }

@@ -1,10 +1,9 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
+using UnityEditor.Compilation;
 
 namespace QuickEye.UIToolkit.Editor
 {
@@ -35,22 +34,16 @@ namespace QuickEye.UIToolkit.Editor
             InlineCodeGenSettings.RemoveSetting(filePath, InlineCodeGenSettings.CsNamespaceAttributeName);
         }
 
-
-        public static string GetNamespaceForFileDirectory(string filePath)
+        public static string GetCsNamespace(string uxmlOrGenCsFilePath, out bool isInline)
         {
-            return GetNamespaceForDir(Path.GetDirectoryName(filePath));
-        }
-
-        public static string GetNamespaceForFile(string filePath, out bool isInline)
-        {
-            if (TryGetInlineNamespace(filePath, out var csNamespace))
+            if (TryGetInlineNamespace(uxmlOrGenCsFilePath, out var csNamespace))
             {
                 isInline = true;
                 return csNamespace;
             }
 
             isInline = false;
-            return GetNamespaceForFileDirectory(filePath);
+            return GetNamespaceForFile(uxmlOrGenCsFilePath);
         }
 
         private static bool TryGetInlineNamespace(string filePath, out string csNamespace)
@@ -59,66 +52,35 @@ namespace QuickEye.UIToolkit.Editor
             return csNamespace != null;
         }
 
-        private static string GetNamespaceForDir(string directoryName)
+        private static string GetNamespaceForFile(string filePath)
         {
-            if (string.IsNullOrWhiteSpace(directoryName))
+            if (string.IsNullOrWhiteSpace(filePath))
                 return string.Empty;
 
-            if (directoryName == "Assets")
+            var assemblyDefinitionFilePath =
+                CompilationPipeline.GetAssemblyDefinitionFilePathFromScriptPath(filePath);
+            if (string.IsNullOrEmpty(assemblyDefinitionFilePath))
                 return EditorSettings.projectGenerationRootNamespace;
 
-            foreach (var file in Directory.GetFiles(directoryName, "*"))
-            {
-                if (!TryLoadAssemblyDefinition(file, out var asmDef))
-                    continue;
+            if (!TryLoadAssemblyDefinition(assemblyDefinitionFilePath, out var asmDef))
+                throw new Exception($"unexpected: {assemblyDefinitionFilePath}");
 
-                if (!string.IsNullOrEmpty(asmDef.rootNamespace))
-                    return asmDef.rootNamespace;
+            if (!string.IsNullOrEmpty(asmDef.rootNamespace))
+                return asmDef.rootNamespace;
 
-                if (!string.IsNullOrEmpty(asmDef.name))
-                    return asmDef.name;
-            }
-
-            return GetNamespaceForDir(Path.GetDirectoryName(directoryName));
+            return asmDef.name;
         }
 
         private static bool TryLoadAssemblyDefinition(string filePath, out AsmDefinition asmDef)
         {
-            asmDef = null;
-
-            if (filePath.EndsWith(".asmdef"))
-            {
-                asmDef = JsonUtility.FromJson<AsmDefinition>(File.ReadAllText(filePath));
-            }
-            else if (filePath.EndsWith(".asmref"))
-            {
-                asmDef = JsonUtility.FromJson<AsmDefinition>(File.ReadAllText(filePath));
-                var reference = asmDef.reference;
-                asmDef = reference.StartsWith("GUID:")
-                    ? LoadAsmDef(reference[5..])
-                    : AssetDatabase.FindAssets($"t:{nameof(AssemblyDefinitionAsset)}")
-                        .Select(LoadAsmDef)
-                        .FirstOrDefault(def => def.name == reference);
-                if (asmDef == null)
-                    Debug.LogError($"Assembly reference is missing: {filePath}");
-            }
-
+            asmDef = JsonUtility.FromJson<AsmDefinition>(File.ReadAllText(filePath));
             return asmDef != null;
-        }
-
-        private static AsmDefinition LoadAsmDef(string guid)
-        {
-            if (string.IsNullOrEmpty(guid))
-                return null;
-            var json = AssetDatabase.LoadAssetAtPath<TextAsset>(AssetDatabase.GUIDToAssetPath(guid)).text;
-            return JsonUtility.FromJson<AsmDefinition>(json);
         }
 
         [Serializable]
         private class AsmDefinition
         {
             public string name;
-            public string reference;
             public string rootNamespace;
         }
     }

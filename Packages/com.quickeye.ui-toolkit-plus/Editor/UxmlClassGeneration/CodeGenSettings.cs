@@ -8,6 +8,7 @@ namespace QuickEye.UIToolkit.Editor
     {
         [InspectorName("lowerCamelCase")]
         LowerCamelCase,
+
         [InspectorName("UpperCamelCase")]
         UpperCamelCase
     }
@@ -54,14 +55,21 @@ namespace QuickEye.UIToolkit.Editor
     [CustomEditor(typeof(CodeGenSettings))]
     internal class CodeGenSettingsEditor : UnityEditor.Editor
     {
+        private const string ProjectUxmlCodeGeneration = "Project/UXML Code Generation";
+
         [SettingsProvider]
         public static SettingsProvider CreateSettingsProvider()
         {
             var instance = CodeGenSettings.instance;
             var provider = AssetSettingsProvider.CreateProviderFromObject(
-                "Project/UXML Code Generation", instance,
+                ProjectUxmlCodeGeneration, instance,
                 SettingsProvider.GetSearchKeywordsFromSerializedObject(new SerializedObject(instance)));
             return provider;
+        }
+
+        public static void OpenSettings()
+        {
+            SettingsService.OpenProjectSettings(ProjectUxmlCodeGeneration);
         }
 
         public override void OnInspectorGUI()

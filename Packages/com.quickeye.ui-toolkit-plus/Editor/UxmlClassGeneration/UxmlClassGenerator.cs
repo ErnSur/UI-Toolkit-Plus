@@ -48,7 +48,7 @@ namespace QuickEye.UIToolkit.Editor
 
             var newScriptContent = CreateScriptContent(
                 className: CodeGenSettings.instance.className.ApplyStyle(uxmlAsset.name),
-                classNamespace: CodeGeneration.GetNamespaceForFile(genCsFilePath, out _),
+                classNamespace: CodeGeneration.GetCsNamespace(genCsFilePath, out _),
                 uxmlElements: validElements);
 
             if (File.Exists(genCsFilePath) &&
