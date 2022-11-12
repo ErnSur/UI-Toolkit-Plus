@@ -141,10 +141,13 @@ namespace QuickEye.UIToolkit.Editor
 
         private void GenerateScriptDropdown()
         {
-            if (EditorGUILayout.DropdownButton(new GUIContent("Generate"), FocusType.Keyboard, GUILayout.Width(70)))
+            if (EditorGUILayout.DropdownButton(new GUIContent("Options"), FocusType.Keyboard, GUILayout.Width(70)))
             {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("C# gen script"), false, Generate);
+                menu.AddItem(new GUIContent("Generate .gen.cs"), false, Generate);
+                menu.AddItem(new GUIContent("Generate .gen.cs + .cs"), false, null);
+                menu.AddSeparator("");
+                menu.AddItem(new GUIContent("Open code gen settings"), false, null);
                 GUIUtility.keyboardControl = 0;
                 menu.DropDown(_generateScriptDropdownRect);
             }
