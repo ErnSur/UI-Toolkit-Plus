@@ -147,7 +147,7 @@ namespace QuickEye.UIToolkit.Editor
                 menu.AddItem(new GUIContent("Generate .gen.cs"), false, Generate);
                 menu.AddItem(new GUIContent("Generate .gen.cs + .cs"), false, null);
                 menu.AddSeparator("");
-                menu.AddItem(new GUIContent("Open code gen settings"), false, CodeGenSettingsEditor.OpenSettings);
+                menu.AddItem(new GUIContent("Open code gen settings"), false, CodeGenProjectSettingsEditor.OpenSettings);
                 GUIUtility.keyboardControl = 0;
                 menu.DropDown(_generateScriptDropdownRect);
             }

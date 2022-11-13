@@ -47,7 +47,7 @@ namespace QuickEye.UIToolkit.Editor
             var genCsFilePath = GetGenCsFilePath(uxmlFilePath);
 
             var newScriptContent = CreateScriptContent(
-                className: CodeGenSettings.instance.className.ApplyStyle(uxmlAsset.name),
+                className: CodeGenProjectSettings.Instance.className.ApplyStyle(uxmlAsset.name),
                 classNamespace: CodeGeneration.GetCsNamespace(genCsFilePath, out _),
                 uxmlElements: validElements);
 
@@ -74,7 +74,7 @@ namespace QuickEye.UIToolkit.Editor
         private static string GetFieldDeclaration(UxmlElement element)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
-            var fieldIdentifier = CodeGenSettings.instance.privateField
+            var fieldIdentifier = CodeGenProjectSettings.Instance.privateField
                 .ApplyStyle(CodeGeneration.UssNameToVariableName(element.NameAttribute));
             return $"private {type} {fieldIdentifier};";
         }
@@ -83,7 +83,7 @@ namespace QuickEye.UIToolkit.Editor
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
             var name = element.NameAttribute;
-            var varName = CodeGenSettings.instance.privateField
+            var varName = CodeGenProjectSettings.Instance.privateField
                 .ApplyStyle(CodeGeneration.UssNameToVariableName(name));
 
             if (element.FullyQualifiedTypeName == ColumnFullName)
@@ -101,7 +101,7 @@ namespace QuickEye.UIToolkit.Editor
             if (string.IsNullOrEmpty(multiColumnElement?.NameAttribute))
                 return $"// Could not find \"{name}\" MultiColumn parent with a name.";
 
-            var multiColumnEleVarName = CodeGenSettings.instance.privateField
+            var multiColumnEleVarName = CodeGenProjectSettings.Instance.privateField
                 .ApplyStyle(CodeGeneration.UssNameToVariableName(multiColumnElement.NameAttribute));
             return $"{varName} = {multiColumnEleVarName}.columns[\"{name}\"];";
         }
