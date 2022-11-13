@@ -9,6 +9,7 @@ namespace QuickEye.UIToolkit.Editor
 {
     internal static class CodeGeneration
     {
+        
         public static string UssNameToVariableName(string input)
         {
             return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());

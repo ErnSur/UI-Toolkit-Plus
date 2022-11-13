@@ -46,6 +46,15 @@ namespace QuickEye.UIToolkit.Editor
 
             public string ApplyStyle(string identifier)
             {
+                switch (style)
+                {
+                    case CaseStyle.LowerCamelCase:
+                        identifier = identifier.ToCamelCase();
+                        break;
+                    case CaseStyle.UpperCamelCase:
+                        identifier = identifier.ToPascalCase();
+                        break;
+                }
                 return $"{prefix}{identifier}{suffix}";
             }
         }
