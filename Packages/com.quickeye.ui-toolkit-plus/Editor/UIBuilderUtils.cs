@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using System.Xml.Linq;
@@ -81,7 +82,7 @@ namespace QuickEye.UIToolkit
                 foreach (var e in elements)
                 {
                     sb.AppendLine($"[Q(\"{e.NameAttribute}\")]");
-                    sb.AppendLine($"private {e.TypeName} {CodeGeneration.UssNameToVariableName(e.NameAttribute)};");
+                    sb.AppendLine($"private {e.TypeName} {UssNameToVariableName(e.NameAttribute)};");
                 }
 
                 count = elements.Length;
@@ -92,6 +93,58 @@ namespace QuickEye.UIToolkit
             result = null;
             count = 0;
             return false;
+        }
+
+        private static string UssNameToVariableName(string input)
+        {
+            return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());
+        }
+    }
+    
+    internal static class UxmlParser
+    {
+        public static bool TryGetElementsWithName(string uxml, out UxmlElement[] elements)
+        {
+            try
+            {
+                elements = (from ele in XDocument.Parse(uxml).Descendants()
+                    let name = ele.Attribute("name")?.Value
+                    where name != null
+                    select new UxmlElement(ele)).ToArray();
+
+                return true;
+            }
+            catch (XmlException)
+            {
+                elements = null;
+                return false;
+            }
+        }
+    }
+    
+    internal class UxmlElement
+    {
+        public readonly XElement XElement;
+        public readonly string Namespace;
+        public readonly string TypeName;
+        public readonly string NameAttribute;
+        public string FullyQualifiedTypeName => $"{Namespace}.{TypeName}";
+        public bool IsUnityEngineType => Namespace == "UnityEngine.UIElements";
+        
+        public UxmlElement(XElement xElement)
+        {
+            XElement = xElement;
+            var localName = xElement.Name.LocalName;
+
+            Namespace = xElement.Name.NamespaceName != XNamespace.None
+                ? xElement.Name.NamespaceName
+                : localName[..localName.LastIndexOf('.')];
+            TypeName = localName.Contains('.')
+                ? localName.Split('.').Last()
+                : localName;
+            NameAttribute = xElement.Attribute("name")?.Value;
+            if (FullyQualifiedTypeName == "UnityEngine.UIElements.Instance")
+                TypeName = "TemplateContainer";
         }
     }
 }
