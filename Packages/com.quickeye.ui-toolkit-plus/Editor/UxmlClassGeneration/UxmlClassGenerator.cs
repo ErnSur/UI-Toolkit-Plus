@@ -57,8 +57,18 @@ namespace QuickEye.UIToolkit.Editor
 
             File.WriteAllText(genCsFilePath, newScriptContent);
             AssetDatabase.ImportAsset(genCsFilePath);
+            SetIcon(genCsFilePath);
             if (pingAsset)
                 EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<MonoScript>(genCsFilePath));
+        }
+
+        private static void SetIcon(string path)
+        {
+            var monoImporter = AssetImporter.GetAtPath(path) as MonoImporter;
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.quickeye.ui-toolkit-plus/Editor/Icons/gen.cs Icon.png");
+
+            monoImporter.SetIcon(icon);
+            monoImporter.SaveAndReimport();
         }
 
         private static string GetFieldDeclaration(UxmlElement element)
