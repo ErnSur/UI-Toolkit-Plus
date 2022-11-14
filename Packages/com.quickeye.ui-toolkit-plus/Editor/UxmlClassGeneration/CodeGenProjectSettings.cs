@@ -6,8 +6,8 @@ namespace QuickEye.UIToolkit.Editor
     [FilePath("ProjectSettings/UxmlCodeGenSettings.asset", FilePathAttribute.Location.ProjectFolder)]
     internal class CodeGenProjectSettings : ScriptableSingleton<CodeGenProjectSettings>
     {
-        public static CodeGenerationSettings Instance => instance.settings;
-        public CodeGenerationSettings settings;
+        public static CodeGenSettings Instance => instance.settings;
+        public CodeGenSettings settings;
         public void Save() => Save(true);
 
         private void OnEnable()

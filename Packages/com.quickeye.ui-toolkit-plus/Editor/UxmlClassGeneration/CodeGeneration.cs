@@ -9,30 +9,17 @@ namespace QuickEye.UIToolkit.Editor
 {
     internal static class CodeGeneration
     {
-        
+        public static CodeGenSettings GetSettingsFor(string uxmlFilePath)
+        {
+            var uxml = File.ReadAllText(uxmlFilePath);
+            var settings= CodeGenSettingsSerializer.FromUxml(uxml).AddChangesTo(CodeGenProjectSettings.Instance);
+            settings.csNamespace ??= GetNamespaceForFile(uxmlFilePath);
+            return settings;
+        }
+
         public static string UssNameToVariableName(string input)
         {
             return Regex.Replace(input, "-+.", m => char.ToUpper(m.Value[m.Length - 1]).ToString());
-        }
-
-        public static string GetInlineNamespace(string filePath)
-        {
-            if (filePath.EndsWith(".gen.cs"))
-                filePath = filePath.Replace(".gen.cs", ".uxml");
-            if (!filePath.EndsWith(".uxml"))
-                return null;
-
-            return new InlineCodeGenSettings(File.ReadAllText(filePath)).CsNamespace;
-        }
-
-        public static void RemoveInlineNamespace(string filePath)
-        {
-            if (filePath.EndsWith(".gen.cs"))
-                filePath = filePath.Replace(".gen.cs", ".uxml");
-            if (!filePath.EndsWith(".uxml"))
-                return;
-
-            InlineCodeGenSettings.RemoveSetting(filePath, InlineCodeGenSettings.CsNamespaceAttributeName);
         }
 
         public static string GetCsNamespace(string uxmlOrGenCsFilePath, out bool isInline)
@@ -47,12 +34,36 @@ namespace QuickEye.UIToolkit.Editor
             return GetNamespaceForFile(uxmlOrGenCsFilePath);
         }
 
+        public static void SetInlineNamespace(string filePath, string newNamespace)
+        {
+            if (filePath.EndsWith(".gen.cs"))
+                filePath = filePath.Replace(".gen.cs", ".uxml");
+            if (!filePath.EndsWith(".uxml"))
+                return;
+            var settings = CodeGenSettingsSerializer.FromUxml(File.ReadAllText(filePath));
+            settings.csNamespace = newNamespace;
+            CodeGenSettingsSerializer.SaveTo(settings, filePath);
+        }
+        
         private static bool TryGetInlineNamespace(string filePath, out string csNamespace)
         {
             csNamespace = GetInlineNamespace(filePath);
             return csNamespace != null;
         }
 
+        private static string GetInlineNamespace(string filePath)
+        {
+            if (filePath.EndsWith(".gen.cs"))
+                filePath = filePath.Replace(".gen.cs", ".uxml");
+            if (!filePath.EndsWith(".uxml"))
+                return null;
+
+            return CodeGenSettingsSerializer.FromUxml(File.ReadAllText(filePath)).csNamespace;
+        }
+
+        /// <summary>
+        /// Gets the namespace based on assembly definition files and project settings
+        /// </summary>
         private static string GetNamespaceForFile(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))

@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace QuickEye.UIToolkit.Editor
 {
-    internal static class CodeGenerationSettingsSerializer
+    internal static class CodeGenSettingsSerializer
     {
         private const string PrefixAttrNameSuffix = "-prefix";
         private const string SuffixAttrNameSuffix = "-suffix";
@@ -17,11 +17,11 @@ namespace QuickEye.UIToolkit.Editor
         private const string ClassAttributeName = "class";
         public const string CsNamespaceAttributeName = AttributePrefixBase + "-namespace";
 
-        public static InlineCodeGenerationSettings FromUxml(string uxml)
+        public static CodeGenSettings FromUxml(string uxml)
         {
             var root = XDocument.Parse(uxml).Root;
 
-            return new InlineCodeGenerationSettings
+            return new CodeGenSettings
             {
                 csNamespace = root?.Attribute(CsNamespaceAttributeName)?.Value,
                 privateField = GetMemberIdentifierSettingsFromXml(root, FieldAttributeName),
@@ -29,7 +29,7 @@ namespace QuickEye.UIToolkit.Editor
             };
         }
 
-        public static void SaveTo(InlineCodeGenerationSettings settings, string uxmlPath)
+        public static void SaveTo(CodeGenSettings settings, string uxmlPath)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
             if (root == null)

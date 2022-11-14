@@ -1,18 +1,32 @@
 using System;
+using UnityEngine;
 
 namespace QuickEye.UIToolkit.Editor
 {
     [Serializable]
-    internal class InlineCodeGenerationSettings : CodeGenerationSettings
+    internal class CodeGenSettings
     {
+        [NonSerialized]
         public string csNamespace;
 
-        public CodeGenerationSettings AddChangesTo(CodeGenerationSettings settings)
+        [Header("Code Style")]
+        public MemberIdentifierSettings className = new MemberIdentifierSettings()
         {
-            return new CodeGenerationSettings
+            style = CaseStyle.UpperCamelCase
+        };
+
+        public MemberIdentifierSettings privateField = new MemberIdentifierSettings()
+        {
+            style = CaseStyle.LowerCamelCase
+        };
+        
+        public CodeGenSettings AddChangesTo(CodeGenSettings settings)
+        {
+            return new CodeGenSettings
             {
                 className = AddChanges(settings.className, className),
                 privateField = AddChanges(settings.privateField, privateField),
+                csNamespace = csNamespace ?? settings.csNamespace
             };
         }
 

@@ -35,7 +35,7 @@ namespace QuickEye.UIToolkit.Editor
         {
             var uxmlFilePath = AssetDatabase.GetAssetPath(uxmlAsset);
             var uxml = File.ReadAllText(uxmlFilePath);
-            var settings = InlineCodeGenSettings.FromUxml(uxml);
+            var settings = CodeGeneration.GetSettingsFor(uxmlFilePath);
 
             if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
                 return;
@@ -47,8 +47,8 @@ namespace QuickEye.UIToolkit.Editor
             var genCsFilePath = GetGenCsFilePath(uxmlFilePath);
 
             var newScriptContent = CreateScriptContent(
-                className: CodeGenProjectSettings.Instance.className.ApplyStyle(uxmlAsset.name),
-                classNamespace: CodeGeneration.GetCsNamespace(genCsFilePath, out _),
+                className: settings.className.ApplyStyle(uxmlAsset.name),
+                classNamespace: settings.csNamespace,
                 uxmlElements: validElements);
 
             if (File.Exists(genCsFilePath) &&

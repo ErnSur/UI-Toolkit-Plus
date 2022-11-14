@@ -90,11 +90,7 @@ namespace QuickEye.UIToolkit.Editor
             var uxmlPaths = GetTargetPaths().ToArray();
             foreach (var uxmlPath in uxmlPaths)
             {
-                if (removeSetting)
-                    CodeGeneration.RemoveInlineNamespace(uxmlPath);
-                else
-                    InlineCodeGenSettings.SetSetting(uxmlPath, InlineCodeGenSettings.CsNamespaceAttributeName,
-                        _textFieldString);
+                CodeGeneration.SetInlineNamespace(uxmlPath, removeSetting ? null : _textFieldString);
             }
 
             _firstTargetNamespace = _textFieldString = CodeGeneration.GetCsNamespace(uxmlPaths[0], out _);
@@ -147,7 +143,8 @@ namespace QuickEye.UIToolkit.Editor
                 menu.AddItem(new GUIContent("Generate .gen.cs"), false, Generate);
                 menu.AddItem(new GUIContent("Generate .gen.cs + .cs"), false, null);
                 menu.AddSeparator("");
-                menu.AddItem(new GUIContent("Open code gen settings"), false, CodeGenProjectSettingsEditor.OpenSettings);
+                menu.AddItem(new GUIContent("Open code gen settings"), false,
+                    CodeGenProjectSettingsEditor.OpenSettings);
                 GUIUtility.keyboardControl = 0;
                 menu.DropDown(_generateScriptDropdownRect);
             }
