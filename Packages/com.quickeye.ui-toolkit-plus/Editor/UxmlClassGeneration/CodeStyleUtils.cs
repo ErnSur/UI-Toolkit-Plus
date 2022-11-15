@@ -4,15 +4,29 @@ using System.Text.RegularExpressions;
 
 namespace QuickEye.UIToolkit.Editor
 {
-    internal static class TextUtils
+    internal static class CodeStyleUtils
     {
-        public static string ToCamelCase(this string original)
+        public static string ApplyCaseStyle(this string text, CaseStyle style)
         {
-            var text = ToPascalCase(original);
+            switch (style)
+            {
+                default:
+                case CaseStyle.NotSet:
+                    return text;
+                case CaseStyle.LowerCamelCase:
+                    return ToLowerCamelCase(text); 
+                case CaseStyle.UpperCamelCase:
+                    return ToUpperCamelCase(text);
+            }
+        }
+
+        private static string ToLowerCamelCase(string original)
+        {
+            var text = ToUpperCamelCase(original);
             return $"{char.ToLowerInvariant(text[0])}{text.Substring(1)}";
         }
 
-        public static string ToPascalCase(this string original)
+        private static string ToUpperCamelCase(string original)
         {
             var invalidCharsRgx = new Regex("[^_a-zA-Z0-9]");
             var startsWithLowerCaseChar = new Regex("^[a-z]");

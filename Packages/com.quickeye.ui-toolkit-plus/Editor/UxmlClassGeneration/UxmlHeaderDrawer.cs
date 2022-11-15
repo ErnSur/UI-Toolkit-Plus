@@ -33,7 +33,7 @@ namespace QuickEye.UIToolkit.Editor
         {
             _firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
             _firstTargetNamespace = _textFieldString =
-                CodeGeneration.GetCsNamespace(_firstTargetUxmlPath, out _showOverrideField);
+                CsNamespaceUtils.GetCsNamespace(_firstTargetUxmlPath, out _showOverrideField);
         }
 
         public override void OnGUI()
@@ -90,10 +90,10 @@ namespace QuickEye.UIToolkit.Editor
             var uxmlPaths = GetTargetPaths().ToArray();
             foreach (var uxmlPath in uxmlPaths)
             {
-                CodeGeneration.SetInlineNamespace(uxmlPath, removeSetting ? null : _textFieldString);
+                CsNamespaceUtils.SetInlineNamespace(uxmlPath, removeSetting ? null : _textFieldString);
             }
 
-            _firstTargetNamespace = _textFieldString = CodeGeneration.GetCsNamespace(uxmlPaths[0], out _);
+            _firstTargetNamespace = _textFieldString = CsNamespaceUtils.GetCsNamespace(uxmlPaths[0], out _);
             EditorApplication.delayCall += () =>
             {
                 AssetDatabase.StartAssetEditing();
@@ -126,7 +126,7 @@ namespace QuickEye.UIToolkit.Editor
             _showOverrideField = false;
             foreach (var filePath in GetTargetPaths())
             {
-                var n = CodeGeneration.GetCsNamespace(filePath, out var isInline);
+                var n = CsNamespaceUtils.GetCsNamespace(filePath, out var isInline);
                 _showOverrideField |= isInline;
                 EditorGUI.showMixedValue = n != _firstTargetNamespace;
                 if (_showOverrideField && EditorGUI.showMixedValue)

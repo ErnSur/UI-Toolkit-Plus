@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace QuickEye.UIToolkit.Editor
 {
-    internal static class CodeGenSettingsSerializer
+    internal static class InlineSettings
     {
         private const string PrefixAttrNameSuffix = "-prefix";
         private const string SuffixAttrNameSuffix = "-suffix";
@@ -17,30 +17,52 @@ namespace QuickEye.UIToolkit.Editor
         private const string ClassAttributeName = "class";
         public const string CsNamespaceAttributeName = AttributePrefixBase + "-namespace";
 
-        public static CodeGenSettings FromUxml(string uxml)
+        public static string GetCsNamespace(string uxmlPath)
+        {
+            var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
+            return GetCsNamespace(root);
+            
+        }
+        
+        private static string GetCsNamespace(XElement root)
+        {
+            return root?.Attribute(CsNamespaceAttributeName)?.Value;
+        }
+        
+        public static void WriteCsNamespace(string uxmlPath, string csNamespace)
+        {
+            var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
+            if (csNamespace != null)
+                root.SetAttributeValue(CsNamespaceAttributeName, csNamespace);
+            else
+                root.Attribute(CsNamespaceAttributeName)?.Remove();
+            Write(uxmlPath, root);
+        }
+        
+        public static CodeStyleRules GetCodeStyleRules(string uxml)
         {
             var root = XDocument.Parse(uxml).Root;
 
-            return new CodeGenSettings
+            return new CodeStyleRules
             {
-                csNamespace = root?.Attribute(CsNamespaceAttributeName)?.Value,
                 privateField = GetMemberIdentifierSettingsFromXml(root, FieldAttributeName),
                 className = GetMemberIdentifierSettingsFromXml(root, ClassAttributeName)
             };
         }
 
-        public static void SaveTo(CodeGenSettings settings, string uxmlPath)
+        public static void WriteCodeStyleRules(string uxmlPath, CodeStyleRules settings)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
             if (root == null)
                 return;
             SetMemberIdentifierSettingsToXml(root, settings.className, ClassAttributeName);
             SetMemberIdentifierSettingsToXml(root, settings.privateField, FieldAttributeName);
-            if (settings.csNamespace != null)
-                root.SetAttributeValue(CsNamespaceAttributeName, settings.csNamespace);
-            else
-                root.Attribute(CsNamespaceAttributeName)?.Remove();
-            
+
+            Write(uxmlPath, root);
+        }
+
+        private static void Write(string uxmlPath, XElement root)
+        {
             using (var writer = new XmlTextWriter(uxmlPath, Encoding.UTF8))
             {
                 writer.Formatting = Formatting.Indented;

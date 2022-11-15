@@ -4,11 +4,8 @@ using UnityEngine;
 namespace QuickEye.UIToolkit.Editor
 {
     [Serializable]
-    internal class CodeGenSettings
+    internal class CodeStyleRules
     {
-        [NonSerialized]
-        public string csNamespace;
-
         [Header("Code Style")]
         public MemberIdentifierSettings className = new MemberIdentifierSettings()
         {
@@ -20,17 +17,16 @@ namespace QuickEye.UIToolkit.Editor
             style = CaseStyle.LowerCamelCase
         };
         
-        public CodeGenSettings AddChangesTo(CodeGenSettings settings)
+        public CodeStyleRules Override(CodeStyleRules settings)
         {
-            return new CodeGenSettings
+            return new CodeStyleRules
             {
-                className = AddChanges(settings.className, className),
-                privateField = AddChanges(settings.privateField, privateField),
-                csNamespace = csNamespace ?? settings.csNamespace
+                className = AddOverrides(settings.className, className),
+                privateField = AddOverrides(settings.privateField, privateField),
             };
         }
 
-        private static MemberIdentifierSettings AddChanges(MemberIdentifierSettings baseSettings,
+        private static MemberIdentifierSettings AddOverrides(MemberIdentifierSettings baseSettings,
             MemberIdentifierSettings overrides)
         {
             return new MemberIdentifierSettings

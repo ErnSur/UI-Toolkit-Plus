@@ -35,7 +35,7 @@ namespace QuickEye.UIToolkit.Editor
         {
             var uxmlFilePath = AssetDatabase.GetAssetPath(uxmlAsset);
             var uxml = File.ReadAllText(uxmlFilePath);
-            var settings = CodeGeneration.GetSettingsFor(uxmlFilePath);
+            var settings = CsNamespaceUtils.GetFinalCodeStyleRulesFor(uxmlFilePath);
 
             if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
                 return;
@@ -47,8 +47,8 @@ namespace QuickEye.UIToolkit.Editor
             var genCsFilePath = GetGenCsFilePath(uxmlFilePath);
 
             var newScriptContent = CreateScriptContent(
-                className: settings.className.ApplyStyle(uxmlAsset.name),
-                classNamespace: settings.csNamespace,
+                className: settings.className.Apply(uxmlAsset.name),
+                classNamespace: CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _),
                 uxmlElements: validElements);
 
             if (File.Exists(genCsFilePath) &&
@@ -65,7 +65,8 @@ namespace QuickEye.UIToolkit.Editor
         private static void SetIcon(string path)
         {
             var monoImporter = AssetImporter.GetAtPath(path) as MonoImporter;
-            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/com.quickeye.ui-toolkit-plus/Editor/Icons/gen.cs Icon.png");
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(
+                "Packages/com.quickeye.ui-toolkit-plus/Editor/Icons/gen.cs Icon.png");
 
             monoImporter.SetIcon(icon);
             monoImporter.SaveAndReimport();
@@ -74,8 +75,8 @@ namespace QuickEye.UIToolkit.Editor
         private static string GetFieldDeclaration(UxmlElement element)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
-            var fieldIdentifier = CodeGenProjectSettings.Instance.privateField
-                .ApplyStyle(CodeGeneration.UssNameToVariableName(element.NameAttribute));
+            var fieldIdentifier = CodeGenProjectSettings.CodeStyleRules.privateField
+                .Apply(element.NameAttribute);
             return $"private {type} {fieldIdentifier};";
         }
 
@@ -83,8 +84,8 @@ namespace QuickEye.UIToolkit.Editor
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
             var name = element.NameAttribute;
-            var varName = CodeGenProjectSettings.Instance.privateField
-                .ApplyStyle(CodeGeneration.UssNameToVariableName(name));
+            var varName = CodeGenProjectSettings.CodeStyleRules.privateField
+                .Apply(name);
 
             if (element.FullyQualifiedTypeName == ColumnFullName)
             {
@@ -101,8 +102,8 @@ namespace QuickEye.UIToolkit.Editor
             if (string.IsNullOrEmpty(multiColumnElement?.NameAttribute))
                 return $"// Could not find \"{name}\" MultiColumn parent with a name.";
 
-            var multiColumnEleVarName = CodeGenProjectSettings.Instance.privateField
-                .ApplyStyle(CodeGeneration.UssNameToVariableName(multiColumnElement.NameAttribute));
+            var multiColumnEleVarName = CodeGenProjectSettings.CodeStyleRules.privateField
+                .Apply(multiColumnElement.NameAttribute);
             return $"{varName} = {multiColumnEleVarName}.columns[\"{name}\"];";
         }
 
