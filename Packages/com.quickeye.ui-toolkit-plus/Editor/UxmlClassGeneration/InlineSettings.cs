@@ -8,12 +8,12 @@ namespace QuickEye.UIToolkit.Editor
 {
     internal static class InlineSettings
     {
-        private const string PrefixAttrNameSuffix = "-prefix";
-        private const string SuffixAttrNameSuffix = "-suffix";
-        private const string StyleAttrNameSuffix = "-style";
-        
-        private const string AttributePrefixBase = "code-gen-";
-        private const string FieldAttributeName = "field";
+        private const string PrefixAttrNameSuffix = "prefix";
+        private const string SuffixAttrNameSuffix = "suffix";
+        private const string StyleAttrNameSuffix = "style";
+
+        private const string AttributePrefixBase = "gen-cs";
+        private const string FieldAttributeName = "private-field";
         private const string ClassAttributeName = "class";
         public const string CsNamespaceAttributeName = AttributePrefixBase + "-namespace";
 
@@ -21,14 +21,13 @@ namespace QuickEye.UIToolkit.Editor
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
             return GetCsNamespace(root);
-            
         }
-        
+
         private static string GetCsNamespace(XElement root)
         {
             return root?.Attribute(CsNamespaceAttributeName)?.Value;
         }
-        
+
         public static void WriteCsNamespace(string uxmlPath, string csNamespace)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
@@ -38,7 +37,7 @@ namespace QuickEye.UIToolkit.Editor
                 root.Attribute(CsNamespaceAttributeName)?.Remove();
             Write(uxmlPath, root);
         }
-        
+
         public static CodeStyleRules GetCodeStyleRules(string uxml)
         {
             var root = XDocument.Parse(uxml).Root;
@@ -103,12 +102,12 @@ namespace QuickEye.UIToolkit.Editor
         }
 
         private static string GetPrefixAttrName(string memberName) =>
-            AttributePrefixBase + memberName + PrefixAttrNameSuffix;
+            string.Join('-', AttributePrefixBase, memberName, PrefixAttrNameSuffix);
 
         private static string GetSuffixAttrName(string memberName) =>
-            AttributePrefixBase + memberName + SuffixAttrNameSuffix;
+            string.Join('-', AttributePrefixBase, memberName, SuffixAttrNameSuffix);
 
         private static string GetStyleAttrName(string memberName) =>
-            AttributePrefixBase + memberName + StyleAttrNameSuffix;
+            string.Join('-', AttributePrefixBase, memberName, StyleAttrNameSuffix);
     }
 }

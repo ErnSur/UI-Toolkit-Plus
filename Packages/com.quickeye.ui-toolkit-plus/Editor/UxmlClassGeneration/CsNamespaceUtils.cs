@@ -9,6 +9,7 @@ namespace QuickEye.UIToolkit.Editor
 {
     internal static class CsNamespaceUtils
     {
+        // TODO: Move elswhere
         public static CodeStyleRules GetFinalCodeStyleRulesFor(string uxmlFilePath)
         {
             var uxml = File.ReadAllText(uxmlFilePath);

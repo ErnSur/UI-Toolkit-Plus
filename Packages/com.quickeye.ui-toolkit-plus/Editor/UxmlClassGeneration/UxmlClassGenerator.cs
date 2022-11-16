@@ -35,7 +35,8 @@ namespace QuickEye.UIToolkit.Editor
         {
             var uxmlFilePath = AssetDatabase.GetAssetPath(uxmlAsset);
             var uxml = File.ReadAllText(uxmlFilePath);
-            var settings = CsNamespaceUtils.GetFinalCodeStyleRulesFor(uxmlFilePath);
+
+            var codeStyleRules = CsNamespaceUtils.GetFinalCodeStyleRulesFor(uxmlFilePath);
 
             if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
                 return;
@@ -47,9 +48,10 @@ namespace QuickEye.UIToolkit.Editor
             var genCsFilePath = GetGenCsFilePath(uxmlFilePath);
 
             var newScriptContent = CreateScriptContent(
-                className: settings.className.Apply(uxmlAsset.name),
+                className: uxmlAsset.name,
                 classNamespace: CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _),
-                uxmlElements: validElements);
+                uxmlElements: validElements,
+                codeStyle: codeStyleRules);
 
             if (File.Exists(genCsFilePath) &&
                 !IsEqualWithoutComments(File.ReadAllText(genCsFilePath), newScriptContent))
@@ -72,48 +74,47 @@ namespace QuickEye.UIToolkit.Editor
             monoImporter.SaveAndReimport();
         }
 
-        private static string GetFieldDeclaration(UxmlElement element)
+        private static string GetFieldDeclaration(UxmlElement element, CodeStyleRules codeStyleRules)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
-            var fieldIdentifier = CodeGenProjectSettings.CodeStyleRules.privateField
-                .Apply(element.NameAttribute);
+            var fieldIdentifier = codeStyleRules.privateField.Apply(element.NameAttribute);
             return $"private {type} {fieldIdentifier};";
         }
 
-        private static string GetFieldAssigment(UxmlElement element)
+        private static string GetFieldAssigment(UxmlElement element, CodeStyleRules codeStyleRules)
         {
             var type = element.IsUnityEngineType ? element.TypeName : element.FullyQualifiedTypeName;
             var name = element.NameAttribute;
-            var varName = CodeGenProjectSettings.CodeStyleRules.privateField
-                .Apply(name);
+            var varName = codeStyleRules.privateField.Apply(name);
 
             if (element.FullyQualifiedTypeName == ColumnFullName)
             {
-                return GetFieldAssigmentForColumn(element, varName, name);
+                return GetFieldAssigmentForColumn(element, varName, name, codeStyleRules);
             }
 
             return $"{varName} = root.Q<{type}>(\"{name}\");";
         }
 
-        private static string GetFieldAssigmentForColumn(UxmlElement element, string varName, string name)
+        private static string GetFieldAssigmentForColumn(UxmlElement element, string varName, string name,
+            CodeStyleRules codeStyleRules)
         {
             var multiColumnElement = element.XElement.Parent?.Parent?.ToUxmlElement();
 
             if (string.IsNullOrEmpty(multiColumnElement?.NameAttribute))
                 return $"// Could not find \"{name}\" MultiColumn parent with a name.";
 
-            var multiColumnEleVarName = CodeGenProjectSettings.CodeStyleRules.privateField
-                .Apply(multiColumnElement.NameAttribute);
+            var multiColumnEleVarName = codeStyleRules.privateField.Apply(multiColumnElement.NameAttribute);
             return $"{varName} = {multiColumnEleVarName}.columns[\"{name}\"];";
         }
 
-        private static string CreateScriptContent(string className, string classNamespace, UxmlElement[] uxmlElements)
+        private static string CreateScriptContent(string className, string classNamespace, UxmlElement[] uxmlElements,
+            CodeStyleRules codeStyle)
         {
-            var fields = uxmlElements.Select(GetFieldDeclaration);
-            var assignments = uxmlElements.Select(GetFieldAssigment);
+            var fields = uxmlElements.Select(e => GetFieldDeclaration(e, codeStyle));
+            var assignments = uxmlElements.Select(e => GetFieldAssigment(e, codeStyle));
 
             var template = Resources.Load<TextAsset>("QuickEye/UXMLGenScriptTemplate").text
-                .Replace("#SCRIPT_NAME#", className)
+                .Replace("#SCRIPT_NAME#", codeStyle.className.Apply(className))
                 .Replace("#PACKAGE_VERSION#", PackageInfo.Version);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#FIELDS#", fields);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#ASSIGNMENTS#", assignments);
