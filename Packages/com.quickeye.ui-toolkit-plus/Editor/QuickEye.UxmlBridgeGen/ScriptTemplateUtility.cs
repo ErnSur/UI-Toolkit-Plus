@@ -13,7 +13,8 @@ namespace QuickEye.UxmlBridgeGen
         {
             var tagWithIndentRegex = $"\\ *{tag}";
             var match = Regex.Match(templateContent, tagWithIndentRegex);
-            var indent = match.Value[..^tag.Length];
+            //var indent = match.Value[..^tag.Length];
+            var indent = match.Value.Substring(0, match.Value.Length - tag.Length);
             var replacement = string.Join(Environment.NewLine + indent, newLines);
             return Regex.Replace(templateContent, tag, replacement);
         }
@@ -55,7 +56,8 @@ namespace QuickEye.UxmlBridgeGen
                 {
                     if (line.Contains(namespaceStartTag))
                     {
-                        namespaceIndent = line[..^namespaceStartTag.Length];
+                        //namespaceIndent = line[..^namespaceStartTag.Length];
+                        namespaceIndent = line.Substring(0, line.Length - namespaceStartTag.Length);
                         sb.AppendLine($"namespace {namespaceName}");
                         sb.AppendLine("{");
                         continue;

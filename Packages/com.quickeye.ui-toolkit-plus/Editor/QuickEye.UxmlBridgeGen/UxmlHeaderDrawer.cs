@@ -99,7 +99,8 @@ namespace QuickEye.UxmlBridgeGen
                 {
                     foreach (var uxmlPath in uxmlPaths)
                     {
-                        GenCsClassGenerator.GenerateGenCs(uxmlPath, true);
+                        if (UxmlPostprocessor.ShouldGenerateCsFile(uxmlPath))
+                            GenCsClassGenerator.GenerateGenCs(uxmlPath, true);
                     }
                 }
                 finally
@@ -128,7 +129,7 @@ namespace QuickEye.UxmlBridgeGen
                     break;
             }
         }
-        
+
         private void GenerateScriptDropdown()
         {
             if (EditorGUILayout.DropdownButton(new GUIContent("Options"), FocusType.Keyboard, GUILayout.Width(70)))

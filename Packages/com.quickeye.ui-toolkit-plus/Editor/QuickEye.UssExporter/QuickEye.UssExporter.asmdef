@@ -2,7 +2,9 @@
     "name": "QuickEye.UssExporter",
     "rootNamespace": "QuickEye.UssExporter",
     "references": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
