@@ -101,8 +101,7 @@ namespace QuickEye.UIToolkit.Editor
                 {
                     foreach (var uxmlPath in uxmlPaths)
                     {
-                        var uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
-                        UxmlClassGenerator.GenerateGenCs(uxmlAsset, true);
+                        GenCsClassGenerator.GenerateGenCs(uxmlPath, true);
                     }
                 }
                 finally
@@ -140,8 +139,12 @@ namespace QuickEye.UIToolkit.Editor
             if (EditorGUILayout.DropdownButton(new GUIContent("Options"), FocusType.Keyboard, GUILayout.Width(70)))
             {
                 var menu = new GenericMenu();
-                menu.AddItem(new GUIContent("Generate .gen.cs"), false, Generate);
-                menu.AddItem(new GUIContent("Generate .gen.cs + .cs"), false, null);
+                menu.AddItem(new GUIContent("Generate .gen.cs"), false, RegenerateGenCsFile);
+                menu.AddItem(new GUIContent("Generate .gen.cs + .cs"), false, () =>
+                {
+                    RegenerateGenCsFile();
+                    CreateCsFile();
+                });
                 menu.AddSeparator("");
                 menu.AddItem(new GUIContent("Open code gen settings"), false,
                     CodeGenProjectSettingsEditor.OpenSettings);
@@ -149,13 +152,16 @@ namespace QuickEye.UIToolkit.Editor
                 menu.DropDown(_generateScriptDropdownRect);
             }
 
-            void Generate()
+            void RegenerateGenCsFile()
             {
                 foreach (ScriptedImporter target in Editor.targets)
-                {
-                    UxmlClassGenerator.GenerateGenCs(
-                        AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(target.assetPath), true);
-                }
+                    GenCsClassGenerator.GenerateGenCs(target.assetPath, true);
+            }
+
+            void CreateCsFile()
+            {
+                foreach (ScriptedImporter target in Editor.targets)
+                    GenCsClassGenerator.GenerateCs(target.assetPath, true);
             }
 
             if (Event.current.type == EventType.Repaint)

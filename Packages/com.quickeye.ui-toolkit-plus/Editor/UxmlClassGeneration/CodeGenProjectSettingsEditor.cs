@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEngine;
 
 namespace QuickEye.UIToolkit.Editor
 {
@@ -26,7 +27,8 @@ namespace QuickEye.UIToolkit.Editor
         {
             using (var changeScope = new EditorGUI.ChangeCheckScope())
             {
-                DrawPropertyChildren(serializedObject.FindProperty("settings"));
+                var codeStyleProp = serializedObject.FindProperty("codeStyleRules");
+                DrawPropertyChildren(codeStyleProp);
                 if (changeScope.changed)
                 {
                     serializedObject.ApplyModifiedProperties();
@@ -34,7 +36,7 @@ namespace QuickEye.UIToolkit.Editor
                 }
             }
         }
-        
+
         private static void DrawPropertyChildren(SerializedProperty prop)
         {
             var endProperty = prop.GetEndProperty();
