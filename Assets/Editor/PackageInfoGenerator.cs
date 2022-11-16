@@ -9,13 +9,13 @@ namespace QuickEye.Editor
     internal class PackageInfoGenerator : AssetPostprocessor
     {
         private const string PackageManifestGuid = "9567f359ac77aee4c930ff2374f3d84e";
-        private const string PackageInfoDirectoryName = "Packages/com.quickeye.ui-toolkit-plus/Editor/UxmlClassGeneration/";
+        private const string PackageInfoDirectoryName = "Packages/com.quickeye.ui-toolkit-plus/Editor/QuickEye.UxmlBridgeGen/";
         private static string PackageInfoNamespace => typeof(QAttribute).Namespace;
 
         private const string PackageInfoPath = PackageInfoDirectoryName + "PackageInfo.cs";
         private const string PackageInfoClassTemplate = @"
 // auto-generated
-namespace #NAMESPACE#
+namespace QuickEye.UxmlBridgeGen
 {
     internal static class PackageInfo
     {
