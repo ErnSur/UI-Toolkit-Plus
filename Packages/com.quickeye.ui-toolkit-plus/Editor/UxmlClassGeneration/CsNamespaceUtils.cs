@@ -9,14 +9,6 @@ namespace QuickEye.UIToolkit.Editor
 {
     internal static class CsNamespaceUtils
     {
-        // TODO: Move elswhere
-        public static CodeStyleRules GetFinalCodeStyleRulesFor(string uxmlFilePath)
-        {
-            var uxml = File.ReadAllText(uxmlFilePath);
-            var settings = InlineSettings.GetCodeStyleRules(uxml).Override(CodeGenProjectSettings.CodeStyleRules);
-            return settings;
-        }
-
         public static string GetCsNamespace(string uxmlOrGenCsFilePath, out bool isInline)
         {
             if (TryGetInlineNamespace(uxmlOrGenCsFilePath, out var csNamespace))

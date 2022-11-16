@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.AssetImporters;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEditor.AssetImporters;
 
 namespace QuickEye.UIToolkit.Editor
 {
@@ -10,7 +9,7 @@ namespace QuickEye.UIToolkit.Editor
 
     internal class UxmlHeaderDrawer : PostHeaderDrawer
     {
-        public const string UxmlImporterClassName = "UIElementsViewImporter";
+        private const string UxmlImporterClassName = "UIElementsViewImporter";
 
         [InitializeOnLoadMethod]
         private static void Init()
@@ -22,7 +21,6 @@ namespace QuickEye.UIToolkit.Editor
             };
         }
 
-        private readonly string _firstTargetUxmlPath;
         private string _firstTargetNamespace;
         private string _textFieldString;
         private bool _showOverrideField;
@@ -31,9 +29,9 @@ namespace QuickEye.UIToolkit.Editor
 
         public UxmlHeaderDrawer(Editor editor) : base(editor)
         {
-            _firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
+            var firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
             _firstTargetNamespace = _textFieldString =
-                CsNamespaceUtils.GetCsNamespace(_firstTargetUxmlPath, out _showOverrideField);
+                CsNamespaceUtils.GetCsNamespace(firstTargetUxmlPath, out _showOverrideField);
         }
 
         public override void OnGUI()
@@ -120,8 +118,6 @@ namespace QuickEye.UIToolkit.Editor
 
         private void SetShowMixedValuesAndFieldOverride()
         {
-            // mixedvalues = if more then 1 target and they have different namespaces
-            // nampespaceOverride = any of the targets has a inline namespace
             _showOverrideField = false;
             foreach (var filePath in GetTargetPaths())
             {
@@ -132,8 +128,7 @@ namespace QuickEye.UIToolkit.Editor
                     break;
             }
         }
-
-
+        
         private void GenerateScriptDropdown()
         {
             if (EditorGUILayout.DropdownButton(new GUIContent("Options"), FocusType.Keyboard, GUILayout.Width(70)))
@@ -154,12 +149,14 @@ namespace QuickEye.UIToolkit.Editor
 
             void RegenerateGenCsFile()
             {
+                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
                 foreach (ScriptedImporter target in Editor.targets)
                     GenCsClassGenerator.GenerateGenCs(target.assetPath, true);
             }
 
             void CreateCsFile()
             {
+                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
                 foreach (ScriptedImporter target in Editor.targets)
                     GenCsClassGenerator.GenerateCs(target.assetPath, true);
             }
