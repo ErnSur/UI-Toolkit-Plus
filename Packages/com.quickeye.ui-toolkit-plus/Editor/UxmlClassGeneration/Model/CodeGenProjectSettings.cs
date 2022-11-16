@@ -7,7 +7,8 @@ namespace QuickEye.UIToolkit.Editor
     internal class CodeGenProjectSettings : ScriptableSingleton<CodeGenProjectSettings>
     {
         public static CodeStyleRules CodeStyleRules => instance.codeStyleRules;
-        public CodeStyleRules codeStyleRules;
+        [SerializeField]
+        private CodeStyleRules codeStyleRules;
         public void Save() => Save(true);
 
         private void OnEnable()

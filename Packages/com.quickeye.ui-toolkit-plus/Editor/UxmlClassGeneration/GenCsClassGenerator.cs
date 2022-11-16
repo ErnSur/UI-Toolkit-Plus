@@ -6,34 +6,44 @@ using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit.Editor
 {
-    internal static class UxmlClassGenerator
+    internal static class GenCsClassGenerator
     {
-        private const string GenerateCsMenuItemName = "CONTEXT/VisualTreeAsset/Generate C# Class";
+        private const string ColumnFullName = "UnityEngine.UIElements.Column";
+        private const string GenCsScriptTemplatePath = "QuickEye/GenCsScriptTemplate";
+        private const string CsScriptTemplatePath = "QuickEye/CsScriptTemplate";
+        private const string GenCsLightModeIconGuid = "41141330b8b824474bcbbf2f99e848e2";
 
-        private static readonly string[] IgnoredTagFullnames =
+        private static readonly string[] _IgnoredTagFullNames =
         {
             "UnityEngine.UIElements.Template",
             "Style"
         };
 
-        private const string ColumnFullName = "UnityEngine.UIElements.Column";
-
-        [MenuItem(GenerateCsMenuItemName)]
-        private static void GenerateGenCs(MenuCommand command)
+        public static void GenerateCs(string uxmlFilePath, bool pingAsset)
         {
-            var asset = command.context as VisualTreeAsset;
-            GenerateGenCs(asset, true);
+            var csFilePath = uxmlFilePath.Replace(".uxml", ".cs");
+            if (File.Exists(csFilePath))
+            {
+                Debug.LogWarning($"Cannot generate file, it already exists: {csFilePath}");
+                return;
+            }
+
+            var codeStyle = CsNamespaceUtils.GetFinalCodeStyleRulesFor(uxmlFilePath);
+            var className = Path.GetFileNameWithoutExtension(uxmlFilePath);
+            var classNamespace = CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _);
+            var fileContent = Resources.Load<TextAsset>(CsScriptTemplatePath).text
+                .Replace("#SCRIPT_NAME#", codeStyle.className.Apply(className));
+            fileContent = ScriptTemplateUtility.ReplaceNamespaceTags(fileContent, classNamespace);
+
+            File.WriteAllText(csFilePath, fileContent);
+            AssetDatabase.ImportAsset(csFilePath);
+            if (pingAsset)
+                EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<MonoScript>(csFilePath));
         }
 
-        [MenuItem(GenerateCsMenuItemName, true)]
-        private static bool GenerateGenCsValidation(MenuCommand command)
+        public static void GenerateGenCs(string uxmlFilePath, bool pingAsset)
         {
-            return AssetDatabase.GetAssetPath(command.context).EndsWith(".uxml");
-        }
-
-        public static void GenerateGenCs(VisualTreeAsset uxmlAsset, bool pingAsset)
-        {
-            var uxmlFilePath = AssetDatabase.GetAssetPath(uxmlAsset);
+            var uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlFilePath);
             var uxml = File.ReadAllText(uxmlFilePath);
 
             var codeStyleRules = CsNamespaceUtils.GetFinalCodeStyleRulesFor(uxmlFilePath);
@@ -42,16 +52,16 @@ namespace QuickEye.UIToolkit.Editor
                 return;
 
             var validElements = elements
-                .Where(e => !IgnoredTagFullnames.Contains(e.FullyQualifiedTypeName))
+                .Where(e => !_IgnoredTagFullNames.Contains(e.FullyQualifiedTypeName))
                 .ToArray();
 
             var genCsFilePath = GetGenCsFilePath(uxmlFilePath);
 
             var newScriptContent = CreateScriptContent(
-                className: uxmlAsset.name,
-                classNamespace: CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _),
-                uxmlElements: validElements,
-                codeStyle: codeStyleRules);
+                uxmlAsset.name,
+                CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _),
+                validElements,
+                codeStyleRules);
 
             if (File.Exists(genCsFilePath) &&
                 !IsEqualWithoutComments(File.ReadAllText(genCsFilePath), newScriptContent))
@@ -67,8 +77,9 @@ namespace QuickEye.UIToolkit.Editor
         private static void SetIcon(string path)
         {
             var monoImporter = AssetImporter.GetAtPath(path) as MonoImporter;
-            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(
-                "Packages/com.quickeye.ui-toolkit-plus/Editor/Icons/gen.cs Icon.png");
+            if (monoImporter == null)
+                return;
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(GenCsLightModeIconGuid));
 
             monoImporter.SetIcon(icon);
             monoImporter.SaveAndReimport();
@@ -88,9 +99,7 @@ namespace QuickEye.UIToolkit.Editor
             var varName = codeStyleRules.privateField.Apply(name);
 
             if (element.FullyQualifiedTypeName == ColumnFullName)
-            {
                 return GetFieldAssigmentForColumn(element, varName, name, codeStyleRules);
-            }
 
             return $"{varName} = root.Q<{type}>(\"{name}\");";
         }
@@ -113,7 +122,7 @@ namespace QuickEye.UIToolkit.Editor
             var fields = uxmlElements.Select(e => GetFieldDeclaration(e, codeStyle));
             var assignments = uxmlElements.Select(e => GetFieldAssigment(e, codeStyle));
 
-            var template = Resources.Load<TextAsset>("QuickEye/UXMLGenScriptTemplate").text
+            var template = Resources.Load<TextAsset>(GenCsScriptTemplatePath).text
                 .Replace("#SCRIPT_NAME#", codeStyle.className.Apply(className))
                 .Replace("#PACKAGE_VERSION#", PackageInfo.Version);
             template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#FIELDS#", fields);
