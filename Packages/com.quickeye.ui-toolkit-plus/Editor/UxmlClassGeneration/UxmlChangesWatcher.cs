@@ -1,16 +1,14 @@
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEngine.UIElements;
 
 namespace QuickEye.UIToolkit.Editor
 {
     internal class UxmlChangesWatcher : AssetPostprocessor
     {
-        // TODO: update this
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
             string[] movedAssets,
-            string[] movedFromAssetPaths, bool didDomainReload)
+            string[] movedFromAssetPaths)
         {
             foreach (var uxmlPath in importedAssets.Where(p => p.EndsWith(".uxml")))
             {

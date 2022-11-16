@@ -18,6 +18,16 @@ namespace QuickEye.UIToolkit.Editor
             return Regex.Replace(templateContent, tag, replacement);
         }
 
+        public static string ReplaceClassNameTag(string templateContent, string className)
+        {
+            return templateContent.Replace("#SCRIPT_NAME#", className);
+        }
+
+        public static string ReplacePackageVersionNameTag(string templateContent, string packageVersion)
+        {
+            return templateContent.Replace("#PACKAGE_VERSION#", packageVersion);
+        }
+
         public static string ReplaceNamespaceTags(string templateContent, string namespaceName)
         {
             const string namespaceStartTag = "#NAMESPACE_START#";

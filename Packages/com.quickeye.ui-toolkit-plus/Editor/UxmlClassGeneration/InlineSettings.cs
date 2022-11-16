@@ -31,6 +31,8 @@ namespace QuickEye.UIToolkit.Editor
         public static void WriteCsNamespace(string uxmlPath, string csNamespace)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
+            if (root == null)
+                return;
             if (csNamespace != null)
                 root.SetAttributeValue(CsNamespaceAttributeName, csNamespace);
             else

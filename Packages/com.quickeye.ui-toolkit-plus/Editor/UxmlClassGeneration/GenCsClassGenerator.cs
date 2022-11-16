@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static QuickEye.UIToolkit.Editor.ScriptTemplateUtility;
 
 namespace QuickEye.UIToolkit.Editor
 {
@@ -28,12 +29,12 @@ namespace QuickEye.UIToolkit.Editor
                 return;
             }
 
-            var codeStyle = CsNamespaceUtils.GetFinalCodeStyleRulesFor(uxmlFilePath);
+            var codeStyle = GetFinalCodeStyleRulesFor(uxmlFilePath);
             var className = Path.GetFileNameWithoutExtension(uxmlFilePath);
             var classNamespace = CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _);
-            var fileContent = Resources.Load<TextAsset>(CsScriptTemplatePath).text
-                .Replace("#SCRIPT_NAME#", codeStyle.className.Apply(className));
-            fileContent = ScriptTemplateUtility.ReplaceNamespaceTags(fileContent, classNamespace);
+            var fileContent = Resources.Load<TextAsset>(CsScriptTemplatePath).text;
+            fileContent = ReplaceClassNameTag(fileContent, codeStyle.className.Apply(className));
+            fileContent = ReplaceNamespaceTags(fileContent, classNamespace);
 
             File.WriteAllText(csFilePath, fileContent);
             AssetDatabase.ImportAsset(csFilePath);
@@ -46,7 +47,7 @@ namespace QuickEye.UIToolkit.Editor
             var uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlFilePath);
             var uxml = File.ReadAllText(uxmlFilePath);
 
-            var codeStyleRules = CsNamespaceUtils.GetFinalCodeStyleRulesFor(uxmlFilePath);
+            var codeStyleRules = GetFinalCodeStyleRulesFor(uxmlFilePath);
 
             if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
                 return;
@@ -122,13 +123,13 @@ namespace QuickEye.UIToolkit.Editor
             var fields = uxmlElements.Select(e => GetFieldDeclaration(e, codeStyle));
             var assignments = uxmlElements.Select(e => GetFieldAssigment(e, codeStyle));
 
-            var template = Resources.Load<TextAsset>(GenCsScriptTemplatePath).text
-                .Replace("#SCRIPT_NAME#", codeStyle.className.Apply(className))
-                .Replace("#PACKAGE_VERSION#", PackageInfo.Version);
-            template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#FIELDS#", fields);
-            template = ScriptTemplateUtility.ReplaceTagWithIndentedMultiline(template, "#ASSIGNMENTS#", assignments);
-            template = ScriptTemplateUtility.ReplaceNamespaceTags(template, classNamespace);
-            return template;
+            var scriptContent = Resources.Load<TextAsset>(GenCsScriptTemplatePath).text;
+            scriptContent = ReplaceClassNameTag(scriptContent, codeStyle.className.Apply(className));
+            scriptContent = ReplacePackageVersionNameTag(scriptContent, PackageInfo.Version);
+            scriptContent = ReplaceTagWithIndentedMultiline(scriptContent, "#FIELDS#", fields);
+            scriptContent = ReplaceTagWithIndentedMultiline(scriptContent, "#ASSIGNMENTS#", assignments);
+            scriptContent = ReplaceNamespaceTags(scriptContent, classNamespace);
+            return scriptContent;
         }
 
         private static bool IsEqualWithoutComments(string oldContent, string newContent)
@@ -147,6 +148,13 @@ namespace QuickEye.UIToolkit.Editor
         public static string GetGenCsFilePath(string uxmlFilePath)
         {
             return uxmlFilePath.Replace(".uxml", ".gen.cs");
+        }
+
+        public static CodeStyleRules GetFinalCodeStyleRulesFor(string uxmlFilePath)
+        {
+            var uxml = File.ReadAllText(uxmlFilePath);
+            var settings = InlineSettings.GetCodeStyleRules(uxml).Override(CodeGenProjectSettings.CodeStyleRules);
+            return settings;
         }
     }
 }

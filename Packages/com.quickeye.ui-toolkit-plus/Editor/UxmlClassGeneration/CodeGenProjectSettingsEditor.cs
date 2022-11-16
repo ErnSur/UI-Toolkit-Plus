@@ -1,26 +1,25 @@
 using UnityEditor;
-using UnityEngine;
 
 namespace QuickEye.UIToolkit.Editor
 {
     [CustomEditor(typeof(CodeGenProjectSettings))]
     internal class CodeGenProjectSettingsEditor : UnityEditor.Editor
     {
-        private const string ProjectUxmlCodeGeneration = "Project/UXML Code Generation";
+        private const string SettingsPath = "Project/UXML-C# Code Generation";
 
         [SettingsProvider]
         public static SettingsProvider CreateSettingsProvider()
         {
             var instance = CodeGenProjectSettings.instance;
             var provider = AssetSettingsProvider.CreateProviderFromObject(
-                ProjectUxmlCodeGeneration, instance,
+                SettingsPath, instance,
                 SettingsProvider.GetSearchKeywordsFromSerializedObject(new SerializedObject(instance)));
             return provider;
         }
 
         public static void OpenSettings()
         {
-            SettingsService.OpenProjectSettings(ProjectUxmlCodeGeneration);
+            SettingsService.OpenProjectSettings(SettingsPath);
         }
 
         public override void OnInspectorGUI()
