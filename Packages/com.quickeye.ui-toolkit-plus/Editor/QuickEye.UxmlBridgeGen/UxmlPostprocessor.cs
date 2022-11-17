@@ -4,16 +4,23 @@ using UnityEditor;
 
 namespace QuickEye.UxmlBridgeGen
 {
-    internal class UxmlChangesWatcher : AssetPostprocessor
+    internal class UxmlPostprocessor : AssetPostprocessor
     {
+        public static bool ShouldGenerateCsFile(string uxmlPath)
+        {
+            var genCsFilePath = GenCsClassGenerator.GetGenCsFilePath(uxmlPath);
+            return File.Exists(genCsFilePath);
+        }
+        
+        
+
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
             string[] movedAssets,
             string[] movedFromAssetPaths)
         {
             foreach (var uxmlPath in importedAssets.Where(p => p.EndsWith(".uxml")))
             {
-                var genCsFilePath = GenCsClassGenerator.GetGenCsFilePath(uxmlPath);
-                if (File.Exists(genCsFilePath))
+                if (ShouldGenerateCsFile(uxmlPath))
                 {
                     GenCsClassGenerator.GenerateGenCs(uxmlPath, false);
                 }
