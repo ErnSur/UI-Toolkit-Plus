@@ -8,12 +8,13 @@ namespace QuickEye.UxmlBridgeGen
     [InitializeOnLoad]
     internal static class PersistentPostHeaderManager
     {
-        public static event Action<UnityEditor.Editor> EditorCreated;
-        private static readonly Dictionary<UnityEditor.Editor, List<PostHeaderDrawer>> _ActiveDrawers = new();
+        public static event Action<Editor> EditorCreated;
+        private static readonly Dictionary<Editor, List<PostHeaderDrawer>> _ActiveDrawers = new
+            Dictionary<Editor, List<PostHeaderDrawer>>();
 
         static PersistentPostHeaderManager()
         {
-            UnityEditor.Editor.finishedDefaultHeaderGUI += OnPostHeaderGUI;
+            Editor.finishedDefaultHeaderGUI += OnPostHeaderGUI;
         }
         
         public static void RegisterPostHeaderDrawer(PostHeaderDrawer drawer)
@@ -27,7 +28,7 @@ namespace QuickEye.UxmlBridgeGen
             _ActiveDrawers[drawer.Editor] = new List<PostHeaderDrawer> { drawer };
         }
 
-        private static void OnPostHeaderGUI(UnityEditor.Editor editor)
+        private static void OnPostHeaderGUI(Editor editor)
         {
             if (!_ActiveDrawers.ContainsKey(editor))
             {
