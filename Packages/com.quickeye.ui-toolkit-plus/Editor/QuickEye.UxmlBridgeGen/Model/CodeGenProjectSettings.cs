@@ -8,7 +8,7 @@ namespace QuickEye.UxmlBridgeGen
     {
         public static CodeStyleRules CodeStyleRules => instance.codeStyleRules;
         [SerializeField]
-        private CodeStyleRules codeStyleRules;
+        private CodeStyleRules codeStyleRules = new CodeStyleRules();
         public void Save() => Save(true);
 
         private void OnEnable()
