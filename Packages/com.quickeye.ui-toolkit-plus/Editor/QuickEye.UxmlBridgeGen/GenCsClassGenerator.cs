@@ -13,6 +13,7 @@ namespace QuickEye.UxmlBridgeGen
         private const string GenCsScriptTemplatePath = "QuickEye/GenCsScriptTemplate";
         private const string CsScriptTemplatePath = "QuickEye/CsScriptTemplate";
         private const string GenCsLightModeIconGuid = "41141330b8b824474bcbbf2f99e848e2";
+        private const string UxmlConventionalSuffix = ".view";
 
         private static readonly string[] _IgnoredTagFullNames =
         {
@@ -29,7 +30,8 @@ namespace QuickEye.UxmlBridgeGen
                 return;
             }
 
-            var codeStyle = GetFinalCodeStyleRulesFor(uxmlFilePath);
+            var inlineSettings = InlineSettings.FromXml(File.ReadAllText(uxmlFilePath));
+            var codeStyle = GetFinalCodeStyleRulesFor(inlineSettings);
             var className = Path.GetFileNameWithoutExtension(uxmlFilePath);
             var classNamespace = CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _);
             var fileContent = Resources.Load<TextAsset>(CsScriptTemplatePath).text;
@@ -46,8 +48,8 @@ namespace QuickEye.UxmlBridgeGen
         {
             var uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlFilePath);
             var uxml = File.ReadAllText(uxmlFilePath);
-
-            var codeStyleRules = GetFinalCodeStyleRulesFor(uxmlFilePath);
+            var inlineSettings = InlineSettings.FromXml(uxml);
+            var codeStyleRules = GetFinalCodeStyleRulesFor(inlineSettings);
 
             if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
                 return;
@@ -55,9 +57,15 @@ namespace QuickEye.UxmlBridgeGen
             var validElements = elements
                 .Where(e => !_IgnoredTagFullNames.Contains(e.FullyQualifiedTypeName))
                 .ToArray();
+            if (!inlineSettings.TryGetGenCsFilePath(out var genCsFilePath, out _))
+            {
+                genCsFilePath = GetDefaultGenCsFilePath(uxmlFilePath);
+            }
 
-            var genCsFilePath = GetGenCsFilePath(uxmlFilePath);
-
+            //TODO: add class name as inline setting?
+            // var className = uxmlAsset.name.EndsWith(UxmlConventionalSuffix)
+            //     ? uxmlAsset.name.Substring(0, uxmlAsset.name.Length - UxmlConventionalSuffix.Length)
+            //     : uxmlAsset.name;
             var newScriptContent = CreateScriptContent(
                 uxmlAsset.name,
                 CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _),
@@ -70,9 +78,20 @@ namespace QuickEye.UxmlBridgeGen
 
             File.WriteAllText(genCsFilePath, newScriptContent);
             AssetDatabase.ImportAsset(genCsFilePath);
+            TryUpdateGenCsGuid(uxmlFilePath, genCsFilePath, inlineSettings);
             SetIcon(genCsFilePath);
             if (pingAsset)
                 EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<MonoScript>(genCsFilePath));
+        }
+
+        private static void TryUpdateGenCsGuid(string uxmlFilePath, string genCsFilePath, InlineSettings inlineSettings)
+        {
+            var genCsGuid = AssetDatabase.AssetPathToGUID(genCsFilePath);
+            if (inlineSettings.GenCsGuid != genCsGuid)
+            {
+                inlineSettings.GenCsGuid = genCsGuid;
+                inlineSettings.WriteXmlAttributes(uxmlFilePath);
+            }
         }
 
         private static void SetIcon(string path)
@@ -80,9 +99,11 @@ namespace QuickEye.UxmlBridgeGen
             var monoImporter = AssetImporter.GetAtPath(path) as MonoImporter;
             if (monoImporter == null)
                 return;
-            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(GenCsLightModeIconGuid));
 
+#if UNITY_2021_1_OR_NEWER
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(GenCsLightModeIconGuid));
             monoImporter.SetIcon(icon);
+#endif
             monoImporter.SaveAndReimport();
         }
 
@@ -145,15 +166,15 @@ namespace QuickEye.UxmlBridgeGen
             return reader.ReadToEnd();
         }
 
-        public static string GetGenCsFilePath(string uxmlFilePath)
+        public static string GetDefaultGenCsFilePath(string uxmlFilePath)
         {
-            return uxmlFilePath.Replace(".uxml", ".gen.cs");
+            var uxmlExtension = ".uxml";
+            return uxmlFilePath.Replace(uxmlExtension, ".gen.cs");
         }
 
-        public static CodeStyleRules GetFinalCodeStyleRulesFor(string uxmlFilePath)
+        public static CodeStyleRules GetFinalCodeStyleRulesFor(InlineSettings inlineSettings)
         {
-            var uxml = File.ReadAllText(uxmlFilePath);
-            var settings = InlineSettings.GetCodeStyleRules(uxml).Override(CodeGenProjectSettings.CodeStyleRules);
+            var settings = inlineSettings.GetCodeStyleRules().Override(CodeGenProjectSettings.CodeStyleRules);
             return settings;
         }
     }

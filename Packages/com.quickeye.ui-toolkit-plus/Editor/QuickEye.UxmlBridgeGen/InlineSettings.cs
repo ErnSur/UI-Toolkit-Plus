@@ -1,66 +1,84 @@
-using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
+using UnityEngine;
 
 namespace QuickEye.UxmlBridgeGen
 {
-    internal static class InlineSettings
+    [XmlRoot("UXML", Namespace = "UnityEngine.UIElements")]
+    public class InlineSettings
     {
-        private const string PrefixAttrNameSuffix = "prefix";
-        private const string SuffixAttrNameSuffix = "suffix";
-        private const string StyleAttrNameSuffix = "style";
+        [XmlAttribute("gen-cs-namespace")]
+        public string CsNamespace;
 
-        private const string AttributePrefixBase = "gen-cs";
-        private const string FieldAttributeName = "private-field";
-        private const string ClassAttributeName = "class";
-        public const string CsNamespaceAttributeName = AttributePrefixBase + "-namespace";
+        [XmlAttribute("gen-cs-file")]
+        public string GenCsGuid;
 
-        public static string GetCsNamespace(string uxmlPath)
+        [XmlAttribute("gen-cs-private-field-prefix")]
+        public string PrivateFieldPrefix;
+
+        [XmlAttribute("gen-cs-private-field-suffix")]
+        public string PrivateFieldSuffix;
+
+        [XmlAttribute("gen-cs-private-field-style")]
+        public string PrivateFieldStyle;
+
+
+        [XmlAttribute("gen-cs-class-prefix")]
+        public string ClassPrefix;
+
+        [XmlAttribute("gen-cs-class-suffix")]
+        public string ClassSuffix;
+
+        [XmlAttribute("gen-cs-class-style")]
+        public string ClassStyle;
+
+        public static void test(string uxmlPath)
         {
-            var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
-            return GetCsNamespace(root);
+            var root = FromXml(File.ReadAllText(uxmlPath));
+            Debug.Log($"ns {root.CsNamespace}");
+            root.GenCsGuid = null;
+            root.WriteXmlAttributes(uxmlPath);
         }
 
-        private static string GetCsNamespace(XElement root)
+        public static InlineSettings FromXml(string xml)
         {
-            return root?.Attribute(CsNamespaceAttributeName)?.Value;
+            var stream = new StringReader(xml);
+
+            var serializer = new XmlSerializer(typeof(InlineSettings));
+            var root = (InlineSettings)serializer.Deserialize(stream);
+            return root;
         }
 
-        public static void WriteCsNamespace(string uxmlPath, string csNamespace)
+        public void WriteXmlAttributes(string uxmlPath)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
             if (root == null)
                 return;
-            if (csNamespace != null)
-                root.SetAttributeValue(CsNamespaceAttributeName, csNamespace);
-            else
-                root.Attribute(CsNamespaceAttributeName)?.Remove();
-            Write(uxmlPath, root);
-        }
-
-        public static CodeStyleRules GetCodeStyleRules(string uxml)
-        {
-            var root = XDocument.Parse(uxml).Root;
-
-            return new CodeStyleRules
+            foreach (var (attributeName, value) in GetSerializableAttributes())
             {
-                privateField = GetMemberIdentifierSettingsFromXml(root, FieldAttributeName),
-                className = GetMemberIdentifierSettingsFromXml(root, ClassAttributeName)
-            };
-        }
-
-        public static void WriteCodeStyleRules(string uxmlPath, CodeStyleRules settings)
-        {
-            var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
-            if (root == null)
-                return;
-            SetMemberIdentifierSettingsToXml(root, settings.className, ClassAttributeName);
-            SetMemberIdentifierSettingsToXml(root, settings.privateField, FieldAttributeName);
+                if (value != null)
+                    root.SetAttributeValue(attributeName, value);
+                else
+                    root.Attribute(attributeName)?.Remove();
+            }
 
             Write(uxmlPath, root);
         }
+
+        private (string attributeName, string value)[] GetSerializableAttributes()
+        {
+            var serializableAttributes = from field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
+                let attr = field.GetCustomAttribute<XmlAttributeAttribute>()
+                where attr != null
+                select (attr.AttributeName, field.GetValue(this) as string);
+            return serializableAttributes.ToArray();
+        }
+
 
         private static void Write(string uxmlPath, XElement root)
         {
@@ -71,45 +89,5 @@ namespace QuickEye.UxmlBridgeGen
                 root.WriteTo(writer);
             }
         }
-
-        private static MemberIdentifierSettings GetMemberIdentifierSettingsFromXml(XElement root, string memberName)
-        {
-            var res = new MemberIdentifierSettings
-            {
-                prefix = root.Attribute(GetPrefixAttrName(memberName))?.Value,
-                suffix = root.Attribute(GetSuffixAttrName(memberName))?.Value,
-            };
-
-            Enum.TryParse(root.Attribute(GetStyleAttrName(memberName))?.Value, true, out res.style);
-            return res;
-        }
-
-        private static void SetMemberIdentifierSettingsToXml(XElement root, MemberIdentifierSettings settings,
-            string memberName)
-        {
-            if (settings.prefix != null)
-                root.SetAttributeValue(GetPrefixAttrName(memberName), settings.prefix);
-            else
-                root.Attribute(GetPrefixAttrName(memberName))?.Remove();
-
-            if (settings.suffix != null)
-                root.SetAttributeValue(GetSuffixAttrName(memberName), settings.suffix);
-            else
-                root.Attribute(GetSuffixAttrName(memberName))?.Remove();
-
-            if (settings.style != CaseStyle.NotSet)
-                root.SetAttributeValue(GetStyleAttrName(memberName), settings.style.ToString());
-            else
-                root.Attribute(GetStyleAttrName(memberName))?.Remove();
-        }
-
-        private static string GetPrefixAttrName(string memberName) =>
-            string.Join('-', AttributePrefixBase, memberName, PrefixAttrNameSuffix);
-
-        private static string GetSuffixAttrName(string memberName) =>
-            string.Join('-', AttributePrefixBase, memberName, SuffixAttrNameSuffix);
-
-        private static string GetStyleAttrName(string memberName) =>
-            string.Join('-', AttributePrefixBase, memberName, StyleAttrNameSuffix);
     }
 }

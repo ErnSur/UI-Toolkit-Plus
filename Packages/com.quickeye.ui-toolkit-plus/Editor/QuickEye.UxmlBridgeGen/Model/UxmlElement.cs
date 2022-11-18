@@ -11,7 +11,7 @@ namespace QuickEye.UxmlBridgeGen
         public readonly string NameAttribute;
         public string FullyQualifiedTypeName => $"{Namespace}.{TypeName}";
         public bool IsUnityEngineType => Namespace == "UnityEngine.UIElements";
-        
+
         public UxmlElement(XElement xElement)
         {
             XElement = xElement;
@@ -19,7 +19,7 @@ namespace QuickEye.UxmlBridgeGen
 
             Namespace = xElement.Name.NamespaceName != XNamespace.None
                 ? xElement.Name.NamespaceName
-                : localName[..localName.LastIndexOf('.')];
+                : localName.Substring(0, localName.LastIndexOf('.'));
             TypeName = localName.Contains('.')
                 ? localName.Split('.').Last()
                 : localName;

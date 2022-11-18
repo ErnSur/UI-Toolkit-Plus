@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEditor.Compilation;
@@ -25,7 +24,7 @@ namespace QuickEye.UxmlBridgeGen
         {
             if (TryGetUxmlPath(uxmlOrCsGenFilePath, out var uxmlPath))
             {
-                csNamespace = InlineSettings.GetCsNamespace(uxmlPath);
+                csNamespace = InlineSettingsUtils.GetCsNamespace(uxmlPath);
                 return csNamespace != null;
             }
 
@@ -39,7 +38,7 @@ namespace QuickEye.UxmlBridgeGen
                 uxmlOrCsGenFilePath = uxmlOrCsGenFilePath.Replace(".gen.cs", ".uxml");
             if (!uxmlOrCsGenFilePath.EndsWith(".uxml"))
                 return;
-            InlineSettings.WriteCsNamespace(uxmlOrCsGenFilePath, newNamespace);
+            InlineSettingsUtils.WriteCsNamespace(uxmlOrCsGenFilePath, newNamespace);
         }
 
         private static bool TryGetUxmlPath(string uxmlOrCsGenFilePath, out string uxmlPath)
