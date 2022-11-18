@@ -66,12 +66,14 @@ namespace QuickEye.UxmlBridgeGen
         private static string GetNamespaceForFile(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
-                return string.Empty;
+                return null;
 
             var assemblyDefinitionFilePath =
                 CompilationPipeline.GetAssemblyDefinitionFilePathFromScriptPath(filePath);
             if (string.IsNullOrEmpty(assemblyDefinitionFilePath))
-                return EditorSettings.projectGenerationRootNamespace;
+            {
+                return filePath.StartsWith("Assets") ? EditorSettings.projectGenerationRootNamespace : null;
+            }
 
             if (!TryLoadAssemblyDefinition(assemblyDefinitionFilePath, out var asmDef))
                 throw new Exception($"unexpected: {assemblyDefinitionFilePath}");

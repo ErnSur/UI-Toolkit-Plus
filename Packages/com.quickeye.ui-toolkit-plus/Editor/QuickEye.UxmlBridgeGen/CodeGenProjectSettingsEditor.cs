@@ -5,7 +5,7 @@ namespace QuickEye.UxmlBridgeGen
     [CustomEditor(typeof(CodeGenProjectSettings))]
     internal class CodeGenProjectSettingsEditor : UnityEditor.Editor
     {
-        private const string SettingsPath = "Project/UXML-C# Code Generation";
+        private const string SettingsPath = "Project/UI Code Generation";
 
         [SettingsProvider]
         public static SettingsProvider CreateSettingsProvider()
