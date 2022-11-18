@@ -7,9 +7,9 @@
 Reusable features for UI Toolkit runtime and editor.
 
 
-### UXML C# Script generation
+### UI Code Generation
 
-You can generate partial C# class from UXML file. 
+You can generate a partial C# class from the UXML file.
 
 Given the following UXML:
 ```xml
@@ -37,7 +37,7 @@ partial class UXMLFileName
 }
 ```
 
-- [Detailed documentation about code generation](Documentation~/UxmlCodeGeneration.md)  
+- [Detailed documentation about code generation](Documentation~/UxmlCodeGeneration.md)
 - [`QAttribute` approach to query assignment](Documentation~/QAttribute.md)
 
 ### Style Sheet Exporter
