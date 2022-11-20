@@ -8,11 +8,10 @@ namespace QuickEye.UxmlBridgeGen
     {
         public static bool ShouldGenerateCsFile(string uxmlPath)
         {
-            var genCsFilePath = GenCsClassGenerator.GetGenCsFilePath(uxmlPath);
-            return File.Exists(genCsFilePath);
+            return InlineSettingsUtils.TryGetGenCsFilePath(uxmlPath, out var genCsFilePath, out _) &&
+                   File.Exists(genCsFilePath);
         }
-        
-        
+
 
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
             string[] movedAssets,

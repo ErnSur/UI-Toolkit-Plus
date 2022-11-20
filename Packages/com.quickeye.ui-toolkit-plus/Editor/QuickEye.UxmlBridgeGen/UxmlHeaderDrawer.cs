@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEditor.AssetImporters;
 
@@ -22,14 +23,19 @@ namespace QuickEye.UxmlBridgeGen
         }
 
         private string _firstTargetNamespace;
+        private MonoScript _firstTargetGenCs;
         private string _textFieldString;
         private bool _showOverrideField;
         private Rect _generateScriptDropdownRect;
         private Rect _textFieldDropdownRect;
+        private InlineSettings _inlineSettings;
 
         public UxmlHeaderDrawer(Editor editor) : base(editor)
         {
             var firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
+            //_inlineSettings = InlineSettings.FromXml(File.ReadAllText(firstTargetUxmlPath));
+            InlineSettingsUtils.TryGetGenCsFilePath(firstTargetUxmlPath, out var firstTargetGenCsPath, out _);
+            _firstTargetGenCs = AssetDatabase.LoadAssetAtPath<MonoScript>(firstTargetGenCsPath);
             _firstTargetNamespace = _textFieldString =
                 CsNamespaceUtils.GetCsNamespace(firstTargetUxmlPath, out _showOverrideField);
         }
@@ -41,6 +47,14 @@ namespace QuickEye.UxmlBridgeGen
                 SetShowMixedValuesAndFieldOverride();
                 TextField();
                 GenerateScriptDropdown();
+            }
+
+            using (new EditorGUI.DisabledScope(true))
+            {
+                EditorGUIUtility.labelWidth = 100;
+
+                EditorGUILayout.ObjectField("Gen Cs", _firstTargetGenCs, typeof(MonoScript),false);
+                EditorGUIUtility.labelWidth = 0;
             }
         }
 

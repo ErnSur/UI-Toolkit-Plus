@@ -3,7 +3,7 @@ using System;
 namespace QuickEye.UxmlBridgeGen
 {
     [Serializable]
-    internal struct MemberIdentifierSettings
+    internal struct MemberIdentifierStyle
     {
         public string prefix;
         public string suffix;

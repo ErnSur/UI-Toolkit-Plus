@@ -7,12 +7,12 @@ namespace QuickEye.UxmlBridgeGen
     internal class CodeStyleRules
     {
         [Header("Code Style")]
-        public MemberIdentifierSettings className = new MemberIdentifierSettings()
+        public MemberIdentifierStyle className = new MemberIdentifierStyle()
         {
             style = CaseStyle.UpperCamelCase
         };
 
-        public MemberIdentifierSettings privateField = new MemberIdentifierSettings()
+        public MemberIdentifierStyle privateField = new MemberIdentifierStyle()
         {
             style = CaseStyle.LowerCamelCase
         };
@@ -26,14 +26,14 @@ namespace QuickEye.UxmlBridgeGen
             };
         }
 
-        private static MemberIdentifierSettings AddOverrides(MemberIdentifierSettings baseSettings,
-            MemberIdentifierSettings overrides)
+        private static MemberIdentifierStyle AddOverrides(MemberIdentifierStyle baseStyle,
+            MemberIdentifierStyle overrides)
         {
-            return new MemberIdentifierSettings
+            return new MemberIdentifierStyle
             {
-                prefix = overrides.prefix ?? baseSettings.prefix,
-                suffix = overrides.suffix ?? baseSettings.suffix,
-                style = overrides.style != CaseStyle.NotSet ? overrides.style : baseSettings.style,
+                prefix = overrides.prefix ?? baseStyle.prefix,
+                suffix = overrides.suffix ?? baseStyle.suffix,
+                style = overrides.style != CaseStyle.NotSet ? overrides.style : baseStyle.style,
             };
         }
     }
