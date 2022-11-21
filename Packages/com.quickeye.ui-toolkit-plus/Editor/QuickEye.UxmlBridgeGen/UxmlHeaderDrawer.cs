@@ -23,38 +23,74 @@ namespace QuickEye.UxmlBridgeGen
         }
 
         private string _firstTargetNamespace;
+        private string _firstTargetUxmlPath;
         private MonoScript _firstTargetGenCs;
+        private bool _firstTargetGenCsMissing;
         private string _textFieldString;
         private bool _showOverrideField;
         private Rect _generateScriptDropdownRect;
         private Rect _textFieldDropdownRect;
         private InlineSettings _inlineSettings;
+        private GUILayoutOption _optionsDropdownWidth = GUILayout.Width(70);
+        private GUIContent _optionsDropdownLabel = new GUIContent("Options");
 
         public UxmlHeaderDrawer(Editor editor) : base(editor)
         {
-            var firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
-            //_inlineSettings = InlineSettings.FromXml(File.ReadAllText(firstTargetUxmlPath));
-            InlineSettingsUtils.TryGetGenCsFilePath(firstTargetUxmlPath, out var firstTargetGenCsPath, out _);
+            Setup(editor);
+        }
+
+        private void Setup(Editor editor)
+        {
+            _firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
+            _inlineSettings = InlineSettings.FromXml(File.ReadAllText(_firstTargetUxmlPath));
+            InlineSettingsUtils.TryGetGenCsFilePath(_firstTargetUxmlPath, out var firstTargetGenCsPath,
+                out _firstTargetGenCsMissing);
             _firstTargetGenCs = AssetDatabase.LoadAssetAtPath<MonoScript>(firstTargetGenCsPath);
             _firstTargetNamespace = _textFieldString =
-                CsNamespaceUtils.GetCsNamespace(firstTargetUxmlPath, out _showOverrideField);
+                CsNamespaceUtils.GetCsNamespace(_firstTargetUxmlPath, out _showOverrideField);
         }
 
         public override void OnGUI()
         {
+            GenCsField();
+            
             using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
             {
                 SetShowMixedValuesAndFieldOverride();
                 TextField();
                 GenerateScriptDropdown();
             }
+        }
 
-            using (new EditorGUI.DisabledScope(true))
+        private void GenCsField()
+        {
+            if (Editor.targets.Length > 1)
+                return;
+            var fileNotYetGenerated = _firstTargetGenCs == null && !_firstTargetGenCsMissing;
+            if (fileNotYetGenerated)
+                return;
+            using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
+            using (var changeScope = new EditorGUI.ChangeCheckScope())
+            using (new EditorGUI.DisabledScope(!_firstTargetGenCsMissing))
             {
                 EditorGUIUtility.labelWidth = 100;
 
-                EditorGUILayout.ObjectField("Gen Cs", _firstTargetGenCs, typeof(MonoScript),false);
+                EditorGUILayout.PrefixLabel("Gen C# Script");
+                var newFile = EditorGUILayout.ObjectField(_firstTargetGenCs, typeof(MonoScript), false);
                 EditorGUIUtility.labelWidth = 0;
+                GUILayoutUtility.GetRect(_optionsDropdownLabel, EditorStyles.miniPullDown, _optionsDropdownWidth);
+                if (changeScope.changed && newFile != null)
+                {
+                    var newFilePath = AssetDatabase.GetAssetPath(newFile);
+                    if (EditorUtility.DisplayDialog("Dangerous action!",
+                            "The content of this file can be overwritten by the code generation system. Do you want to proceed?",
+                            "Yes", "No"))
+                    {
+                        _inlineSettings.GenCsGuid = AssetDatabase.AssetPathToGUID(newFilePath);
+                        _inlineSettings.WriteXmlAttributes(_firstTargetUxmlPath);
+                        Setup(Editor);
+                    }
+                }
             }
         }
 
@@ -146,7 +182,7 @@ namespace QuickEye.UxmlBridgeGen
 
         private void GenerateScriptDropdown()
         {
-            if (EditorGUILayout.DropdownButton(new GUIContent("Options"), FocusType.Keyboard, GUILayout.Width(70)))
+            if (EditorGUILayout.DropdownButton(_optionsDropdownLabel, FocusType.Keyboard, _optionsDropdownWidth))
             {
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("Generate .gen.cs"), false, RegenerateGenCsFile);
@@ -167,6 +203,7 @@ namespace QuickEye.UxmlBridgeGen
                 // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
                 foreach (ScriptedImporter target in Editor.targets)
                     GenCsClassGenerator.GenerateGenCs(target.assetPath, true);
+                Setup(Editor);
             }
 
             void CreateCsFile()

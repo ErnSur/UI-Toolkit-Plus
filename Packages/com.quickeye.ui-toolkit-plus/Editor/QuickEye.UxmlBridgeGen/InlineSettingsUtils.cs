@@ -22,7 +22,8 @@ namespace QuickEye.UxmlBridgeGen
             }
 
             genCsPath = AssetDatabase.GUIDToAssetPath(settings.GenCsGuid);
-            if (string.IsNullOrEmpty(genCsPath))
+            var script = AssetDatabase.LoadAssetAtPath<MonoScript>(genCsPath);
+            if (script == null)
             {
                 isMissing = true;
                 return false;
