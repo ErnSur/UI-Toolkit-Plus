@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c00c1eff344147eaa759e7def2228d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  className:
-    prefix: 
-    suffix: View
-    style: 1
-  privateField:
-    prefix: _
-    suffix: 
-    style: 0
+  codeStyleRules:
+    className:
+      prefix: 
+      suffix: 
+      style: 2
+    privateField:
+      prefix: 
+      suffix: 
+      style: 1
