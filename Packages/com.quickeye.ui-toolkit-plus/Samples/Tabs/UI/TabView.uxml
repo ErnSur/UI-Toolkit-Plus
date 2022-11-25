@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" quick-eye="QuickEye.UIToolkit" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Samples/Tabs/UI/TabView.uss?fileID=7433441132597879392&amp;guid=83454d6fdda5b430a8aaa3d6b8f977ea&amp;type=3#TabView" />
+    <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Samples/Tabs/UI/TabView.style.uss?fileID=7433441132597879392&amp;guid=83454d6fdda5b430a8aaa3d6b8f977ea&amp;type=3#TabView.style" />
     <ui:VisualElement name="view-root" class="horizontal-tabs-layout" style="flex-grow: 1; background-color: rgba(26, 26, 26, 0.18); margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px; padding-left: 2px; padding-right: 2px; padding-top: 2px; padding-bottom: 2px;">
         <ui:VisualElement name="tab-bar">
             <ui:Toggle name="vertical-tabs-toggle" />

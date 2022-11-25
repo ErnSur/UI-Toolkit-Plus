@@ -1,7 +1,7 @@
 {
   "name": "com.quickeye.ui-toolkit-plus",
   "displayName": "UI Toolkit Plus",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "unity": "2021.3",
   "author": "Quick Eye",
   "type": "library",
@@ -12,9 +12,9 @@
       "path": "Samples~/ReorderableCards"
     },
     {
-      "displayName": "UXML C# class generation",
-      "description": "Example usage of UXML C# class generation.",
-      "path": "Samples~/UxmlCodeGeneration"
+      "displayName": "UI code generation",
+      "description": "Example usage of UI code generation.",
+      "path": "Samples~/UICodeGeneration"
     }
   ]
 }

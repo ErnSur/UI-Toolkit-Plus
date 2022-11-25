@@ -1,3 +1,18 @@
+## [3.0.0] - 2022-11-25
+
+## Added
+- UXML Code Generation:
+  - Option to override namespace for generated C# files from UXML importer header.
+  - Option to generate a second file of a generated partial class.
+  - Project-wide settings for code generation.
+    - support for pascal case and camel case styles
+    - support for prefix and suffix for code identifiers
+  - Custom icon for .gen.cs files.
+
+## Changed
+- generate c# script context action moved to dropdown menu in UXML Importer header.
+- uxml attribute rename: `code-gen-prefix` -> `gen-cs-private-field-prefix`
+
 ## [2.0.0] - 2022-11-2
 
 ## Added

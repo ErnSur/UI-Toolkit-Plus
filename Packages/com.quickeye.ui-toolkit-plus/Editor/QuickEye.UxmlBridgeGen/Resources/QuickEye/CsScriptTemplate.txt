@@ -1,0 +1,12 @@
+using UnityEngine.UIElements;
+using UnityEngine;
+
+    #NAMESPACE_START#
+public partial class #SCRIPT_NAME#
+{   
+    public #SCRIPT_NAME#(VisualElement root)
+    {
+        AssignQueryResults(root);
+    }
+}
+#NAMESPACE_END#

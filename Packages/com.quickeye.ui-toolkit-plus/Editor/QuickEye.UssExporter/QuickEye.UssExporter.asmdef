@@ -1,0 +1,18 @@
+{
+    "name": "QuickEye.UssExporter",
+    "rootNamespace": "QuickEye.UssExporter",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_2022_2_OR_NEWER"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,7 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Packages/com.quickeye.ui-toolkit-plus/Editor/StyleSheetExporter/StyleSheetExporter.style.uss?fileID=7433441132597879392&amp;guid=6dd17fa2b74374fbf925018b48f1322a&amp;type=3#StyleSheetExporter.style" />
-    <uie:Toolbar>
-        <uie:ToolbarSearchField focusable="true" name="search-field" />
-    </uie:Toolbar>
-    <ui:TreeView view-data-key="unity-tree-view" focusable="true" name="tree-view" />
-</ui:UXML>
