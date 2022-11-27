@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,20 +6,20 @@ namespace QuickEye.UIToolkit.Samples.Cards
 {
     public class UIController : MonoBehaviour
     {
-        private VisualElement[] cards;
-        private VisualElement root;
+        private VisualElement[] _cards;
+        private VisualElement _root;
 
         void Start()
         {
-            var uidoc = GetComponent<UIDocument>();
-            root = uidoc.rootVisualElement;
+            var uiDocument = GetComponent<UIDocument>();
+            _root = uiDocument.rootVisualElement;
             GetCards();
             AddReorderables();
         }
 
         private void AddReorderables()
         {
-            foreach (var card in cards)
+            foreach (var card in _cards)
             {
                 card.AddManipulator(new Reorderable());
             }
@@ -30,7 +27,7 @@ namespace QuickEye.UIToolkit.Samples.Cards
 
         private void GetCards()
         {
-            cards = root.Query(null, "card").Build().ToArray();
+            _cards = _root.Query(null, "card").Build().ToArray();
         }
     }
 }

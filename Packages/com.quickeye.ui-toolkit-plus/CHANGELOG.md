@@ -1,3 +1,12 @@
+## [3.0.1] - 2022-11-27
+
+## Added
+- Package description
+
+## Fixed
+- Fixed scene references in Reorderables Sample
+- Fixed missing entry for Tabs Samples in package.json
+
 ## [3.0.0] - 2022-11-25
 
 ## Added

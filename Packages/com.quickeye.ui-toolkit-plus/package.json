@@ -1,7 +1,8 @@
 {
   "name": "com.quickeye.ui-toolkit-plus",
   "displayName": "UI Toolkit Plus",
-  "version": "3.0.0",
+  "description": "- Boilerplate Code Generation\n- Tabs\n- Reorderable Manipulator\n- Built-in USS Exporter",
+  "version": "3.0.1",
   "unity": "2021.3",
   "author": "Quick Eye",
   "type": "library",
@@ -15,6 +16,11 @@
       "displayName": "UI code generation",
       "description": "Example usage of UI code generation.",
       "path": "Samples~/UICodeGeneration"
+    },
+    {
+      "displayName": "Tabs",
+      "description": "Example usage of Tabs elements.",
+      "path": "Samples~/Tabs"
     }
   ]
 }
