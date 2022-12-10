@@ -1,3 +1,9 @@
+## [3.0.2] - 2022-12-10
+
+## Fixed
+- Moved Editor element `ToolbarDropdownButton` to Editor assembly.
+
+
 ## [3.0.1] - 2022-11-27
 
 ## Added
