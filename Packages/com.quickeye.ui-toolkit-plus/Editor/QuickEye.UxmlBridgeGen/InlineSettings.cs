@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,12 +38,18 @@ namespace QuickEye.UxmlBridgeGen
         [XmlAttribute("gen-cs-class-style")]
         public string ClassStyle;
 
-        public static void test(string uxmlPath)
+
+        public static InlineSettings FromXmlFile(string xmlFilePath)
         {
-            var root = FromXml(File.ReadAllText(uxmlPath));
-            Debug.Log($"ns {root.CsNamespace}");
-            root.GenCsGuid = null;
-            root.WriteXmlAttributes(uxmlPath);
+            try
+            {
+                return FromXml(File.ReadAllText(xmlFilePath));
+            }
+            catch (Exception)
+            {
+                Debug.LogError($"Failed to get gen cs file path of {xmlFilePath}");
+                throw;
+            }
         }
 
         public static InlineSettings FromXml(string xml)

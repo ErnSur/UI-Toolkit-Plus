@@ -30,7 +30,7 @@ namespace QuickEye.UxmlBridgeGen
                 return;
             }
 
-            var inlineSettings = InlineSettings.FromXml(File.ReadAllText(uxmlFilePath));
+            var inlineSettings = InlineSettings.FromXmlFile(uxmlFilePath);
             var codeStyle = GetFinalCodeStyleRulesFor(inlineSettings);
             var className = Path.GetFileNameWithoutExtension(uxmlFilePath);
             var classNamespace = CsNamespaceUtils.GetCsNamespace(uxmlFilePath, out _);

@@ -42,7 +42,7 @@ namespace QuickEye.UxmlBridgeGen
         private void Setup(Editor editor)
         {
             _firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
-            _inlineSettings = InlineSettings.FromXml(File.ReadAllText(_firstTargetUxmlPath));
+            _inlineSettings = InlineSettings.FromXmlFile(_firstTargetUxmlPath);
             InlineSettingsUtils.TryGetGenCsFilePath(_firstTargetUxmlPath, out var firstTargetGenCsPath,
                 out _firstTargetGenCsMissing);
             _firstTargetGenCs = AssetDatabase.LoadAssetAtPath<MonoScript>(firstTargetGenCsPath);
