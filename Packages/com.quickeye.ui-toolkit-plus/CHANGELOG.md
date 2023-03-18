@@ -1,6 +1,6 @@
-## [3.0.3] - 2022-12-10
-## Added
-- New exception
+## [3.0.3] - 2023-03-18
+## Fixed
+- System no longer throws exceptions when it processes files with root UXML element without namespace
 
 ## [3.0.2] - 2022-12-10
 ## Fixed
