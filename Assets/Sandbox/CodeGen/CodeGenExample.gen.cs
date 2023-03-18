@@ -1,7 +1,7 @@
 // -----------------------
 // script auto-generated
 // any changes to this file will be lost on next code generation
-// com.quickeye.ui-toolkit-plus ver: 2.0.0
+// com.quickeye.ui-toolkit-plus ver: 3.0.3
 // -----------------------
 using UnityEngine.UIElements;
 
@@ -9,19 +9,19 @@ namespace SampleAsmDefName
 {
     partial class CodeGenExample
     {
-        private Label _title;
-        private VisualElement _menu;
-        private Button _confirmButton;
-        private QuickEye.UIToolkit.Tab _normalTab;
-        private QuickEye.UIToolkit.TabGroup _dropTab;
+        private Label title;
+        private VisualElement menu;
+        private Button confirmButton;
+        private QuickEye.UIToolkit.Tab normalTab;
+        private QuickEye.UIToolkit.TabGroup dropTab;
     
         protected void AssignQueryResults(VisualElement root)
         {
-            _title = root.Q<Label>("title");
-            _menu = root.Q<VisualElement>("menu");
-            _confirmButton = root.Q<Button>("confirm-button");
-            _normalTab = root.Q<QuickEye.UIToolkit.Tab>("normal-tab");
-            _dropTab = root.Q<QuickEye.UIToolkit.TabGroup>("drop--tab");
+            title = root.Q<Label>("title");
+            menu = root.Q<VisualElement>("menu");
+            confirmButton = root.Q<Button>("confirm-button");
+            normalTab = root.Q<QuickEye.UIToolkit.Tab>("normal-tab");
+            dropTab = root.Q<QuickEye.UIToolkit.TabGroup>("drop--tab");
         }
     }
 }

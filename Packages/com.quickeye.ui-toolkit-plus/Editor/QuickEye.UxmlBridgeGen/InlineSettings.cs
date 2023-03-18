@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -5,13 +7,23 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using UnityEngine;
 
 namespace QuickEye.UxmlBridgeGen
 {
-    [XmlRoot("UXML", Namespace = "UnityEngine.UIElements")]
+    [Serializable]
     public class InlineSettings
     {
+        static readonly Dictionary<string, FieldInfo> SerializableFields;
+
+        static InlineSettings()
+        {
+            SerializableFields =
+                (from field in typeof(InlineSettings).GetFields(BindingFlags.Instance | BindingFlags.Public)
+                    let attr = field.GetCustomAttribute<XmlAttributeAttribute>()
+                    where attr != null
+                    select (attr.AttributeName, field)).ToDictionary(t => t.AttributeName, t => t.field);
+        }
+
         [XmlAttribute("gen-cs-namespace")]
         public string CsNamespace;
 
@@ -37,48 +49,51 @@ namespace QuickEye.UxmlBridgeGen
         [XmlAttribute("gen-cs-class-style")]
         public string ClassStyle;
 
-        public static void test(string uxmlPath)
+        public static InlineSettings FromXmlFile(string xmlFilePath)
         {
-            var root = FromXml(File.ReadAllText(uxmlPath));
-            Debug.Log($"ns {root.CsNamespace}");
-            root.GenCsGuid = null;
-            root.WriteXmlAttributes(uxmlPath);
+            return FromXml(File.ReadAllText(xmlFilePath));
         }
 
         public static InlineSettings FromXml(string xml)
         {
-            var stream = new StringReader(xml);
+            var inlineSettings = new InlineSettings();
+            using (var sr = new StringReader(xml))
+            {
+                using (var xr = XmlReader.Create(sr))
+                {
+                    // Move to the root element
+                    xr.MoveToContent();
+                    foreach (var kvp in SerializableFields)
+                    {
+                        kvp.Value.SetValue(inlineSettings, xr.GetAttribute(kvp.Key));
+                    }
+                }
+            }
 
-            var serializer = new XmlSerializer(typeof(InlineSettings));
-            var root = (InlineSettings)serializer.Deserialize(stream);
-            return root;
+            return inlineSettings;
         }
 
-        public void WriteXmlAttributes(string uxmlPath)
+        public void WriteTo(string uxmlPath)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
             if (root == null)
                 return;
-            foreach (var (attributeName, value) in GetSerializableAttributes())
-            {
-                if (value != null)
-                    root.SetAttributeValue(attributeName, value);
-                else
-                    root.Attribute(attributeName)?.Remove();
-            }
+            AddTo(root);
 
             Write(uxmlPath, root);
         }
 
-        private (string attributeName, string value)[] GetSerializableAttributes()
+        public void AddTo(XElement uxmlRootElement)
         {
-            var serializableAttributes = from field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
-                let attr = field.GetCustomAttribute<XmlAttributeAttribute>()
-                where attr != null
-                select (attr.AttributeName, field.GetValue(this) as string);
-            return serializableAttributes.ToArray();
+            foreach (var (attributeName, fieldInfo) in SerializableFields)
+            {
+                var value = fieldInfo.GetValue(this);
+                if (value != null)
+                    uxmlRootElement.SetAttributeValue(attributeName, value);
+                else
+                    uxmlRootElement.Attribute(attributeName)?.Remove();
+            }
         }
-
 
         private static void Write(string uxmlPath, XElement root)
         {

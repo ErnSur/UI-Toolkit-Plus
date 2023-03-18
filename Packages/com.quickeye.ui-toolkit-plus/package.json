@@ -2,7 +2,7 @@
   "name": "com.quickeye.ui-toolkit-plus",
   "displayName": "UI Toolkit Plus",
   "description": "- Boilerplate Code Generation\n- Tabs\n- Reorderable Manipulator\n- Built-in USS Exporter",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "unity": "2021.3",
   "author": "Quick Eye",
   "type": "library",

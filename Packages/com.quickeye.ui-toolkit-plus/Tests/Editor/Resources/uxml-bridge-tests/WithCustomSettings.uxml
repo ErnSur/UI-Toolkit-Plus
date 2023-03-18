@@ -1,0 +1,10 @@
+﻿<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" 
+             gen-cs-namespace="test.test"
+             gen-cs-file="guid"
+             gen-cs-private-field-prefix="pf-prefix"
+             gen-cs-private-field-suffix="pf-suffix"
+             gen-cs-private-field-style="LowerCamelCase"
+             gen-cs-class-prefix="c-prefix"
+             gen-cs-class-suffix="c-suffix"
+             gen-cs-class-style="UpperCamelCase">
+</engine:UXML>

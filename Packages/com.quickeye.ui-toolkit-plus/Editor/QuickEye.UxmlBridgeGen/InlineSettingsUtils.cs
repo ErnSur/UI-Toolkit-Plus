@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEditor;
+using UnityEngine;
 
 namespace QuickEye.UxmlBridgeGen
 {
@@ -8,10 +9,10 @@ namespace QuickEye.UxmlBridgeGen
     {
         public static bool TryGetGenCsFilePath(string uxmlPath, out string genCsPath, out bool isMissing)
         {
-            var root = InlineSettings.FromXml(File.ReadAllText(uxmlPath));
+            var root = InlineSettings.FromXmlFile(uxmlPath);
             return root.TryGetGenCsFilePath(out genCsPath, out isMissing);
         }
-        
+
         public static bool TryGetGenCsFilePath(this InlineSettings settings, out string genCsPath, out bool isMissing)
         {
             if (settings.GenCsGuid == null)
@@ -32,18 +33,18 @@ namespace QuickEye.UxmlBridgeGen
             isMissing = false;
             return true;
         }
-        
+
         public static string GetCsNamespace(string uxmlPath)
         {
-            var root = InlineSettings.FromXml(File.ReadAllText(uxmlPath));
+            var root = InlineSettings.FromXmlFile(uxmlPath);
             return root.CsNamespace;
         }
 
         public static void WriteCsNamespace(string uxmlPath, string csNamespace)
         {
-            var root = InlineSettings.FromXml(File.ReadAllText(uxmlPath));
+            var root = InlineSettings.FromXmlFile(uxmlPath);
             root.CsNamespace = csNamespace;
-            root.WriteXmlAttributes(uxmlPath);
+            root.WriteTo(uxmlPath);
         }
 
         public static CodeStyleRules GetCodeStyleRules(string uxml)
@@ -51,7 +52,7 @@ namespace QuickEye.UxmlBridgeGen
             var root = InlineSettings.FromXml(uxml);
             return GetCodeStyleRules(root);
         }
-        
+
         public static CodeStyleRules GetCodeStyleRules(this InlineSettings settings)
         {
             return new CodeStyleRules
