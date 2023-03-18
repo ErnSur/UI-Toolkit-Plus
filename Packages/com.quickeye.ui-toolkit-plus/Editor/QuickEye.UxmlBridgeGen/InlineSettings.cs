@@ -7,7 +7,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using UnityEngine;
 
 namespace QuickEye.UxmlBridgeGen
 {
@@ -51,38 +50,27 @@ namespace QuickEye.UxmlBridgeGen
         [XmlAttribute("gen-cs-class-style")]
         public string ClassStyle;
 
-        // Change it to TryGet, uxml file content can be invalid
-        // In UI add HelBox messages that UXML could not be parsed, (possibly invalid UXML format)
         public static InlineSettings FromXmlFile(string xmlFilePath)
         {
-            try
-            {
-                return FromXml(File.ReadAllText(xmlFilePath));
-            }
-            catch (Exception)
-            {
-                Debug.LogError($"Failed deserialize inline settings of {xmlFilePath}");
-                throw;
-            }
+            return FromXml(File.ReadAllText(xmlFilePath));
         }
 
         public static InlineSettings FromXml(string xml)
         {
             var inlineSettings = new InlineSettings();
-            // Create a StringReader to read the XML string
             using (var sr = new StringReader(xml))
             {
-                // Create an XmlReader to parse the XML string
                 using (var xr = XmlReader.Create(sr))
                 {
                     // Move to the root element
                     xr.MoveToContent();
                     foreach (var kvp in SerializableFields)
                     {
-                        kvp.Value.SetValue(inlineSettings,xr.GetAttribute(kvp.Key));
+                        kvp.Value.SetValue(inlineSettings, xr.GetAttribute(kvp.Key));
                     }
                 }
             }
+
             return inlineSettings;
         }
 

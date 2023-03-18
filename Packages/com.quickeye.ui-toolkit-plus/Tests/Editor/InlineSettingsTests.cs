@@ -13,7 +13,7 @@ namespace QuickEye.UIToolkit.Tests
     {
         const string ResourcesDir = "uxml-bridge-tests/";
 
-        static readonly Dictionary<UxmlFileType, string> Uxmls = new Dictionary<UxmlFileType, string>()
+        static readonly Dictionary<UxmlFileType, string> UxmlContents = new Dictionary<UxmlFileType, string>()
         {
             { UxmlFileType.Default, LoadUxml("Default") },
             { UxmlFileType.NoRootNamespace, LoadUxml("NoRootNamespace") },
@@ -37,7 +37,7 @@ namespace QuickEye.UIToolkit.Tests
         [TestCase(UxmlFileType.WithCustomSettings, true)]
         public void Deserialize_Settings(UxmlFileType fileType, bool hasCustomSettings)
         {
-            var uxml = Uxmls[fileType];
+            var uxml = UxmlContents[fileType];
 
             var settings = InlineSettings.FromXml(uxml);
 
@@ -48,10 +48,10 @@ namespace QuickEye.UIToolkit.Tests
             }
         }
 
-        [TestCase]
+        [Test]
         public void Serialize_Settings()
         {
-            var uxml = Uxmls[UxmlFileType.Default];
+            var uxml = UxmlContents[UxmlFileType.Default];
             var root = XDocument.Parse(uxml).Root;
             var settings = InlineSettings.FromXml(uxml);
 
