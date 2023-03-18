@@ -90,7 +90,7 @@ namespace QuickEye.UxmlBridgeGen
             if (inlineSettings.GenCsGuid != genCsGuid)
             {
                 inlineSettings.GenCsGuid = genCsGuid;
-                inlineSettings.WriteXmlAttributes(uxmlFilePath);
+                inlineSettings.WriteTo(uxmlFilePath);
             }
         }
 

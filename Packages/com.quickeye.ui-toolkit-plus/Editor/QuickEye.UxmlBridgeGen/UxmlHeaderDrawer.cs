@@ -87,7 +87,7 @@ namespace QuickEye.UxmlBridgeGen
                             "Yes", "No"))
                     {
                         _inlineSettings.GenCsGuid = AssetDatabase.AssetPathToGUID(newFilePath);
-                        _inlineSettings.WriteXmlAttributes(_firstTargetUxmlPath);
+                        _inlineSettings.WriteTo(_firstTargetUxmlPath);
                         Setup(Editor);
                     }
                 }

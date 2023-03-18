@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,9 +11,21 @@ using UnityEngine;
 
 namespace QuickEye.UxmlBridgeGen
 {
-    [XmlRoot("UXML", Namespace = "UnityEngine.UIElements")]
+    // TODO: Test on 2021.3
+    [Serializable]
     public class InlineSettings
     {
+        static readonly Dictionary<string, FieldInfo> SerializableFields;
+
+        static InlineSettings()
+        {
+            SerializableFields =
+                (from field in typeof(InlineSettings).GetFields(BindingFlags.Instance | BindingFlags.Public)
+                    let attr = field.GetCustomAttribute<XmlAttributeAttribute>()
+                    where attr != null
+                    select (attr.AttributeName, field)).ToDictionary(t => t.AttributeName, t => t.field);
+        }
+
         [XmlAttribute("gen-cs-namespace")]
         public string CsNamespace;
 
@@ -38,7 +51,8 @@ namespace QuickEye.UxmlBridgeGen
         [XmlAttribute("gen-cs-class-style")]
         public string ClassStyle;
 
-
+        // Change it to TryGet, uxml file content can be invalid
+        // In UI add HelBox messages that UXML could not be parsed, (possibly invalid UXML format)
         public static InlineSettings FromXmlFile(string xmlFilePath)
         {
             try
@@ -47,45 +61,52 @@ namespace QuickEye.UxmlBridgeGen
             }
             catch (Exception)
             {
-                Debug.LogError($"Failed to get gen cs file path of {xmlFilePath}");
+                Debug.LogError($"Failed deserialize inline settings of {xmlFilePath}");
                 throw;
             }
         }
 
         public static InlineSettings FromXml(string xml)
         {
-            var stream = new StringReader(xml);
-
-            var serializer = new XmlSerializer(typeof(InlineSettings));
-            var root = (InlineSettings)serializer.Deserialize(stream);
-            return root;
+            var inlineSettings = new InlineSettings();
+            // Create a StringReader to read the XML string
+            using (var sr = new StringReader(xml))
+            {
+                // Create an XmlReader to parse the XML string
+                using (var xr = XmlReader.Create(sr))
+                {
+                    // Move to the root element
+                    xr.MoveToContent();
+                    foreach (var kvp in SerializableFields)
+                    {
+                        kvp.Value.SetValue(inlineSettings,xr.GetAttribute(kvp.Key));
+                    }
+                }
+            }
+            return inlineSettings;
         }
 
-        public void WriteXmlAttributes(string uxmlPath)
+        public void WriteTo(string uxmlPath)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
             if (root == null)
                 return;
-            foreach (var (attributeName, value) in GetSerializableAttributes())
-            {
-                if (value != null)
-                    root.SetAttributeValue(attributeName, value);
-                else
-                    root.Attribute(attributeName)?.Remove();
-            }
+            AddTo(root);
 
             Write(uxmlPath, root);
         }
 
-        private (string attributeName, string value)[] GetSerializableAttributes()
+        public void AddTo(XElement uxmlRootElement)
         {
-            var serializableAttributes = from field in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
-                let attr = field.GetCustomAttribute<XmlAttributeAttribute>()
-                where attr != null
-                select (attr.AttributeName, field.GetValue(this) as string);
-            return serializableAttributes.ToArray();
+            foreach (var (attributeName, fieldInfo) in SerializableFields)
+            {
+                var value = fieldInfo.GetValue(this);
+                if (value != null)
+                    uxmlRootElement.SetAttributeValue(attributeName, value);
+                else
+                    uxmlRootElement.Attribute(attributeName)?.Remove();
+            }
         }
-
 
         private static void Write(string uxmlPath, XElement root)
         {
