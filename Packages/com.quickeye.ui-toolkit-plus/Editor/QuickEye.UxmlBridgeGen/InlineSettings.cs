@@ -10,7 +10,6 @@ using System.Xml.Serialization;
 
 namespace QuickEye.UxmlBridgeGen
 {
-    // TODO: Test on 2021.3
     [Serializable]
     public class InlineSettings
     {
