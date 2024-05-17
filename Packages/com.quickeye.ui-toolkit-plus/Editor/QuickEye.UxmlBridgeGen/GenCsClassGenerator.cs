@@ -51,9 +51,11 @@ namespace QuickEye.UxmlBridgeGen
             var inlineSettings = InlineSettings.FromXml(uxml);
             var codeStyleRules = GetFinalCodeStyleRulesFor(inlineSettings);
 
-            if (!UxmlParser.TryGetElementsWithName(uxml, out var elements))
+            if (!UxmlParser.TryGetElementsWithValidName(uxml, out var elements))
                 return;
 
+            
+            
             var validElements = elements
                 .Where(e => !_IgnoredTagFullNames.Contains(e.FullyQualifiedTypeName))
                 .ToArray();

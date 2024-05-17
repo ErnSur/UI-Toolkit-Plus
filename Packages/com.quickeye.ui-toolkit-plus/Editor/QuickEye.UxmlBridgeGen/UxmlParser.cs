@@ -6,13 +6,16 @@ namespace QuickEye.UxmlBridgeGen
 {
     internal static class UxmlParser
     {
-        public static bool TryGetElementsWithName(string uxml, out UxmlElement[] elements)
+        /// <summary>
+        /// Names with underscore prefix are ignored. This is so that we can name elements for the sake of hierarchy readability.
+        /// </summary>
+        public static bool TryGetElementsWithValidName(string uxml, out UxmlElement[] elements)
         {
             try
             {
                 elements = (from ele in XDocument.Parse(uxml).Descendants()
                     let name = ele.Attribute("name")?.Value
-                    where name != null
+                    where name != null && !name.StartsWith("_")
                     select new UxmlElement(ele)).ToArray();
 
                 return true;
