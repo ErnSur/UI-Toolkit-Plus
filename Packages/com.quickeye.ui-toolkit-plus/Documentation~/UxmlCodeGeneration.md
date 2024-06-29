@@ -10,6 +10,38 @@ As long as this generated class exists it will be automatically regenerated on e
 
 <img src="gen-cs-header.png" width="500">
 
+
+## Example of generated class
+
+Given the following UXML:
+```xml
+<ui:VisualElement name="_Header">
+    <ui:Label name="title" />
+</ui:VisualElement>
+<ui:VisualElement name="menu">
+    <ui:Button name="confirm-button" />
+</ui:VisualElement>
+```
+Tool generates C# script:
+```csharp
+partial class UXMLFileName
+{
+    private Label title;
+    private VisualElement menu;
+    private Button confirmButton;
+
+    private void AssignQueryResults(VisualElement root)
+    {
+        title = root.Q<Label>("title");
+        menu = root.Q<VisualElement>("menu");
+        confirmButton = root.Q<Button>("confirm-button");
+    }
+}
+```
+
+> [!NOTE]
+> UXML elements names that start with an underscore (_) will be ignored by the code generation. You can use this to name elements in UI Builder for the sake of hierarchy readability.
+
 ## How to change generated class namespace?
 
 The namespace of a class is determined by the following factors:

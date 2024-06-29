@@ -1,22 +1,31 @@
+## [4.0.0] - 2024-06-29
+
+### Added
+- Gen C# field in UXML Importer header is no longer disabled. You can always change the "gen.cs" script or remove it. If Gen C# Script is null the filed will disappear. I will show again if you manually generate the script using the options dropdown "Generate .gen.cs".
+- Updated code generation documentation (Documentation~/UxmlCodeGeneration.md)
+
+### Changed
+- UXML elements with name that starts with underscore (_) will be ignored by c# code generation. This means that it's now possible to name elements in UI Builder for the sake of hierarchy readability.
+
 ## [3.0.3] - 2023-03-18
-## Fixed
+### Fixed
 - System no longer throws exceptions when it processes files with root UXML element without namespace
 
 ## [3.0.2] - 2022-12-10
-## Fixed
+### Fixed
 - Moved Editor element `ToolbarDropdownButton` to Editor assembly.
 
 ## [3.0.1] - 2022-11-27
-## Added
+### Added
 - Package description
 
-## Fixed
+### Fixed
 - Fixed scene references in Reorderables Sample
 - Fixed missing entry for Tabs Samples in package.json
 
 ## [3.0.0] - 2022-11-25
 
-## Added
+### Added
 - UXML Code Generation:
   - Option to override namespace for generated C# files from UXML importer header.
   - Option to generate a second file of a generated partial class.
@@ -25,13 +34,13 @@
     - support for prefix and suffix for code identifiers
   - Custom icon for .gen.cs files.
 
-## Changed
+### Changed
 - generate c# script context action moved to dropdown menu in UXML Importer header.
 - uxml attribute rename: `code-gen-prefix` -> `gen-cs-private-field-prefix`
 
 ## [2.0.0] - 2022-11-2
 
-## Added
+### Added
 - `ToolbarDropdownButton`
 - Added USS class name fields to Tab class family
 - Vertical Tab group style changes

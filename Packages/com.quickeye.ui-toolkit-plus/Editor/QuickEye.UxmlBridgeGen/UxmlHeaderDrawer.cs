@@ -71,7 +71,6 @@ namespace QuickEye.UxmlBridgeGen
                 return;
             using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
             using (var changeScope = new EditorGUI.ChangeCheckScope())
-            using (new EditorGUI.DisabledScope(!_firstTargetGenCsMissing))
             {
                 EditorGUIUtility.labelWidth = 100;
 
@@ -90,6 +89,12 @@ namespace QuickEye.UxmlBridgeGen
                         _inlineSettings.WriteTo(_firstTargetUxmlPath);
                         Setup(Editor);
                     }
+                }
+                else if (newFile == null)
+                {
+                    _inlineSettings.GenCsGuid = null;
+                    _inlineSettings.WriteTo(_firstTargetUxmlPath);
+                    Setup(Editor);
                 }
             }
         }
