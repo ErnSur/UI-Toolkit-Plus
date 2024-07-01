@@ -32,7 +32,7 @@ namespace QuickEye.UxmlBridgeGen
         private Rect _textFieldDropdownRect;
         private InlineSettings _inlineSettings;
         private GUILayoutOption _optionsDropdownWidth = GUILayout.Width(70);
-        private GUIContent _optionsDropdownLabel = new GUIContent("Options");
+        private GUIContent _optionsDropdownLabel = new GUIContent("Code Generation Options");
 
         public UxmlHeaderDrawer(Editor editor) : base(editor)
         {
@@ -52,23 +52,21 @@ namespace QuickEye.UxmlBridgeGen
 
         public override void OnGUI()
         {
+            SetShowMixedValuesAndFieldOverride();
+            EditorGUILayout.HelpBox("Make sure to save changes in the UI Builder window before modifying the UXML settings!", MessageType.Info);
+            GenerateScriptDropdown();
+            NamespaceField();
             GenCsField();
-            
-            using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
-            {
-                SetShowMixedValuesAndFieldOverride();
-                TextField();
-                GenerateScriptDropdown();
-            }
         }
 
+        // TODO: Add a tooltip: how this field works
         private void GenCsField()
         {
             if (Editor.targets.Length > 1)
                 return;
-            var fileNotYetGenerated = _firstTargetGenCs == null && !_firstTargetGenCsMissing;
-            if (fileNotYetGenerated)
-                return;
+            // var fileNotYetGenerated = _firstTargetGenCs == null && !_firstTargetGenCsMissing;
+            // if (fileNotYetGenerated)
+            //     return;
             using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
             using (var changeScope = new EditorGUI.ChangeCheckScope())
             {
@@ -77,7 +75,7 @@ namespace QuickEye.UxmlBridgeGen
                 EditorGUILayout.PrefixLabel("Gen C# Script");
                 var newFile = EditorGUILayout.ObjectField(_firstTargetGenCs, typeof(MonoScript), false);
                 EditorGUIUtility.labelWidth = 0;
-                GUILayoutUtility.GetRect(_optionsDropdownLabel, EditorStyles.miniPullDown, _optionsDropdownWidth);
+                //GUILayoutUtility.GetRect(_optionsDropdownLabel, EditorStyles.miniPullDown);
                 if (changeScope.changed && newFile != null)
                 {
                     var newFilePath = AssetDatabase.GetAssetPath(newFile);
@@ -86,14 +84,14 @@ namespace QuickEye.UxmlBridgeGen
                             "Yes", "No"))
                     {
                         _inlineSettings.GenCsGuid = AssetDatabase.AssetPathToGUID(newFilePath);
-                        _inlineSettings.WriteTo(_firstTargetUxmlPath);
+                        _inlineSettings.WriteTo(_firstTargetUxmlPath, true);
                         Setup(Editor);
                     }
                 }
-                else if (newFile == null)
+                else if (changeScope.changed && newFile == null)
                 {
                     _inlineSettings.GenCsGuid = null;
-                    _inlineSettings.WriteTo(_firstTargetUxmlPath);
+                    _inlineSettings.WriteTo(_firstTargetUxmlPath, true);
                     Setup(Editor);
                 }
             }
@@ -104,10 +102,12 @@ namespace QuickEye.UxmlBridgeGen
             UpdateInlineNamespace(false);
         }
 
-        private void TextField()
+        private void NamespaceField()
         {
+            using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
             using (new OverrideFieldScope(_showOverrideField))
             {
+                // TODO: Add a tooltip: how namespace resolution works
                 EditorGUILayout.PrefixLabel("C# Namespace");
 
                 var evt = Event.current;
@@ -187,7 +187,7 @@ namespace QuickEye.UxmlBridgeGen
 
         private void GenerateScriptDropdown()
         {
-            if (EditorGUILayout.DropdownButton(_optionsDropdownLabel, FocusType.Keyboard, _optionsDropdownWidth))
+            if (EditorGUILayout.DropdownButton(_optionsDropdownLabel, FocusType.Keyboard))
             {
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("Generate .gen.cs"), false, RegenerateGenCsFile);
@@ -205,10 +205,21 @@ namespace QuickEye.UxmlBridgeGen
 
             void RegenerateGenCsFile()
             {
-                // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-                foreach (ScriptedImporter target in Editor.targets)
-                    GenCsClassGenerator.GenerateGenCs(target.assetPath, true);
-                Setup(Editor);
+                // I start the StartAssetEditing because the GenCsClassGenerator.GenerateGenCs can cause asset import
+                AssetDatabase.StartAssetEditing();
+                try
+                {
+                    foreach (var target in Editor.targets.OfType<ScriptedImporter>())
+                    {
+                        GenCsClassGenerator.GenerateGenCs(target.assetPath, true);
+                    }
+
+                    Setup(Editor);
+                }
+                finally
+                {
+                    AssetDatabase.StopAssetEditing();
+                }
             }
 
             void CreateCsFile()

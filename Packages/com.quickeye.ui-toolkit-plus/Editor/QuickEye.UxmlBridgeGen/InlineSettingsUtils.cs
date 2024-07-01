@@ -44,7 +44,7 @@ namespace QuickEye.UxmlBridgeGen
         {
             var root = InlineSettings.FromXmlFile(uxmlPath);
             root.CsNamespace = csNamespace;
-            root.WriteTo(uxmlPath);
+            root.WriteTo(uxmlPath, true);
         }
 
         public static CodeStyleRules GetCodeStyleRules(string uxml)

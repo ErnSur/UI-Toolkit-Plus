@@ -7,6 +7,9 @@
 ### Changed
 - UXML elements with name that starts with underscore (_) will be ignored by c# code generation. This means that it's now possible to name elements in UI Builder for the sake of hierarchy readability.
 
+### Fixed
+- Edge case where "Generate ge.cs" action would not write UXML settings to the file if gen.cs was not assigned but the script generator saw that the gen file exists and no changes need to be applied// TODO: clear this up.
+
 ## [3.0.3] - 2023-03-18
 ### Fixed
 - System no longer throws exceptions when it processes files with root UXML element without namespace

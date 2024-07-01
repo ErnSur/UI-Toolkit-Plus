@@ -44,6 +44,9 @@ namespace QuickEye.UxmlBridgeGen
                 EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<MonoScript>(csFilePath));
         }
 
+        /// <summary>
+        /// This method will also update the inline settings with the new gen.cs guid. This can cause the uxml file to be reimported.
+        /// </summary>
         public static void GenerateGenCs(string uxmlFilePath, bool pingAsset)
         {
             var uxmlAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlFilePath);
@@ -53,8 +56,6 @@ namespace QuickEye.UxmlBridgeGen
 
             if (!UxmlParser.TryGetElementsWithValidName(uxml, out var elements))
                 return;
-
-            
             
             var validElements = elements
                 .Where(e => !_IgnoredTagFullNames.Contains(e.FullyQualifiedTypeName))
@@ -76,7 +77,10 @@ namespace QuickEye.UxmlBridgeGen
 
             if (File.Exists(genCsFilePath) &&
                 !IsEqualWithoutComments(File.ReadAllText(genCsFilePath), newScriptContent))
+            {
+                TryUpdateGenCsGuid(uxmlFilePath, genCsFilePath, inlineSettings);
                 return;
+            }
 
             File.WriteAllText(genCsFilePath, newScriptContent);
             AssetDatabase.ImportAsset(genCsFilePath);
@@ -92,7 +96,7 @@ namespace QuickEye.UxmlBridgeGen
             if (inlineSettings.GenCsGuid != genCsGuid)
             {
                 inlineSettings.GenCsGuid = genCsGuid;
-                inlineSettings.WriteTo(uxmlFilePath);
+                inlineSettings.WriteTo(uxmlFilePath,true);
             }
         }
 

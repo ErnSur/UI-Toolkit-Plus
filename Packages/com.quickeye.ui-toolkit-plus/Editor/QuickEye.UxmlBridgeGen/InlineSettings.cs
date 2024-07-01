@@ -10,6 +10,8 @@ using System.Xml.Serialization;
 
 namespace QuickEye.UxmlBridgeGen
 {
+    using UnityEditor;
+
     [Serializable]
     public class InlineSettings
     {
@@ -73,7 +75,7 @@ namespace QuickEye.UxmlBridgeGen
             return inlineSettings;
         }
 
-        public void WriteTo(string uxmlPath)
+        public void WriteTo(string uxmlPath, bool importAsset)
         {
             var root = XDocument.Parse(File.ReadAllText(uxmlPath)).Root;
             if (root == null)
@@ -81,6 +83,8 @@ namespace QuickEye.UxmlBridgeGen
             AddTo(root);
 
             Write(uxmlPath, root);
+            if (importAsset)
+                AssetDatabase.ImportAsset(uxmlPath);
         }
 
         public void AddTo(XElement uxmlRootElement)

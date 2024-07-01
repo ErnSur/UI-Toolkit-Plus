@@ -63,3 +63,14 @@ _Project Settings/UI Code Generation_
 In short a partial class allows you to split class definition over more than one file, it is usually used with code generation features.
 
 An example of partial class usage can be found in the package sample "UI Code Generation". Available in the Package Manager Window.
+
+
+## Known Issues
+
+> [!CAUTION]
+> gen.cs file is not being updated automatically after I save the changes in the UI Builder / Saving changes in the UI builder removes the UXML reference to the gen.cs file. 
+
+Each UXML file stores a reference to gen.cs file inside the UXML element attribute `gen-cs-file`.
+If you open a UXML file in a UI Builder window the UI Builder caches the file and does not update it after if it was modified externally (i.e., through a UMXL code gen header options). 
+
+To work around this issue you can close the UI Builder window before generating gen.cs for the first time, after that you can open it again and the gen.cs will be updated automatically each time you save changes in the UI Builder.

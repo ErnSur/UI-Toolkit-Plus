@@ -4,6 +4,8 @@ using System.Xml.Linq;
 
 namespace QuickEye.UxmlBridgeGen
 {
+    using UnityEngine;
+
     internal static class UxmlParser
     {
         /// <summary>
