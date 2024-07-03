@@ -3,6 +3,9 @@
 ### Added
 - Gen C# field in UXML Importer header is no longer disabled. You can always change the "gen.cs" script or remove it. If Gen C# Script is null the filed will disappear. I will show again if you manually generate the script using the options dropdown "Generate .gen.cs".
 - Updated code generation documentation (Documentation~/UxmlCodeGeneration.md)
+- Tooltips to UXML header code gen fields
+- Dialog popup to warn about unsaved UI Builder changes before generating C# script
+- Added menu item to Generate Code dropdown that open feature documentation
 
 ### Changed
 - UXML elements with name that starts with underscore (_) will be ignored by c# code generation. This means that it's now possible to name elements in UI Builder for the sake of hierarchy readability.

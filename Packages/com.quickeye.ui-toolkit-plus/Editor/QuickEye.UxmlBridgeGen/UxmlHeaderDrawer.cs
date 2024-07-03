@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEditor.AssetImporters;
 
@@ -11,6 +10,10 @@ namespace QuickEye.UxmlBridgeGen
     internal class UxmlHeaderDrawer : PostHeaderDrawer
     {
         private const string UxmlImporterClassName = "UIElementsViewImporter";
+        
+        private readonly GUIContent _csNamespaceFieldLabel = new GUIContent("C# Namespace","The namespace of a class is determined by the following factors:\n\n1. If this field is populated, its value will be used.\n2. If `AssemblyDefinitionAsset` or `AssemblyDefinitionReferenceAsset` exists in the UXML directory or parent directory: `AssemblyDefinitionAsset.rootNamespace` will be used.\n3. If `AssemblyDefinitionAsset.rootNamespace` is empty `AssemblyDefinitionAsset.name` will be used instead.\n4. If the UXML file is inside the Assets folder, the `EditorSettings.projectGenerationRootNamespace` will be used.\n5. If none of the above conditions are met, the class will have no namespace.");
+        
+        private readonly GUIContent _genScriptFieldLabel = new GUIContent("Gen C# Script","The generated C# script that gets updated when the UXML file changes. Use the 'Generate Code...' dropdown to generate a new script.");
 
         [InitializeOnLoadMethod]
         private static void Init()
@@ -25,14 +28,12 @@ namespace QuickEye.UxmlBridgeGen
         private string _firstTargetNamespace;
         private string _firstTargetUxmlPath;
         private MonoScript _firstTargetGenCs;
-        private bool _firstTargetGenCsMissing;
-        private string _textFieldString;
+        private string _namespaceFieldString;
         private bool _showOverrideField;
         private Rect _generateScriptDropdownRect;
         private Rect _textFieldDropdownRect;
         private InlineSettings _inlineSettings;
-        private GUILayoutOption _optionsDropdownWidth = GUILayout.Width(70);
-        private GUIContent _optionsDropdownLabel = new GUIContent("Code Generation Options");
+        private readonly GUIContent _optionsDropdownLabel = new GUIContent("Generate Code...");
 
         public UxmlHeaderDrawer(Editor editor) : base(editor)
         {
@@ -44,16 +45,15 @@ namespace QuickEye.UxmlBridgeGen
             _firstTargetUxmlPath = ((ScriptedImporter)editor.target).assetPath;
             _inlineSettings = InlineSettings.FromXmlFile(_firstTargetUxmlPath);
             InlineSettingsUtils.TryGetGenCsFilePath(_firstTargetUxmlPath, out var firstTargetGenCsPath,
-                out _firstTargetGenCsMissing);
+                out _);
             _firstTargetGenCs = AssetDatabase.LoadAssetAtPath<MonoScript>(firstTargetGenCsPath);
-            _firstTargetNamespace = _textFieldString =
+            _firstTargetNamespace = _namespaceFieldString =
                 CsNamespaceUtils.GetCsNamespace(_firstTargetUxmlPath, out _showOverrideField);
         }
 
         public override void OnGUI()
         {
             SetShowMixedValuesAndFieldOverride();
-            EditorGUILayout.HelpBox("Make sure to save changes in the UI Builder window before modifying the UXML settings!", MessageType.Info);
             GenerateScriptDropdown();
             NamespaceField();
             GenCsField();
@@ -64,24 +64,21 @@ namespace QuickEye.UxmlBridgeGen
         {
             if (Editor.targets.Length > 1)
                 return;
-            // var fileNotYetGenerated = _firstTargetGenCs == null && !_firstTargetGenCsMissing;
-            // if (fileNotYetGenerated)
-            //     return;
+
             using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
             using (var changeScope = new EditorGUI.ChangeCheckScope())
             {
                 EditorGUIUtility.labelWidth = 100;
 
-                EditorGUILayout.PrefixLabel("Gen C# Script");
+                EditorGUILayout.PrefixLabel(_genScriptFieldLabel);
                 var newFile = EditorGUILayout.ObjectField(_firstTargetGenCs, typeof(MonoScript), false);
                 EditorGUIUtility.labelWidth = 0;
-                //GUILayoutUtility.GetRect(_optionsDropdownLabel, EditorStyles.miniPullDown);
                 if (changeScope.changed && newFile != null)
                 {
                     var newFilePath = AssetDatabase.GetAssetPath(newFile);
                     if (EditorUtility.DisplayDialog("Dangerous action!",
                             "The content of this file can be overwritten by the code generation system. Do you want to proceed?",
-                            "Yes", "No"))
+                            "Yes", "No") && ShouldSaveWriteToFile())
                     {
                         _inlineSettings.GenCsGuid = AssetDatabase.AssetPathToGUID(newFilePath);
                         _inlineSettings.WriteTo(_firstTargetUxmlPath, true);
@@ -97,18 +94,12 @@ namespace QuickEye.UxmlBridgeGen
             }
         }
 
-        private void ApplyNamespaceChanges()
-        {
-            UpdateInlineNamespace(false);
-        }
-
         private void NamespaceField()
         {
             using (new EditorGUILayout.HorizontalScope(new GUIStyle()))
             using (new OverrideFieldScope(_showOverrideField))
             {
-                // TODO: Add a tooltip: how namespace resolution works
-                EditorGUILayout.PrefixLabel("C# Namespace");
+                EditorGUILayout.PrefixLabel(_csNamespaceFieldLabel);
 
                 var evt = Event.current;
                 if (evt.type == EventType.Repaint)
@@ -120,33 +111,41 @@ namespace QuickEye.UxmlBridgeGen
                     _textFieldDropdownRect.Contains(evt.mousePosition))
                 {
                     var menu = new GenericMenu();
-                    menu.AddItem(new GUIContent("Revert"), false, () => UpdateInlineNamespace(true));
+                    menu.AddItem(new GUIContent("Revert"), false, () => TryUpdateInlineNamespace(null));
                     GUIUtility.keyboardControl = 0;
                     menu.DropDown(_textFieldDropdownRect);
                 }
 
                 using (var changeScope = new EditorGUI.ChangeCheckScope())
                 {
-                    _textFieldString = EditorGUILayout.DelayedTextField(_textFieldString);
-                    if (changeScope.changed)
-                        ApplyNamespaceChanges();
-                }
+                    var newValue = EditorGUILayout.DelayedTextField(_namespaceFieldString);
+                    if (changeScope.changed && TryUpdateInlineNamespace(_namespaceFieldString))
+                    {
+                        _namespaceFieldString = newValue;
+                    }
 
+                }
 
                 EditorGUI.showMixedValue = false;
             }
         }
 
-        private void UpdateInlineNamespace(bool removeSetting)
+        /// <summary>
+        /// Tries to update the inline namespace of the UXML file.
+        /// </summary>
+        /// <param name="newValue">Set to null to remove the inline namespace</param>
+        private bool TryUpdateInlineNamespace(string newValue)
         {
+            if (!ShouldSaveWriteToFile())
+                return false;
             GUIUtility.keyboardControl = 0;
             var uxmlPaths = GetTargetPaths().ToArray();
             foreach (var uxmlPath in uxmlPaths)
             {
-                CsNamespaceUtils.SetInlineNamespace(uxmlPath, removeSetting ? null : _textFieldString);
+                CsNamespaceUtils.SetInlineNamespace(uxmlPath, newValue);
             }
 
-            _firstTargetNamespace = _textFieldString = CsNamespaceUtils.GetCsNamespace(uxmlPaths[0], out _);
+            _firstTargetNamespace = _namespaceFieldString = CsNamespaceUtils.GetCsNamespace(uxmlPaths[0], out _);
             EditorApplication.delayCall += () =>
             {
                 AssetDatabase.StartAssetEditing();
@@ -163,6 +162,7 @@ namespace QuickEye.UxmlBridgeGen
                     AssetDatabase.StopAssetEditing();
                 }
             };
+            return true;
         }
 
         private IEnumerable<string> GetTargetPaths()
@@ -187,7 +187,10 @@ namespace QuickEye.UxmlBridgeGen
 
         private void GenerateScriptDropdown()
         {
-            if (EditorGUILayout.DropdownButton(_optionsDropdownLabel, FocusType.Keyboard))
+            var style = new GUIStyle("MiniPullDown");
+            style.alignment = TextAnchor.MiddleCenter;
+
+            if (EditorGUILayout.DropdownButton(_optionsDropdownLabel, FocusType.Keyboard, style))
             {
                 var menu = new GenericMenu();
                 menu.AddItem(new GUIContent("Generate .gen.cs"), false, RegenerateGenCsFile);
@@ -199,12 +202,18 @@ namespace QuickEye.UxmlBridgeGen
                 menu.AddSeparator("");
                 menu.AddItem(new GUIContent("Open code gen settings"), false,
                     CodeGenProjectSettingsEditor.OpenSettings);
+                menu.AddItem(new GUIContent("Open documentation"), false, () =>
+                {
+                    EditorUtility.OpenWithDefaultApp("Packages/com.quickeye.ui-toolkit-plus/Documentation~/UxmlCodeGeneration.md");
+                });
                 GUIUtility.keyboardControl = 0;
                 menu.DropDown(_generateScriptDropdownRect);
             }
 
             void RegenerateGenCsFile()
             {
+                if (!ShouldSaveWriteToFile())
+                    return;
                 // I start the StartAssetEditing because the GenCsClassGenerator.GenerateGenCs can cause asset import
                 AssetDatabase.StartAssetEditing();
                 try
@@ -231,6 +240,24 @@ namespace QuickEye.UxmlBridgeGen
 
             if (Event.current.type == EventType.Repaint)
                 _generateScriptDropdownRect = GUILayoutUtility.GetLastRect();
+        }
+
+        private bool ShouldSaveWriteToFile()
+        {
+            if (!IsUIBuilderWindowOpen())
+                return true;
+
+            var message =
+                @"UI Builder Window is open!
+Unsaved changes to this UXML file in the UI Builder will be lost.
+Save changes in the UI Builder window before modifying this file.";
+            
+            return EditorUtility.DisplayDialog("UI Builder Window is open!", message, "Proceed", "Cancel");
+        }
+
+        private static bool IsUIBuilderWindowOpen()
+        {
+            return UIBuilderUtils.TryGetUIBuilderWindow(out _);
         }
     }
 }
