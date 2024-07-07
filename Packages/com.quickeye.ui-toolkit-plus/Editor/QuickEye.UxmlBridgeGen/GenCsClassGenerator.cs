@@ -15,7 +15,7 @@ namespace QuickEye.UxmlBridgeGen
         private const string GenCsLightModeIconGuid = "41141330b8b824474bcbbf2f99e848e2";
         private const string UxmlConventionalSuffix = ".view";
 
-        private static readonly string[] _IgnoredTagFullNames =
+        private static readonly string[] IgnoredTagFullNames =
         {
             "UnityEngine.UIElements.Template",
             "Style"
@@ -58,7 +58,7 @@ namespace QuickEye.UxmlBridgeGen
                 return;
             
             var validElements = elements
-                .Where(e => !_IgnoredTagFullNames.Contains(e.FullyQualifiedTypeName))
+                .Where(e => !IgnoredTagFullNames.Contains(e.FullyQualifiedTypeName))
                 .ToArray();
             if (!inlineSettings.TryGetGenCsFilePath(out var genCsFilePath, out _))
             {
@@ -174,6 +174,9 @@ namespace QuickEye.UxmlBridgeGen
 
         public static string GetDefaultGenCsFilePath(string uxmlFilePath)
         {
+            if (string.IsNullOrWhiteSpace(CodeGenProjectSettings.DefaultGenScriptDirectory))
+                return Path.Combine(CodeGenProjectSettings.DefaultGenScriptDirectory,
+                    Path.GetFileName(uxmlFilePath).Replace(".uxml", ".gen.cs"));
             var uxmlExtension = ".uxml";
             return uxmlFilePath.Replace(uxmlExtension, ".gen.cs");
         }

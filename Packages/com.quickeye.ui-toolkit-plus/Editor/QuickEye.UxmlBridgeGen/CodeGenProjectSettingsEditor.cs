@@ -3,7 +3,7 @@ using UnityEditor;
 namespace QuickEye.UxmlBridgeGen
 {
     [CustomEditor(typeof(CodeGenProjectSettings))]
-    internal class CodeGenProjectSettingsEditor : UnityEditor.Editor
+    internal class CodeGenProjectSettingsEditor : Editor
     {
         private const string SettingsPath = "Project/UI Code Generation";
 
@@ -26,7 +26,9 @@ namespace QuickEye.UxmlBridgeGen
         {
             using (var changeScope = new EditorGUI.ChangeCheckScope())
             {
-                var codeStyleProp = serializedObject.FindProperty("codeStyleRules");
+                var defaultGenScriptDirectoryProp = serializedObject.FindProperty(nameof(CodeGenProjectSettings.defaultGenScriptDirectory));
+                EditorGUILayout.PropertyField(defaultGenScriptDirectoryProp, true);
+                var codeStyleProp = serializedObject.FindProperty(nameof(CodeGenProjectSettings.codeStyleRules));
                 DrawPropertyChildren(codeStyleProp);
                 if (changeScope.changed)
                 {
@@ -35,7 +37,7 @@ namespace QuickEye.UxmlBridgeGen
                 }
             }
         }
-
+        
         private static void DrawPropertyChildren(SerializedProperty prop)
         {
             var endProperty = prop.GetEndProperty();

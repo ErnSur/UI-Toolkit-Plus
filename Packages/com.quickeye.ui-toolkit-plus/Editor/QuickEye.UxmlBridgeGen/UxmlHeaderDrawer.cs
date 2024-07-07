@@ -7,6 +7,7 @@ namespace QuickEye.UxmlBridgeGen
 {
     using UnityEditor;
 
+    // TODO: Update .md documentation screenshot
     internal class UxmlHeaderDrawer : PostHeaderDrawer
     {
         private const string UxmlImporterClassName = "UIElementsViewImporter";
@@ -59,7 +60,6 @@ namespace QuickEye.UxmlBridgeGen
             GenCsField();
         }
 
-        // TODO: Add a tooltip: how this field works
         private void GenCsField()
         {
             if (Editor.targets.Length > 1)
