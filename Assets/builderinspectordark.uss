@@ -1,0 +1,86 @@
+.unity-builder-inspector {
+    --unity_builder-colors-binding: rgb(175, 145, 244);
+    --unity-builder-inspector-title-bar: rgb(62, 62, 62);
+    --unity-builder-inspector-title-bar-hover: rgb(71, 71, 71);
+    --unity-builder-inspector-inline-editing-row: var(--unity-builder-inspector-title-bar);
+}
+
+.unity-builder-inspector__category-foldout > .unity-foldout__header > .unity-label {
+    border-color: rgb(117, 117, 117);
+    background-color: rgb(78, 78, 78);
+}
+
+.unity-builder-inspector__category-foldout > .unity-foldout__header > .unity-toggle {
+    border-color: rgb(117, 117, 117);
+    background-color: rgb(78, 78, 78);
+}
+
+.unity-builder-inspector__category-foldout > .unity-foldout__header > .unity-label:hover {
+    background-color: rgb(88, 88, 88);
+}
+
+.unity-builder-inspector__category-foldout > .unity-foldout__header > .unity-toggle:hover {
+    background-color: rgb(88, 88, 88);
+}
+
+.unity-builder-inspector__style-category-foldout.unity-builder-inspector__style-category-foldout--override > .unity-foldout__header > .unity-builder-inspector-blue-override-box {
+    background-color: rgb(223, 223, 223);
+}
+
+.unity-builder-inspector__category-foldout.unity-builder-inspector__category-foldout--override > .unity-foldout__header > .unity-builder-inspector-blue-override-box {
+    background-color: rgb(223, 223, 223);
+}
+
+.unity-foldout--override > .unity-foldout__header > .unity-builder-inspector-blue-override-box {
+    background-color: rgb(223, 223, 223);
+}
+
+.unity-builder-inspector__divider {
+    background-color: rgb(151, 151, 151);
+}
+
+.unity-builder-inspector__style-category-foldout > .unity-foldout__content {
+    border-top-color: rgb(48, 48, 48);
+}
+
+.unity-builder-inspector__style-category-foldout {
+    border-bottom-color: rgb(32, 32, 32);
+}
+
+.unity-builder-inspector__style--binding:focus > .unity-property-field .unity-disabled > .unity-base-field__label {
+    color: rgb(129, 180, 255);
+}
+
+.unity-builder-inspector__style--binding:focus .unity-property-field.unity-disabled .unity-base-field__label {
+    color: rgb(129, 180, 255);
+}
+
+.unity-builder-style-row:focus .unity-builder-inspector__style--binding.unity-disabled .unity-base-field__label {
+    color: rgb(129, 180, 255);
+}
+
+.unity-builder-inspector__style--override .unity-builder-inspector-blue-override-box {
+    background-color: rgb(223, 223, 223);
+}
+
+.unity-builder-variable-field__placeholder-label {
+    color: rgba(255, 255, 255, 0.3);
+    -unity-font-style: italic;
+}
+
+.unity-builder-inspector__style--variable-editing.unity-builder--readonly .unity-builder-variable-field .unity-base-field__input {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.unity-builder-field-status-indicator.unity-builder-inspector__style--default > .unity-builder-field-status-indicator__content > .unity-builder-field-status-indicator__icon {
+    background-image: resource("UIBuilderPackageResources/Icons/Dark/Inspector/Status/Settings.png");
+}
+
+.unity-builder-inspector_canvas-background-mode Button {
+    align-items: center;
+}
+
+.unity-builder-inspector .unity-builder__text-preview-pane .unity-builder-pane__sub-title {
+    background-image: resource("Builtin Skins/DarkSkin/Images/WindowBottomResize.png");
+}

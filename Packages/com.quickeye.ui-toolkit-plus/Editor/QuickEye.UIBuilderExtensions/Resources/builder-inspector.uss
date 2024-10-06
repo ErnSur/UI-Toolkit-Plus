@@ -1,0 +1,25 @@
+:root {
+    --border-color: rgb(32, 32, 32);
+}
+
+.unity-builder-inspector__style-category-foldout
+{
+    flex-grow: 1;
+}
+
+.style-category-tab-view
+{
+    width: 110px;
+    flex-grow: 0;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-right-color: var(--border-color);
+    border-bottom-color: var(--border-color);
+}
+
+.unity-tab__header
+{
+    align-self: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

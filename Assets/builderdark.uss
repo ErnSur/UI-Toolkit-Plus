@@ -1,0 +1,340 @@
+:root {
+    --unity_builder-colors-canvas_transformer-background-disabled: rgb(183, 183, 183);
+    --unity_builder-colors-field_search_completer_popup-border: rgb(95, 95, 95);
+    --unity_builder-colors-field_search_completer_popup__footer-background: rgb(63, 63, 63);
+    --unity_builder-colors-field_search_completer_popup__details_view-background: rgb(42, 42, 42);
+    --unity_builder-colors-notification__background: rgb(51, 51, 51);
+    --unity_builder-icons-delete_minus: resource("d_Toolbar Minus");
+    --unity_builder-icons-converters_compatible: resource("UIBuilderPackageResources/Icons/Dark/BindingView/ConvertersCompatible.png");
+    --unity_builder-icons-converters_incompatible: resource("UIBuilderPackageResources/Icons/Dark/BindingView/ConvertersIncompatible.png");
+    --unity_builder-icons-converters_unknown: resource("UIBuilderPackageResources/Icons/Dark/BindingView/ConvertersUnknown.png");
+}
+
+.unity-builder-pane__header {
+    background-color: rgb(37, 37, 37);
+}
+
+.unity-builder-pane:focus > .unity-builder-pane__header {
+    border-color: rgb(0, 140, 255);
+}
+
+.unity-builder-explorer__item--dragger-hover {
+    background-color: rgba(3, 68, 128, 0.51);
+}
+
+.unity-builder-explorer__header {
+    border-color: rgb(117, 117, 117);
+    background-color: rgb(88, 88, 88);
+}
+
+.unity-builder-explorer__header:hover {
+    background-color: rgb(103, 103, 103);
+}
+
+.unity-list-view:focus .unity-list-view__item--selected {
+    background-color: rgb(44, 93, 135);
+}
+
+.unity-builder-explorer__header.unity-collection-view__item--selected {
+    background-color: rgb(44, 93, 135);
+}
+
+.unity-builder-explorer__header.unity-list-view__item--selected:hover {
+    background-color: rgb(62, 95, 150);
+}
+
+.unity-list-view:focus .unity-builder-explorer__header.unity-list-view__item--selected {
+    background-color: rgb(62, 95, 150);
+}
+
+.unity-builder-explorer__between-element-item--dragger-hover > .unity-builder-explorer__reorder-hover-bar {
+    background-color: rgb(64, 80, 221);
+}
+
+.unity-builder__toolbar-setting-menu {
+    background-image: resource("UIBuilderPackageResources/Icons/Dark/d__Menu.png");
+}
+
+.unity-builder__toolbar-setting-menu:hover {
+    background-color: rgb(78, 78, 78);
+}
+
+.unity-builder-explorer__item--hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.unity-list-view__item--selected.unity-builder-explorer__item--hover {
+    background-color: rgb(62, 95, 150);
+}
+
+.unity-builder-viewport__viewport-wrapper {
+    background-color: rgb(32, 32, 32);
+}
+
+.unity-builder-viewport__viewport-wrapper.unity-builder-viewport--preview {
+    border-color: rgb(255, 153, 0);
+}
+
+.unity-builder-viewport__shared-styles-and-document {
+    border-color: rgb(47, 47, 47);
+}
+
+.unity-builder-canvas__header {
+    background-color: rgb(47, 47, 47);
+}
+
+.unity-builder-canvas__container {
+    border-color: rgb(47, 47, 47);
+}
+
+.unity-builder-canvas--active .unity-builder-canvas__side__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-canvas__side:hover .unity-builder-canvas__side__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-canvas--active .unity-builder-canvas__corner__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-canvas__corner:hover .unity-builder-canvas__corner__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-canvas--highlighted .unity-builder-viewport__shared-styles-and-document {
+    border-color: rgb(47, 114, 168);
+}
+
+.unity-builder-canvas--highlighted .unity-builder-canvas__header {
+    background-color: rgb(47, 114, 168);
+    color: rgb(255, 255, 255);
+}
+
+.unity-builder-code-preview {
+    background-color: rgb(36, 36, 36);
+}
+
+.unity-builder-code__open-source-file-button {
+    background-image: resource("UIBuilderPackageResources/Icons/Dark/CodePreview/GoToDashboard.png");
+}
+
+.unity-builder-code__open-source-file-button:hover {
+    background-image: resource("UIBuilderPackageResources/Icons/Selected/CodePreview/GoToDashboard.png");
+}
+
+.unity-builder-code__code-line-numbers {
+    color: rgb(100, 100, 100);
+}
+
+.unity-builder-code__code_outer_container {
+    border-color: rgb(89, 89, 89);
+    background-color: rgb(36, 36, 36);
+}
+
+.unity-base-text-field .unity-builder-code__input {
+    background-color: rgb(36, 36, 36);
+}
+
+.unity-base-text-field .unity-builder-code__input:focus {
+    background-color: rgb(36, 36, 36);
+}
+
+.unity-builder-tag-pill {
+    color: rgb(228, 228, 228);
+    border-color: rgb(228, 228, 228);
+}
+
+.unity-list-view__item--selected .unity-builder-tag-pill {
+    border-color: rgb(228, 228, 228);
+}
+
+.unity-builder-class-pill--help .unity-builder-class-pill__background:hover {
+    background-color: rgb(39, 39, 39);
+}
+
+.unity-builder-class-pill__background {
+    background-color: rgb(39, 39, 39);
+}
+
+.unity-builder-class-pill__background:hover {
+    background-color: rgb(70, 70, 70);
+}
+
+.unity-builder-class-pill__delete-button-icon {
+    -unity-background-image-tint-color: rgb(196, 196, 196);
+}
+
+.unity-builder-class-pill__delete-button:hover {
+    background-color: rgb(70, 70, 70);
+}
+
+.unity-builder-preview__container {
+    border-color: rgb(141, 141, 141);
+}
+
+.unity-builder-parent-tracker {
+    border-color: rgb(141, 141, 141);
+}
+
+.unity-builder-placement-indicator__indicator {
+    background-color: rgb(255, 217, 0);
+}
+
+.unity-builder-selection-indicator {
+    border-color: rgb(47, 114, 168);
+}
+
+.unity-builder-selection-indicator__header {
+    background-color: rgb(47, 114, 168);
+}
+
+.unity-builder-resizer__side__inner {
+    background-color: rgb(47, 114, 168);
+}
+
+.unity-builder-resizer__corner__inner {
+    background-color: rgb(47, 114, 168);
+}
+
+.unity-builder-resizer__side.unity-builder-transformer--active .unity-builder-resizer__side__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-resizer__side:hover .unity-builder-resizer__side__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-resizer__corner.unity-builder-transformer--active .unity-builder-resizer__corner__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-resizer__corner:hover .unity-builder-resizer__corner__inner {
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-anchorer__inner {
+    border-color: rgb(168, 126, 47);
+}
+
+.unity-builder-anchorer--active .unity-builder-anchorer__inner {
+    background-color: rgb(168, 126, 47);
+}
+
+.unity-builder-anchorer__hover-zone:hover .unity-builder-anchorer__inner {
+    border-color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
+}
+
+.unity-builder-dragger__overlay {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.unity-builder-dragger__empty-vs {
+    border-color: rgb(255, 255, 255);
+}
+
+.unity-style-field-popup {
+    background-color: rgb(56, 56, 56);
+    border-color: rgb(129, 129, 129);
+}
+
+.unity-builder-tooltip-preview {
+    background-color: rgb(56, 56, 56);
+}
+
+.unity-builder-tooltip-preview__enabler {
+    border-color: rgb(129, 129, 129);
+}
+
+.unity-builder-inspector__varinfo-tooltip {
+    background-color: rgb(63, 63, 63);
+}
+
+.unity-builder-inspector__varinfo-tooltip__warning .unity-label {
+    color: rgb(244, 188, 2);
+}
+
+.unity-builder-inspector__varinfo-tooltip__warning Image {
+    --unity-image: resource("Icons/d_console.warnicon.sml.png");
+}
+
+.unity-builder-inspector__varinfo-view {
+    background-color: rgb(42, 42, 42);
+}
+
+.unity-builder-inspector__varinfo-view__value-preview-container #preview {
+    border-color: rgb(129, 129, 129);
+}
+
+.unity-field-search-completer-popup {
+    background-color: rgb(51, 51, 51);
+}
+
+.unity-field-search-completer-popup .unity-list-view__item--selected {
+    color: rgb(255, 255, 255);
+    background-color: rgb(62, 95, 150);
+}
+
+.unity-field-search-completer-popup .unity-list-view__item--selected .unity-label {
+    color: rgb(255, 255, 255);
+}
+
+.unity-field-search-completer-popup #previewContainer {
+    border-color: rgb(64, 64, 64);
+}
+
+.unity-field-search-completer-popup__result-label {
+    color: rgb(146, 146, 146);
+}
+
+.builder-label {
+    color: rgb(146, 146, 146);
+}
+
+.unity-builder-code-label {
+    color: rgb(153, 153, 153);
+}
+
+.unity-builder-code-row--alternate {
+    background-color: rgb(63, 63, 63);
+}
+
+.unity-builder-code-label--element-type {
+    color: rgb(255, 255, 255);
+}
+
+.unity-builder-code-label--element-name {
+    color: rgb(147, 179, 248);
+}
+
+.unity-builder-code-label--element-class-name {
+    color: rgb(200, 200, 100);
+}
+
+.unity-builder-code-label--element-pseudo-state {
+    color: rgb(48, 168, 0);
+}
+
+.unity-builder-code-label--element-attached-stylesheet {
+    color: rgb(143, 100, 200);
+}
+
+.unity-builder-content-box {
+    background-color: rgb(63, 63, 63);
+    border-color: rgb(36, 36, 36);
+}
+
+.unity-builder-selector-preview__checkerboard-background {
+    --odd-cell-color: rgb(74, 74, 74);
+    --even-cell-color: rgb(102, 102, 102);
+}
+
+.unity-builder-selector-preview__toggle-icon {
+    background-image: resource("UIBuilderPackageResources/Icons/Dark/Inspector/Preview/Transparency View Toggle.png");
+}
+
+.unity-builder-selector-preview__toggle-icon:checked {
+    background-image: resource("UIBuilderPackageResources/Icons/Dark/Inspector/Preview/Transparency View Toggle Off.png");
+}

@@ -1,6 +1,12 @@
 # Custom UI Builder
 Tabs instead of foldouts in the inspector
 
+How to inject my logic into the builder?
+- Create menu item "UI Builder Plus"
+  - it uses reflection to open menu builder and cache its reference in a scriptable object
+  - on each assembly reload we inject our elements int this window
+- 
+
 # Source generator
 - for a class with [UxmlHierarchy(string path)] attribute, generate a partial cs class that creates the same UI hierarchy
 
